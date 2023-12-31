@@ -1,14 +1,12 @@
 # DormSelectionSystem
 
-This template should help get you started developing with Vue 3 in Vite.
+南方科技大学 2023 秋季 OOAD Project 前端仓库
 
-## Recommended IDE Setup
+这是因进行过较大规模的代码重构而重建的仓库，所以没有之前的记录
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## 前端技术栈
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Vue3 (with ElementPlus, Vuex and Vue-router) + axios
 
 ## Project Setup
 
