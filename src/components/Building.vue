@@ -48,7 +48,7 @@ const cards = [
           <!--        <Card v-for="building in buildings" :key="building.id" :card="building" @showBuildingDetails="showBuildingDetails(building.id)" />-->
           <BuildingDetail v-if="selectedBuildingId !== null && showBuilding && !showRoom"
                           :buildingId="selectedBuildingId" @buildingDetail-clicked="handleRoomClicked"/>
-          <Room v-if="selectedRoomId !== null && showRoom" :roomID="selectedRoomId"/>
+          <Room v-if="selectedRoomId !== null && showRoom" :roomId="selectedRoomId"/>
         </div>
       </div>
     </el-main>
