@@ -54,7 +54,7 @@ export default {
   data() {
     return {
       // floors: [],
-      value: 'Floor',
+      selectedBy: 'Floor',
       selectedFloor: '',
       selectedCapacity: '',
       showRoom: false,
@@ -94,124 +94,91 @@ export default {
     // Extract unique capacity values from rooms data
     this.capacities = [...new Set(this.rooms.map(room => room.capacity))];
   },
-  // mounted() {
-  //   // 在组件挂载后，调用后端接口获取楼层和房间信息
-  //   this.fetchBuildingData();
-  // },
   methods: {
-    // fetchBuildingData() {
-    //   // 使用 buildingId 调用后端接口获取楼层和房间信息
-    //   // 并将获取的数据赋值给 floors 和 rooms 变量
-    //   // 例如使用 Axios 进行异步请求
-    //   axios.get(`/api/buildings/${this.buildingId}`)
-    //       .then(response => {
-    //         this.floors = response.data.floors;
-    //         this.rooms = response.data.rooms;
-    //       })
-    //       .catch(error => {
-    //         console.error('Failed to fetch building data:', error);
-    //       });
-    // },
-    selectFloor(floor) {
-      this.selectedFloor = floor.id;
-    },
-    selectCapacity(capacity) {
-      this.selectedCapacity = capacity;
-    },
+    // Filters
     filteredRooms(floorId) {
       return this.rooms.filter(room => room.floor === floorId);
     },
     filteredCapacity(capacity) {
       return this.rooms.filter(room => room.capacity === capacity);
     },
-    emitBuildingInfo(roomID) {
-      this.$emit('buildingDetail-clicked', roomID);
+
+    // Database related
+    selectRoom() {
+
     },
   },
   computed: {
-
-
     filteredAvailable() {
       return this.rooms.filter(room => room.teamID === null);
     },
   },
-  watch: {
-    selectedCapacity(newCapacity) {
-      console.log(newCapacity); // Log the selected capacity
-    }
-  }
-};
+}
 </script>
-
 
 <template>
   <el-container>
     <div class="select">
-      Filter by:
-      <el-select v-model="value" placeholder="Filter by" size="large">
-        <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-        />
-      </el-select>
+      <el-space>
+        <span> Filter by: </span>
+        <el-select v-model="selectedBy" placeholder="Filter by" size="large">
+          <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
+        </el-select>
+      </el-space>
     </div>
-    <div class="tabs-container" style="width: 100%" v-if="value === 'Floor'">
-      <el-table :data="floors" style="width: 100%;margin-top: 50px;">
-        <!-- 展开行 -->
+
+    <div class="tabs-container" style="width: 100%" v-if="selectedBy === 'Floor'">
+      <el-table :data="floors" style="width: 100%; margin-top: 50px;">
         <el-table-column type="expand">
           <template v-slot="props">
             <el-table :data="filteredRooms(props.row.id)" style="width: 100%">
-              <el-table-column prop="name" label="Room Name"></el-table-column>
-              <el-table-column prop="capacity" label="Capacity"></el-table-column>
-              <el-table-column prop="teamID" label="State">
+              <el-table-column prop="name" label="Room Name"/>
+              <el-table-column prop="capacity" label="Capacity"/>
+              <el-table-column label="State">
                 <template v-slot="scope">
-                  <span v-if="scope.row.teamID != null">Occupied</span>
-                  <span v-else>Available</span>
+                  <span> {{ scope.row.teamID ? 'Occupied' : 'Available' }} </span>
                 </template>
               </el-table-column>
               <el-table-column label="Actions">
                 <template v-slot="scope">
-                  <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
-                  <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
+                  <el-button @click="" type="text"> Details </el-button>
+                  <el-button @click="selectRoom(scope.row.id)" type="text"> Select </el-button>
                 </template>
               </el-table-column>
             </el-table>
           </template>
         </el-table-column>
-
-        <!-- 楼层列 -->
-        <el-table-column prop="name" label="Floor"></el-table-column>
+        <el-table-column prop="name" label="Floor"/>
       </el-table>
     </div>
-    <div class="tabs-container" style="width: 100%" v-if="value === 'Capacity'">
-      <el-table :data="capacities" style="width: 100%;margin-top: 50px;">
 
-        <!-- 展开行 -->
+    <div class="tabs-container" style="width: 100%" v-if="selectedBy === 'Capacity'">
+      <el-table :data="capacities" style="width: 100%; margin-top: 50px;">
         <el-table-column type="expand">
           <template v-slot="props">
             <el-table :data="filteredCapacity(props.row)" style="width: 100%">
-              <el-table-column prop="name" label="Room Name"></el-table-column>
-              <el-table-column prop="capacity" label="Capacity"></el-table-column>
+              <el-table-column prop="name" label="Room Name"/>
+              <el-table-column prop="capacity" label="Capacity"/>
               <el-table-column prop="teamID" label="State">
                 <template v-slot="scope">
-                  <span v-if="scope.row.teamID != null">Occupied</span>
-                  <span v-else>Available</span>
+                  <span> {{ scope.row.teamID ? 'Occupied' : 'Available' }} </span>
                 </template>
               </el-table-column>
               <el-table-column label="Actions">
                 <template v-slot="scope">
-                  <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
+                  <el-button @click="" type="text">Details</el-button>
                   <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
                 </template>
               </el-table-column>
-
             </el-table>
           </template>
         </el-table-column>
 
-        <!-- 容量列 -->
         <el-table-column label="Capacity">
           <template v-slot="{ row }">
             {{ `Capacity: ${row}` }}
@@ -219,24 +186,20 @@ export default {
         </el-table-column>
       </el-table>
     </div>
-    <div class="tabs-container" style="width: 100%" v-if="value === 'Available'">
+
+    <div class="tabs-container" style="width: 100%" v-if="selectedBy === 'Available'">
       <div style="margin-top: 50px;">
         <el-table :data="filteredAvailable" style="width: 100%">
-          <el-table-column prop="name" label="Room Name"></el-table-column>
-          <el-table-column prop="capacity" label="Capacity"></el-table-column>
+          <el-table-column prop="name" label="Room Name"/>
+          <el-table-column prop="capacity" label="Capacity"/>
           <el-table-column prop="teamID" label="State">
             <template v-slot="scope">
-              <span v-if="scope.row.teamID!=null">Occupied</span>
-              <span v-else>Available</span>
+              <span> {{ scope.row.teamID ? 'Occupied' : 'Available' }} </span>
             </template>
-
           </el-table-column>
           <el-table-column label="Actions">
-            <!--                <template slot-scope="scope">-->
-            <!--                  <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>-->
-            <!--                </template>-->
             <template v-slot="scope">
-              <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
+              <el-button @click="" type="text">Details</el-button>
               <el-button @click="" type="text">Select</el-button>
             </template>
           </el-table-column>
@@ -247,6 +210,55 @@ export default {
 </template>
 
 <style scoped>
+button {
+  --color: rgb(33 150 243);
+  font-family: inherit;
+  display: inline-block;
+  width: 4em;
+  height: 2em;
+  line-height: 1.9em;
+  margin: 20px;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--color);
+  transition: color .5s;
+  z-index: 1;
+  font-size: 17px;
+  border-radius: 6px;
+  font-weight: 500;
+  color: var(--color);
+}
+
+button:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  background: var(--color);
+  height: 150px;
+  width: 200px;
+  border-radius: 50%;
+}
+
+button:hover {
+  color: #fff;
+}
+
+button:before {
+  top: 100%;
+  left: 100%;
+  transition: all .7s;
+}
+
+button:hover:before {
+  top: -30px;
+  left: -30px;
+}
+
+button:active:before {
+  background: #0720c4;
+  transition: background 0s;
+}
+
 ::v-deep .el-tabs__nav-scroll {
   width: 100% !important;
   margin: 0 auto !important;

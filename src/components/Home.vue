@@ -126,8 +126,8 @@ const buildMenuItemJsonList = [
   {
     name: 'Dormitory',
     icon: OfficeBuilding,
-    path: '/home/building',
-  }
+    path: '/home/buildings',
+  },
 ]
 </script>
 

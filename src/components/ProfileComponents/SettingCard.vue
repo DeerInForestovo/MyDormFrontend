@@ -74,9 +74,7 @@ export default {
       }
       this.$refs.form.validate((valid) => {
         if (!valid) return
-        axiosFunctions.methods.updateUserProfile(
-            this.isManager, this.form.username, this.$store.state.token, this.form
-        ).then((response) => {
+        axiosFunctions.methods.updateUserProfile(this.isManager, this.form.username, this.form).then((response) => {
           ElNotification({
             title: "Success!",
             type: "success",
@@ -109,9 +107,7 @@ export default {
           })
           return
         }
-        axiosFunctions.methods.uploadResources(
-            this.$store.state.token, 'image', image
-        ).then((response) => {
+        axiosFunctions.methods.uploadResources('image', image).then((response) => {
           ElNotification({
             title: "Success!",
             type: "success",
@@ -120,7 +116,7 @@ export default {
           const filename = response.data.url
           console.log(response.data)
           console.log(filename)
-          axiosFunctions.methods.updateUserProfileImage(this.form.username, this.$store.state.token, filename)
+          axiosFunctions.methods.updateUserProfileImage(this.form.username, filename)
               .then((response) => {}).catch((response) => {})
           this.setToDefault()
         }).catch((response) => {
@@ -154,7 +150,7 @@ export default {
       }
       this.form.username = this.username
       // database -> form
-      axiosFunctions.methods.getProfile(this.form.username, this.$store.state.token)
+      axiosFunctions.methods.getProfile(this.form.username)
           .then(response => {
             if (response.data.username !== this.form.username) {
               ElNotification({
@@ -197,7 +193,7 @@ export default {
       } else {
         // backend
         // 1. 创建
-        axiosFunctions.methods.createHobby(this.form.username, this.$store.state.token, hobbyName)
+        axiosFunctions.methods.createHobby(this.form.username, hobbyName)
             .then((response) => {
             }).catch((response) => {
         }).finally(() => {
@@ -207,7 +203,7 @@ export default {
             name: null,
             description: null,
           }
-          axiosFunctions.methods.getHobbyIdByName(this.form.username, this.$store.state.token, hobbyName)
+          axiosFunctions.methods.getHobbyIdByName(this.form.username, hobbyName)
               .then((response) => {
                 hobbyItem = response.data
                 // frontend
@@ -217,7 +213,7 @@ export default {
             console.log(response)
           }).finally(() => {
             // 3. 加入用户爱好
-            axiosFunctions.methods.userAddHobby(this.form.username, this.$store.state.token, hobbyItem)
+            axiosFunctions.methods.userAddHobby(this.form.username, hobbyItem)
                 .then((response) => {
                 })
                 .catch((response) => {
@@ -234,7 +230,7 @@ export default {
         // frontend
         this.form.hobbies.splice(index, 1);
         // backend
-        axiosFunctions.methods.userDeleteHobby(this.form.username, this.$store.state.token, hobbyItem.hobbyId)
+        axiosFunctions.methods.userDeleteHobby(this.form.username, hobbyItem.hobbyId)
       }
     },
 

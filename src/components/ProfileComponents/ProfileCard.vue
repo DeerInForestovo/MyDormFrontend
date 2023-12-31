@@ -52,7 +52,7 @@ export default {
       console.log(this.username)
       this.form.username = this.username
       // database -> form
-      axiosFunctions.methods.getProfile(this.form.username, this.$store.state.token)
+      axiosFunctions.methods.getProfile(this.form.username)
           .then(response => {
             if (response.data.username !== this.form.username) {
               console.log(response)
