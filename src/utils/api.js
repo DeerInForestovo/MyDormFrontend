@@ -83,7 +83,6 @@ export default {
             return axios.get(base_api + '/api/building', this.defaultConfig(token))
         },
 
-
         // Manage
         createUser(username, password) {
             return axios.post(base_api + '/api/manage/user', {

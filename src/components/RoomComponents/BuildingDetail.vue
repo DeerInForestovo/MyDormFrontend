@@ -1,48 +1,7 @@
 <script setup>
-// const floors=[
-//   { id: 1, name: '1st Floor' },
-//   { id: 2, name: '2nd Floor' },
-//   { id: 3, name: '3rd Floor' },
-// ];
-// const rooms=[
-//   { id: 1, name: 'Room A', floor: 1 },
-//   { id: 2, name: 'Room B', floor: 1 },
-//   { id: 3, name: 'Room C', floor: 2 },
-//   { id: 4, name: 'Room D', floor: 2 },
-//   { id: 5, name: 'Room E', floor: 3 },
-//   { id: 6, name: 'Room F', floor: 3 },
-// ];
-// import { ref } from 'vue'
-// const value = ref('')
-//
-// const options = [
-//   {
-//     value: 'Option1',
-//     label: 'Option1',
-//   },
-//   {
-//     value: 'Option2',
-//     label: 'Option2',
-//   },
-//   {
-//     value: 'Option3',
-//     label: 'Option3',
-//   },
-//   {
-//     value: 'Option4',
-//     label: 'Option4',
-//   },
-//   {
-//     value: 'Option5',
-//     label: 'Option5',
-//   },
-// ]
 </script>
 
 <script>
-// import {Cache as axios} from "three";
-import {ref} from 'vue';
-
 export default {
   name: 'BuildingDetail',
   props: {
@@ -53,7 +12,6 @@ export default {
   },
   data() {
     return {
-      // floors: [],
       selectedBy: 'Floor',
       selectedFloor: '',
       selectedCapacity: '',
@@ -146,8 +104,8 @@ export default {
               </el-table-column>
               <el-table-column label="Actions">
                 <template v-slot="scope">
-                  <el-button @click="" type="text"> Details </el-button>
-                  <el-button @click="selectRoom(scope.row.id)" type="text"> Select </el-button>
+                  <el-button @click="this.$router.push('/home/room/' + scope.row.id)" type="text"> Details</el-button>
+                  <el-button @click="selectRoom(scope.row.id)" type="text"> Select</el-button>
                 </template>
               </el-table-column>
             </el-table>
@@ -171,7 +129,7 @@ export default {
               </el-table-column>
               <el-table-column label="Actions">
                 <template v-slot="scope">
-                  <el-button @click="" type="text">Details</el-button>
+                  <el-button @click="this.$router.push('/home/room/' + scope.row.id)" type="text">Details</el-button>
                   <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
                 </template>
               </el-table-column>
@@ -199,8 +157,8 @@ export default {
           </el-table-column>
           <el-table-column label="Actions">
             <template v-slot="scope">
-              <el-button @click="" type="text">Details</el-button>
-              <el-button @click="" type="text">Select</el-button>
+              <el-button @click="this.$router.push('/home/room/' + scope.row.id)" type="text">Details</el-button>
+              <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -210,55 +168,6 @@ export default {
 </template>
 
 <style scoped>
-button {
-  --color: rgb(33 150 243);
-  font-family: inherit;
-  display: inline-block;
-  width: 4em;
-  height: 2em;
-  line-height: 1.9em;
-  margin: 20px;
-  position: relative;
-  overflow: hidden;
-  border: 2px solid var(--color);
-  transition: color .5s;
-  z-index: 1;
-  font-size: 17px;
-  border-radius: 6px;
-  font-weight: 500;
-  color: var(--color);
-}
-
-button:before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  background: var(--color);
-  height: 150px;
-  width: 200px;
-  border-radius: 50%;
-}
-
-button:hover {
-  color: #fff;
-}
-
-button:before {
-  top: 100%;
-  left: 100%;
-  transition: all .7s;
-}
-
-button:hover:before {
-  top: -30px;
-  left: -30px;
-}
-
-button:active:before {
-  background: #0720c4;
-  transition: background 0s;
-}
-
 ::v-deep .el-tabs__nav-scroll {
   width: 100% !important;
   margin: 0 auto !important;
