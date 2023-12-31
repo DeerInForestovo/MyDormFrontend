@@ -11,6 +11,8 @@ import store from './utils/store'
 // import vue-router
 import router from './utils/route'
 
+import 'element-plus/theme-chalk/display.css';
+
 
 // build app
 import {createApp} from 'vue'
