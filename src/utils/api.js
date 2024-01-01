@@ -4,6 +4,8 @@ import store from "./store";
 const base_api = 'http://10.16.165.147:8081';
 let useToken = true;
 
+let token = '';
+
 export default {
     methods: {
         // Basic
@@ -175,7 +177,50 @@ export default {
             return axios.post(base_api + '/api/manage/user', {
                 username: username,
                 password: password
+            })
+        },
+
+        // Room-Comment
+        postComment(username, comment){
+            return axios.post(base_api + '/api/comment', {
+                roomId : comment.roomId,
+                username: username,
+                content: comment.content,
+                replyToCommentId: comment.replyToCommentId,
+                replyToUsername: comment.replyToUsername
             }, this.defaultConfig())
         },
+        getRoomInfo(roomId){
+            return axios.get(base_api + '/api/room/'+roomId, this.defaultConfig())
+        },
+        deleteComment(username, commentId){
+            return axios.delete(base_api + '/api/comment', {
+                params: {
+                    username: username,
+                    commentId: commentId
+                },
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                }
+            })
+        },
+        //star
+        addStar(username, roomId){
+            return axios.post(base_api + '/api/profile/star', {
+                username: username,
+                roomId: roomId
+            }, this.defaultConfig())
+        },
+        removeStar(username, roomId){
+            return axios.delete(base_api + '/api/profile/star', {
+                params: {
+                    username: username,
+                    roomId: roomId
+                },
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                }
+            })
+        }
     }
 }
