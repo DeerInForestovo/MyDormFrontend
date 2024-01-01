@@ -22,10 +22,18 @@ import Room from "@/components/RoomComponents/Room.vue";
 import Building from "@/components/RoomComponents/Buildings.vue";
 import BuildingDetail from "@/components/RoomComponents/BuildingDetail.vue";
 
+import NotFoundPage from "@/components/decorations/NotFoundPage.vue";
+
 import {createRouter, createWebHashHistory} from 'vue-router'
+import store from './store'
 
 // build route
 const routes = [
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: NotFoundPage,
+    },
     {
         path: '/login',
         component: LoginPage,
@@ -40,8 +48,7 @@ const routes = [
                 component: Profile,
             },
             {
-                path: 'setting/:username',
-                props: true,
+                path: 'setting',
                 component: ProfileSetting,
             },
             {
@@ -103,7 +110,6 @@ const router = new createRouter({
     routes,
 })
 
-import store from './store'
 router.beforeEach(async (to, from) => {
     if (  // Did you log in?
         !store.state.token  // ! LoggedIn

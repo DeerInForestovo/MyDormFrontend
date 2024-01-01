@@ -10,6 +10,7 @@ import {ref} from "vue";
 export default {
   data() {
     return {
+      username: null,
       form: ref({
         username: null,
         name: null,
@@ -62,9 +63,11 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      this.setToDefault();
-    })
+    console.log(this.$route)
+    if (this.$route.fullPath.startsWith('/home/setting'))
+      this.username = this.$store.state.username
+    console.log(this.username)
+    this.setToDefault();
   },
 
   methods: {
