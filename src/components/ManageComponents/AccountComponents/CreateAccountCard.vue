@@ -27,6 +27,7 @@ export default {
         axiosFunctions.methods.createUser(this.studentInfoForm.username, this.studentInfoForm.password)
             .then(response => {
               axiosFunctions.methods.updateUserProfile(true, this.studentInfoForm.username, {
+                username: this.studentInfoForm.username,
                 name: this.studentInfoForm.name,
                 gender: this.studentInfoForm.gender,
                 preferRoomSize: 4,
@@ -42,15 +43,16 @@ export default {
                   .catch(response => {
                     ElNotification({
                       title: 'Failed',
-                      message: response.message,
+                      message: 'Failed to set info:' + response.message,
                       type: 'error'
                     })
+                    console.log(response)
                   })
             })
             .catch(response => {
               ElNotification({
                 title: 'Failed',
-                message: response.message,
+                message: 'Failed to create account:' + response.message,
                 type: 'error'
               })
               console.log(response)
