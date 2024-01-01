@@ -15,6 +15,9 @@ let store = createStore({
             // zone info
             zoneId: null,
             zoneName: null,
+
+            stars: [],
+
         }
     },
     mutations: {
@@ -31,6 +34,7 @@ let store = createStore({
             state.profilePhotoUrl = data.profilePhotoUrl
             state.zoneId = data.zoneId
 
+            state.stars = data.stars
         }
     }
 })

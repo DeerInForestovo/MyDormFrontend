@@ -1,10 +1,15 @@
 <script setup>
+import {ref} from 'vue';
 import CommentSection from './CommentSection.vue';
+import {Refresh} from "@element-plus/icons-vue";
 import alice from "@/assets/alice.png";
-
+import axiosFunctions from "@/utils/api";
+import {ElNotification} from "element-plus";
 </script>
 
 <script>
+import axiosFunctions from '@/utils/api'
+import {ElNotification} from "element-plus";
 export default {
   name: 'Room',
   props: {
@@ -12,31 +17,124 @@ export default {
       type: Number,
       required: true,
     },
+    username: {
+      required: false,
+      default: null,
+    }
   },
+  mounted() {
+    this.refreshRoom();
+
+  },
+  data(){
+    return{
+      username: this.$store.state.username,
+      isHeartChecked: true,
+      rooms:{
+        roomPicturePath: null,
+        comments: [],
+      }
+    }
+  },
+
+  methods:{
+    toggleHeart() {
+      this.isHeartChecked = !this.isHeartChecked;
+      console.log("toggle heart");
+      if(this.isHeartChecked){
+        axiosFunctions.methods.addStar(this.username, this.roomId).then((response) => {
+          ElNotification({
+            title: "Success!",
+            type: "success",
+            message: "You have added this room into your favourite rooms!",
+          })
+          console.log(response)
+        }).catch((response) => {
+          ElNotification({
+            title: "Failed",
+            type: "error",
+            message: "Failed to add this room into your favourite rooms!",
+          })
+          console.log('Failed to add this room into your favourite rooms!')
+          console.log(response)
+        })
+      }else{
+        axiosFunctions.methods.removeStar(this.username, this.roomId).then((response) => {
+          ElNotification({
+            title: "Success!",
+            type: "success",
+            message: "You have removed this room from your favourite rooms!",
+          })
+          console.log(response)
+        }).catch((response) => {
+          ElNotification({
+            title: "Failed",
+            type: "error",
+            message: "Failed to remove this room from your favourite rooms!",
+          })
+          console.log('Failed to remove this room from your favourite rooms!')
+          console.log(response)
+        })
+      }
+    },
+    refreshRoom(){
+      axiosFunctions.methods.getRoomInfo(this.roomId)
+          .then(response => {
+            this.rooms = response.data
+            console.log(this.rooms)
+          }).catch(response => { // possibly user not exist
+        console.log(response)
+        ElNotification({
+          title: 'Failed',
+          message: 'Failed to get room info. Does it exist?',
+          type: 'error',
+        })
+        this.$emit('roomNotExists')
+      })
+      console.log(this.rooms.comments)
+    }
+  },
+  watch:{
+    username(){
+      this.refreshRoom();
+    }
+  }
 }
 </script>
 
 <template>
   <div>
     <div class="container">
-      <el-card>
+      <el-card style="width: 90%; margin: 1%">
+        <el-button :icon="Refresh" size="small" text @click="refreshRoom" />
         <div class = "hidden-sm-and-up">
-          <el-image :src="alice" class="Images"/>
+          <el-image :src="axiosFunctions.methods.getResourceByFilename(this.rooms.roomPicturePath)" class="Images">
+          <template #error>
+            <div class="image-slot">
+            </div>
+          </template>
+          </el-image>
         </div>
         <el-row>
           <el-col :xs="0" :sm="10" :md="10" :lg="10" :xl="10">
             <div class = "hidden-xs-only">
-                <el-image :src="alice" class="Images"/>
+                <el-image :src="axiosFunctions.methods.getResourceByFilename(this.rooms.roomPicturePath)" class="Images">
+                <template #error>
+                  <div class="image-slot">
+                  </div>
+                </template>
+                </el-image>
             </div>
           </el-col>
           <el-col :xs="24" :sm="14" :md="14" :lg="14" :xl="14">
             <CommentSection
                 :room-id="roomId"
+                :comments-list="this.rooms.comments"
             />
             <!--change the roomId-->
           </el-col>
         </el-row>
-        <div class="heart-container" title="Like">
+        <div class="heart-container" title="Like" @click = 'toggleHeart'>
           <input type="checkbox" class="checkbox" id="Give-It-An-Id">
           <div class="svg-container">
             <svg viewBox="0 0 24 24" class="svg-outline" xmlns="http://www.w3.org/2000/svg">
