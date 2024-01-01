@@ -18,7 +18,9 @@ import Message from "@/components/Message.vue";
 
 import Map from "@/components/Map.vue";
 
-import Building from "@/components/Building.vue";
+import Room from "@/components/RoomComponents/Room.vue";
+import Building from "@/components/RoomComponents/Buildings.vue";
+import BuildingDetail from "@/components/RoomComponents/BuildingDetail.vue";
 
 import {createRouter, createWebHashHistory} from 'vue-router'
 
@@ -79,9 +81,19 @@ const routes = [
                 component: Map,
             },
             {
-                path: 'building',
+                path: 'buildings',
                 component: Building,
             },
+            {
+                path: 'building/:buildingId',
+                props: true,
+                component: BuildingDetail,
+            },
+            {
+                path: 'room/:roomId',
+                props: true,
+                component: Room,
+            }
         ]
     },
 ]
@@ -96,8 +108,10 @@ router.beforeEach(async (to, from) => {
     if (  // Did you log in?
         !store.state.token  // ! LoggedIn
         && to.path !== '/login'  // to != LoginPage
-    ) return {
-        path: '/login'  // LoginPage
+    ) {
+        return {
+            path: '/login'  // LoginPage
+        }
     }
 })
 

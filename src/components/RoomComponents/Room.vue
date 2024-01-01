@@ -46,6 +46,7 @@ export default {
               </div>
             </div>
           </el-col>
+
           <el-col :span="14">
             <CommentSection
                 :room-id="roomId"

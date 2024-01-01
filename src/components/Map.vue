@@ -136,12 +136,12 @@ export default {
     </map>
   </div>
 
-  <el-popover ref="popover" placement="top" trigger="manual" v-show="popoverVisible">
-    <template #default>
-      <!-- 弹出框内容 -->
-      <div>这是一个弹出框</div>
-    </template>
-  </el-popover>
+<!--  <el-popover ref="popover" placement="top" trigger="manual" v-show="popoverVisible">-->
+<!--    <template #default>-->
+<!--      &lt;!&ndash; 弹出框内容 &ndash;&gt;-->
+<!--      <div>这是一个弹出框</div>-->
+<!--    </template>-->
+<!--  </el-popover>-->
 
 </template>
 
