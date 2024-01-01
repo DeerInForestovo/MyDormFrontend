@@ -3,8 +3,8 @@ import Cookies from 'js-cookie';
 import {ElNotification} from "element-plus";
 import api from "@/utils/api";
 
-const username_cookie_name = 'MyDorm_username'
-const token_cookie_name = 'MyDorm_token'
+const username_string = 'MyDorm_username'
+const token_string = 'MyDorm_token'
 
 let store = createStore({
     state() {
@@ -22,9 +22,8 @@ let store = createStore({
         setUserLoginInfo(state, data) {
             state.username = data.username
             state.token = data.token
-            // Set username and token to cookie
-            Cookies.set(username_cookie_name, data.username, {expires: 1, secure: true})
-            Cookies.set(token_cookie_name, data.token, {expires: 1, secure: true})
+            Cookies.set(username_string, data.username, {expires: 1, secure: true})
+            Cookies.set(token_string, data.token, {expires: 1, secure: true})
         },
 
         setProfileInfo(state, data) {
@@ -35,13 +34,14 @@ let store = createStore({
         logout(state) {
             state.username = null
             state.token = null
-            Cookies.set(username_cookie_name, '', {expires: 1, secure: true})
-            Cookies.set(token_cookie_name, '', {expires: 1, secure: true})
+            Cookies.set(username_string, '', {expires: 1, secure: true})
+            Cookies.set(token_string, '', {expires: 1, secure: true})
         }
     }
 })
 
-// Get username and token from Cookies
+store.state.username = Cookies.get(username_string)
+store.state.token = Cookies.get(token_string)
 let username = store.state.username
 let token = store.state.token
 if (username && token) {
