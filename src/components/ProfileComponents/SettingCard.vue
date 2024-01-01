@@ -12,7 +12,6 @@ import getUserProfile from "@/components/ProfileComponents/getUserProfile";
 export default {
   data() {
     return {
-      username: null,
       form: {
         username: null,
         name: null,
@@ -65,7 +64,9 @@ export default {
   },
   mounted() {
     if (this.$route.fullPath.startsWith('/home/setting'))
-      this.username = this.$store.state.username
+      this.form.username = this.$store.state.username
+    if (this.username)
+      this.form.username = this.username
     this.setToDefault();
   },
 
@@ -144,27 +145,13 @@ export default {
     },
 
     changePassword() {
-      if (this.username === null) {
+      if (this.form.username === null) {
         return
       }
       this.$refs.passwordForm.validate((valid) => {
         if (!valid) return
-        this.passwordForm.username = this.username
+        this.passwordForm.username = this.form.username
         axiosFunctions.methods.changePassword(this.passwordForm)
-            .then((response) => {
-              ElNotification({
-                title: "Success!",
-                type: "success",
-                message: "You have changed your password.",
-              })
-            }).catch((response) => {
-          ElNotification({
-            title: "Failed",
-            type: "error",
-            message: response.data,
-          })
-          console.log(response)
-        })
       })
     },
 
@@ -172,7 +159,14 @@ export default {
     },  // do nothing
 
     setToDefault() { // Set the form to the user's info before any change
-      if (this.username) getUserProfile(this.username, (data) => {this.form = data})
+      if (this.form.username) getUserProfile(
+          this.form.username,
+          (data) => {
+            this.form = data
+          },
+          (response) => {
+            this.$emit('userNotExists')
+          })
     },
 
     // Hobby
@@ -260,6 +254,7 @@ export default {
 
   watch: {
     username() {
+      this.form.username = this.username
       this.setToDefault()
     }
   }

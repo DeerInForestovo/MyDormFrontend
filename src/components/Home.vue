@@ -101,10 +101,6 @@ const buildSubMenuJsonList = [
         path: '/home/manage_students',
       },
       {
-        name: 'Dorms',
-        path: '/home/manage_dorms',
-      },
-      {
         name: 'Options',
         path: '/home/manage_options',
       }

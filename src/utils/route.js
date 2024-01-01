@@ -11,7 +11,6 @@ import TeamMemberRecommend from "@/components/TeamComponents/TeamMemberRecommend
 import TeamNotification from "@/components/TeamComponents/TeamInvitationCard.vue";
 
 import ManageStudents from "@/components/ManageComponents/Accounts.vue";
-import ManageDorms from "@/components/ManageComponents/Dorm.vue";
 import ManageOptions from "@/components/ManageComponents/Options.vue";
 
 import Message from "@/components/Message.vue";
@@ -78,10 +77,6 @@ const routes = [
             {
                 path: 'manage_students',
                 component: ManageStudents,
-            },
-            {
-                path: 'manage_dorms',
-                component: ManageDorms,
             },
             {
                 path: 'manage_options',
