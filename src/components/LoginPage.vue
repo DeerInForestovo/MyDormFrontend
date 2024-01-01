@@ -21,19 +21,25 @@ export default {
   },
 
   methods: {
+    loginAnimation() {
+      // 执行切换页面的动画
+      const element = document.getElementById('LoginPageId')
+      element.classList.add('fadeOut')
+      swal("Success!", "Welcome to MyDorm, user " + this.$store.state.username, "success");
+    },
+
     login() {
       axiosFunctions.methods.login(this.loginForm.ID, this.loginForm.password)
           .then(response => {
-            this.$store.commit('setUserLoginInfo', {
-              username: response.data.username,
-              token: response.data.token
-            })
+            setTimeout(() => {
+              this.$store.commit('setUserLoginInfo', {
+                username: response.data.username,
+                token: response.data.token
+              })
+              this.$router.push('/home')
+            }, 1000)
             this.loginDialogVisible = false;
-            // 执行切换页面的动画
-            const element = document.getElementById('LoginPageId')
-            element.classList.add('fadeOut')
-            setTimeout(() => {this.$router.push('/home')}, 1000)
-            swal("Success!", "Welcome to MyDorm, user " + this.$store.state.username, "success");
+            this.loginAnimation()
           }).catch(response => {
             console.log(response)
             ElNotification({
@@ -99,11 +105,23 @@ export default {
     <div ref="vantaRef" style="width: 100%; height: 100%"></div>
     <div class="LoginPageContainer">
       <div class="LoginPageItems">
-        <el-text class="WelcomeMessage"> Welcome to MyDorm system!</el-text>
-        <br><br>
-        <el-button @click="loginDialogVisible=true" type="primary" plain round size="large">
-          Click to login
-        </el-button>
+        <div style="margin-bottom: 50px">
+          <el-text class="WelcomeMessage"> Welcome to MyDorm system!</el-text>
+        </div>
+        <div>
+          <el-space>
+            <div style="margin-right: 6vw" v-if="this.$store.state.token">
+              <el-button @click="loginAnimation" type="primary" plain round size="large">
+                <span>Continue with <span style="font-weight: bold">{{this.$store.state.username}}</span></span>
+              </el-button>
+            </div>
+            <div>
+              <el-button @click="loginDialogVisible=true" type="primary" plain round size="large">
+                {{this.$store.state.token ? 'Login with another account' : 'Login'}}
+              </el-button>
+            </div>
+          </el-space>
+        </div>
       </div>
     </div>
   </div>

@@ -176,7 +176,8 @@ export default {
       if (axiosFunctions.methods.isTokenUsed())
         axiosFunctions.methods.newToken(this.username, this.$store.state.token)
       else {
-        swal("Notice!", "")
+        swal("Notice!", "Your token has expired due to inactivity for ten minutes.", "notice")
+        this.logout()
       }
     }, 540000)
 
@@ -211,6 +212,7 @@ export default {
     },
 
     logout() {
+      swal("See you!", "Your token has expired.", 'success')
       this.$store.commit('logout')
       this.$router.push('/')
     }
