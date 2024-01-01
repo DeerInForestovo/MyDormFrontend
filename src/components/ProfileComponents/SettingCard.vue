@@ -89,7 +89,7 @@ export default {
           ElNotification({
             title: "Failed",
             type: "error",
-            message: response.data,
+            message: response.message,
           })
           console.log(response)
         })
@@ -112,7 +112,6 @@ export default {
         }
         axiosFunctions.methods.uploadResources('image', image)
             .then((response) => {
-              console.log(response.data.url)
               axiosFunctions.methods.updateUserProfile(this.isManager, this.form.username,
                   {
                     username: this.form.username,
@@ -129,7 +128,7 @@ export default {
                 ElNotification({
                   title: "Failed",
                   type: "error",
-                  message: response.data,
+                  message: response.message,
                 })
                 console.log(response)
               })
@@ -137,7 +136,7 @@ export default {
           ElNotification({
             title: "Failed",
             type: "error",
-            message: response.data,
+            message: response.message,
           })
           console.log(response)
         })
