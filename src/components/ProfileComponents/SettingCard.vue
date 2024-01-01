@@ -1,12 +1,13 @@
 <script setup>
-import axiosFunctions from '@/utils/api'
 import {Picture} from "@element-plus/icons-vue";
+import axiosFunctions from "@/utils/api";
 </script>
 
 <script>
 import axiosFunctions from '@/utils/api'
 import {ElNotification} from "element-plus";
 import {ref} from "vue";
+import getUserProfile from "@/components/ProfileComponents/getUserProfile";
 
 export default {
   data() {
@@ -29,6 +30,7 @@ export default {
         hobbies: [],
       },
       passwordForm: {
+        username: null,
         oldPassword: null,
         newPassword: null,
         confirmPassword: null,
@@ -62,10 +64,8 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$route)
     if (this.$route.fullPath.startsWith('/home/setting'))
       this.username = this.$store.state.username
-    console.log(this.username)
     this.setToDefault();
   },
 
@@ -95,7 +95,7 @@ export default {
       })
     },
 
-    uploadImage(file) {
+    updateImage(file) {
       if (this.form.username === null) {
         return
       }
@@ -123,6 +123,7 @@ export default {
                   type: "success",
                   message: "You have updated the profile image!",
                 })
+                this.$router.go(0)
               }).catch((response) => {
                 ElNotification({
                   title: "Failed",
@@ -148,7 +149,22 @@ export default {
       }
       this.$refs.passwordForm.validate((valid) => {
         if (!valid) return
-        // TODO
+        this.passwordForm.username = this.username
+        axiosFunctions.methods.changePassword(this.passwordForm)
+            .then((response) => {
+              ElNotification({
+                title: "Success!",
+                type: "success",
+                message: "You have changed your password.",
+              })
+            }).catch((response) => {
+          ElNotification({
+            title: "Failed",
+            type: "error",
+            message: response.data,
+          })
+          console.log(response)
+        })
       })
     },
 
@@ -156,32 +172,7 @@ export default {
     },  // do nothing
 
     setToDefault() { // Set the form to the user's info before any change
-      if (this.username === null) {
-        return
-      }
-      this.form.username = this.username
-      // database -> form
-      axiosFunctions.methods.getProfile(this.form.username)
-          .then(response => {
-            if (response.data.username !== this.form.username) {
-              ElNotification({
-                title: 'Failed',
-                message: 'Failed to get user info (response = ' + response.data.username + ', this = ' + this.form.username + ').',
-                type: 'error',
-              })
-              return
-            }
-            this.form = response.data
-            console.log(this.form)
-          }).catch(response => { // possibly user not exist
-        console.log(response)
-        ElNotification({
-          title: 'Failed',
-          message: response.data,
-          type: 'error',
-        })
-        this.$emit('userNotExists')
-      })
+      if (this.username) getUserProfile(this.username, (data) => {this.form = data})
     },
 
     // Hobby
@@ -289,7 +280,7 @@ export default {
                 ref="profileAvatarUpload"
                 :show-file-list="false"
                 :on-success="handleAvatarSuccess"
-                :on-change="uploadImage"
+                :on-change="updateImage"
                 :auto-upload="false"
                 accept="image/png, image/jpeg"
             >

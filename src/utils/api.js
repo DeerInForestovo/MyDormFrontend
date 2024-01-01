@@ -48,11 +48,6 @@ export default {
                 axios.post(base_api + '/api/manage/user/profile/' + username, formData, this.defaultConfig()):  // set user profile
                 axios.patch(base_api + '/api/profile/' + username, formData, this.defaultConfig())
         },
-        // updateUserProfileImage(username, filename) {
-        //     return axios.post(base_api + '/api/profile/image/' + username, {
-        //         url: filename
-        //     }, this.defaultConfig())
-        // },
         getHobbyIdByName(username, hobbyName) {
             return axios.get(base_api + '/api/hobby/' + hobbyName, this.defaultConfig())
         },
@@ -79,6 +74,9 @@ export default {
                         Authorization: 'Bearer ' + token,
                     }
                 })
+        },
+        changePassword(formData) {
+            return axios.put(base_api + '/auth', formData, this.defaultConfig())
         },
 
         // Dorm
