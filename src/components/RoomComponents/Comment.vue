@@ -1,13 +1,14 @@
 <script setup>
 import yuzu from "@/assets/yuzu.png"
-import {ChatRound, Delete} from "@element-plus/icons-vue";
+import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue";
+
 </script>
 
 <template>
   <div class="comment">
-    <el-row type="flex">
-      <el-col :span="3">
-        <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu"/>
+    <el-row type="flex" :gutter="30">
+      <el-col :span = "3">
+        <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu" />
         <!--根据userId获取头像-->
         <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
       </el-col>
@@ -15,23 +16,23 @@ import {ChatRound, Delete} from "@element-plus/icons-vue";
       <el-col :span="21">
         <div class="username" style="display: flex; align-items: center;">
           <el-space>
-            <div>
-              {{ comment.name }}
-            </div>
+            {{ comment.name }}
             <div :style="{color: 'grey'}">
-              {{ comment.date }}
+              {{comment.date}}
             </div>
           </el-space>
-          <button @click="chooseReply(null)">
+
+          <el-button type="text" @click = "chooseReply(null)">
             <el-icon>
               <ChatRound/>
             </el-icon>
-          </button>
-          <button v-if="isCurrentUser(comment.id)" @click="deleteComment(comment.commentId)">
+          </el-button>
+          <el-button type="text" v-if="isCurrentUser(comment.id)" @click="deleteComment(comment.commentId)" >
+
             <el-icon>
               <Delete/>
             </el-icon>
-          </button>
+          </el-button>
         </div>
         <div class="info">
           <div class="content">{{ comment.content }}</div>
@@ -39,23 +40,28 @@ import {ChatRound, Delete} from "@element-plus/icons-vue";
         </div>
 
         <div v-if="comment.replies.length">
-          <div v-for="reply in comment.replies">
-            <el-row>
-              <el-col :span="3">
-                <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu"/>
+
+          <div v-for = "reply in comment.replies">
+            <el-row :gutter = "30">
+              <el-col :span = "3">
+                <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu" />
+
               </el-col>
               <el-col :span="21">
                 <div class="username" style="display: flex; align-items: center;">
+                  <el-space>
+                    {{ reply.name}}
+                    <div :style="{color: 'grey'}">
+                      {{reply.date}}
+                    </div>
+                  </el-space>
 
-                  {{ reply.name }}
-                  <div :style="{color: 'grey'}">
-                    {{ reply.date }}
-                  </div>
-                  <button @click="chooseReply(reply.name)">
+                  <el-button type="text" @click = "chooseReply(reply.name)">
+
                     <el-icon>
                       <ChatRound/>
                     </el-icon>
-                  </button>
+                  </el-button>
                 </div>
                 <div class="info">
                   <div v-if="reply.toUser === ''">
@@ -71,19 +77,28 @@ import {ChatRound, Delete} from "@element-plus/icons-vue";
           </div>
         </div>
 
-        <div v-show="flagId === comment.commentId">
-          <el-row type="flex">
-            <el-col :span="3">
-              <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu"/>
+        <div v-show = "flagId === comment.commentId">
+          <el-row type = "flex" :gutter = "30">
+            <el-col :span = "3">
+              <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu" />
               <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
             </el-col>
-            <el-col :span="21">
-              <input type="text" v-model="reply.content"/>
-              <button @click="addReply">
-                <el-icon>
-                  <ChatRound/>
-                </el-icon>
-              </button>
+            <el-col :span = "21">
+              <el-row>
+                <el-input
+                    type="textarea"
+                    :rows="2"
+                    v-model="reply.content">
+                </el-input>
+              </el-row>
+              <el-row justify="end">
+                <el-button type="text" @click="addReply">
+                  <el-icon >
+                    <Position/>
+                  </el-icon>
+                </el-button>
+              </el-row>
+
             </el-col>
           </el-row>
         </div>
@@ -98,9 +113,10 @@ export default {
   name: 'Comment',
   props: ['comment', 'currentUserId', 'flagId', 'roomId'],
   addReplyUsername: null,
-  data() {
-    return {
-      reply: {
+  data(){
+    return{
+      textarea: '',
+      reply:{
         commentId: null,
         roomId: null,
         username: null,
