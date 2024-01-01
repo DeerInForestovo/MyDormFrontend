@@ -158,66 +158,67 @@ export default {
       </el-select>
     </div>
     <div class="tabs-container" style="width: 100%" v-if="value === 'Floor'">
-      <el-table :data="floors" style="width: 100%;margin-top: 50px;">
-        <!-- 展开行 -->
-        <el-table-column type="expand">
-          <template v-slot="props">
-            <el-table :data="filteredRooms(props.row.id)" style="width: 100%">
+      <div style="margin-top: 50px">
+        <el-collapse v-model="rooms">
+          <el-collapse-item v-for="floor in floors" :name="floor.id" :key="floor.id">
+            <template #title>
+              {{ floor.name }} <!-- 楼层名称 -->
+            </template>
+
+            <el-table :data="filteredRooms(floor.id)" style="width: 100%">
               <el-table-column prop="name" label="Room Name"></el-table-column>
               <el-table-column prop="capacity" label="Capacity"></el-table-column>
               <el-table-column prop="teamID" label="State">
-                <template v-slot="scope">
+                <template #default="scope">
                   <span v-if="scope.row.teamID != null">Occupied</span>
                   <span v-else>Available</span>
                 </template>
               </el-table-column>
               <el-table-column label="Actions">
-                <template v-slot="scope">
-                  <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
-                  <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
+                <template #default="scope">
+                  <el-space wrap>
+                    <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
+                    <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
+                  </el-space>
+
                 </template>
               </el-table-column>
             </el-table>
-          </template>
-        </el-table-column>
-
-        <!-- 楼层列 -->
-        <el-table-column prop="name" label="Floor"></el-table-column>
-      </el-table>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
     </div>
     <div class="tabs-container" style="width: 100%" v-if="value === 'Capacity'">
-      <el-table :data="capacities" style="width: 100%;margin-top: 50px;">
+      <div style="margin-top: 50px">
+        <el-collapse v-model="rooms">
+        <el-collapse-item v-for="(capacity, index) in capacities" :name="`collapse-${index}`" :key="index">
+          <template #title>
+            {{ `Capacity: ${capacity}` }} <!-- 容量信息 -->
+          </template>
 
-        <!-- 展开行 -->
-        <el-table-column type="expand">
-          <template v-slot="props">
-            <el-table :data="filteredCapacity(props.row)" style="width: 100%">
-              <el-table-column prop="name" label="Room Name"></el-table-column>
-              <el-table-column prop="capacity" label="Capacity"></el-table-column>
-              <el-table-column prop="teamID" label="State">
-                <template v-slot="scope">
-                  <span v-if="scope.row.teamID != null">Occupied</span>
-                  <span v-else>Available</span>
-                </template>
-              </el-table-column>
-              <el-table-column label="Actions">
-                <template v-slot="scope">
+          <el-table :data="filteredCapacity(capacity)" style="width: 100%">
+            <el-table-column prop="name" label="Room Name"></el-table-column>
+            <el-table-column prop="capacity" label="Capacity"></el-table-column>
+            <el-table-column prop="teamID" label="State">
+              <template #default="scope">
+                <span v-if="scope.row.teamID != null">Occupied</span>
+                <span v-else>Available</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="Actions">
+              <template #default="scope">
+                <el-space wrap>
                   <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
                   <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
-                </template>
-              </el-table-column>
+                </el-space>
 
-            </el-table>
-          </template>
-        </el-table-column>
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-collapse-item>
+      </el-collapse>
+      </div>
 
-        <!-- 容量列 -->
-        <el-table-column label="Capacity">
-          <template v-slot="{ row }">
-            {{ `Capacity: ${row}` }}
-          </template>
-        </el-table-column>
-      </el-table>
     </div>
     <div class="tabs-container" style="width: 100%" v-if="value === 'Available'">
       <div style="margin-top: 50px;">
@@ -236,8 +237,11 @@ export default {
             <!--                  <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>-->
             <!--                </template>-->
             <template v-slot="scope">
-              <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
-              <el-button @click="" type="text">Select</el-button>
+              <el-space wrap>
+                <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
+                <el-button @click="" type="text">Select</el-button>
+              </el-space>
+
             </template>
           </el-table-column>
         </el-table>
