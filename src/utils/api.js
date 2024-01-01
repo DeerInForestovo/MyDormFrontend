@@ -133,6 +133,7 @@ export default {
             return axios.get(base_api + '/api/team/invitation', this.defaultConfig())
         },
         acceptInvitation(username, invitationId) {
+            console.log(this.getToken())
             return axios.post(base_api + '/api/team/invitation/accept', {
                 username: username,
                 invitationId: invitationId,

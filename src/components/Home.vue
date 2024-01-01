@@ -83,8 +83,8 @@ const buildSubMenuJsonList = [
         path: '/home/team',
       },
       {
-        name: 'Notification',
-        path: '/home/team_notification',
+        name: 'Invitation',
+        path: '/home/team_invitation',
       },
       {
         name: 'Recommendation',

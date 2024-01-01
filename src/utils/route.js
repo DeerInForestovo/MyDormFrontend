@@ -64,7 +64,7 @@ const routes = [
                 component: Team,
             },
             {
-                path: 'team_notification',
+                path: 'team_invitation',
                 component: TeamNotification,
             },
             {
