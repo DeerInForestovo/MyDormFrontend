@@ -57,6 +57,9 @@ export default {
       touchControls: true,
       gyroControls: false,
     })
+
+    // already login?
+
   },
 
   unmounted() {

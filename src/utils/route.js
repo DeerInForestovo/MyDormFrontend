@@ -8,10 +8,9 @@ import ProfileFavorite from "@/components/ProfileComponents/FavoriteCard.vue";
 
 import Team from "@/components/TeamComponents/TeamInfoCard.vue";
 import TeamMemberRecommend from "@/components/TeamComponents/TeamMemberRecommendCard.vue";
-import TeamNotification from "@/components/TeamComponents/TeamNotificationCard.vue";
+import TeamNotification from "@/components/TeamComponents/TeamInvitationCard.vue";
 
 import ManageStudents from "@/components/ManageComponents/Accounts.vue";
-import ManageDorms from "@/components/ManageComponents/Dorm.vue";
 import ManageOptions from "@/components/ManageComponents/Options.vue";
 
 import Message from "@/components/Message.vue";
@@ -22,10 +21,22 @@ import Room from "@/components/RoomComponents/Room.vue";
 import Building from "@/components/RoomComponents/Buildings.vue";
 import BuildingDetail from "@/components/RoomComponents/BuildingDetail.vue";
 
+import NotFoundPage from "@/components/decorations/NotFoundPage.vue";
+
 import {createRouter, createWebHashHistory} from 'vue-router'
+import store from './store'
 
 // build route
 const routes = [
+    {
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: NotFoundPage,
+    },
+    {
+        path: '/',
+        redirect: '/login',
+    },
     {
         path: '/login',
         component: LoginPage,
@@ -40,8 +51,7 @@ const routes = [
                 component: Profile,
             },
             {
-                path: 'setting/:username',
-                props: true,
+                path: 'setting',
                 component: ProfileSetting,
             },
             {
@@ -53,7 +63,7 @@ const routes = [
                 component: Team,
             },
             {
-                path: 'team_notification',
+                path: 'team_invitation',
                 component: TeamNotification,
             },
             {
@@ -67,10 +77,6 @@ const routes = [
             {
                 path: 'manage_students',
                 component: ManageStudents,
-            },
-            {
-                path: 'manage_dorms',
-                component: ManageDorms,
             },
             {
                 path: 'manage_options',
@@ -103,7 +109,6 @@ const router = new createRouter({
     routes,
 })
 
-import store from './store'
 router.beforeEach(async (to, from) => {
     if (  // Did you log in?
         !store.state.token  // ! LoggedIn

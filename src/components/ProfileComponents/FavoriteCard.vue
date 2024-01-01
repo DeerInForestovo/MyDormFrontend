@@ -1,24 +1,39 @@
 <script setup>
 import Anon from "@/assets/Anon.png";
+import axiosFunctions from "@/utils/api";
 
 </script>
 
 <script>
+import axiosFunctions from "@/utils/api";
+import {ElNotification} from "element-plus";
+
 export default {
   data() {
     return {
-      // TODO: 根据后端的list变量来传
-      FavoriteList: ["Room1", "Room2"]
+      stars: this.$store.state.stars,
+      username: this.$store.state.username
     }
   },
   methods: {
-    Check() {
-
-    },
-    Delete(index) {
-      // 删除指定索引处的通知
-      this.FavoriteList.splice(index, 1);
-      // TODO: 给后端发送删除的请求
+    Delete(roomId) {
+      axiosFunctions.methods.removeStar(this.username, roomId).then((response) => {
+        ElNotification({
+          title: "Success!",
+          type: "success",
+          message: "You have removed this room from your favourite rooms!",
+        })
+        this.stars =this.stars.filter(room => room.roomId !== roomId);
+        console.log(response)
+      }).catch((response) => {
+        ElNotification({
+          title: "Failed",
+          type: "error",
+          message: "Failed to remove this room from your favourite rooms!",
+        })
+        console.log('Failed to remove this room from your favourite rooms!')
+        console.log(response)
+      })
     }
   }
 }
@@ -26,15 +41,20 @@ export default {
 <template>
   <el-card style="width: 90%; margin: 1%;" shadow="hover">
     <div class="favorite-list">
-      <el-card v-for="(favorite, index) in FavoriteList" :key="index" class="favorite-card">
-        <el-image :src="Anon" class="Images"/>
+      <el-card v-for="(room, index) in stars" :key="index" class="favorite-card">
+        <el-image :src="axiosFunctions.methods.getResourceByFilename(room.roomPicturePath)" class="Images">
+          <template #error>
+            <div class="image-slot">
+            </div>
+          </template>
+        </el-image>
         <br>
         <br>
         <div>
-          <el-text tag="b"> {{favorite}} </el-text>
+          <el-text tag="b"> {{room.roomName}} </el-text>
           <div class="bottom">
-            <el-button text class="button" @click="Check">Check</el-button>
-            <el-button text class="button" @click="Delete">Delete</el-button>
+            <el-button @click="this.$router.push({path: '/home/room/' + room.roomId, props: ['room.roomId']})" type="text">Check</el-button>
+            <el-button text class="button" @click="new Delete(room.roomId)">Delete</el-button>
           </div>
         </div>
       </el-card>

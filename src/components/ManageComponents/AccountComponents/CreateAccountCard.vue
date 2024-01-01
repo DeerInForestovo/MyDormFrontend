@@ -11,6 +11,7 @@ const createByFileIntroductionVisible = ref(false)
 <script>
 import {ref} from "vue";
 import {ElNotification} from "element-plus";
+import axiosFunctions from "@/utils/api";
 
 export default {
   data() {
@@ -23,17 +24,39 @@ export default {
   methods: {
     createAccount() {
       if (this.infoFormCheck) {
-        // create account
-        // ...
-        console.log(this.studentInfoForm)
-        // clear input form
-        this.studentInfoForm = {}
-        // notification
-        ElNotification({
-          type: 'success',
-          title: 'Success!',
-          message: 'A new account has been created.'
-        })
+        axiosFunctions.methods.createUser(this.studentInfoForm.username, this.studentInfoForm.password)
+            .then(response => {
+              axiosFunctions.methods.updateUserProfile(true, this.studentInfoForm.username, {
+                username: this.studentInfoForm.username,
+                name: this.studentInfoForm.name,
+                gender: this.studentInfoForm.gender,
+                preferRoomSize: 4,
+              })
+                  .then(response => {
+                    ElNotification({
+                      title: 'Success!',
+                      message: "Account created.",
+                      type: "success",
+                    })
+                    this.studentInfoForm = {}
+                  })
+                  .catch(response => {
+                    ElNotification({
+                      title: 'Failed',
+                      message: 'Failed to set info:' + response.message,
+                      type: 'error'
+                    })
+                    console.log(response)
+                  })
+            })
+            .catch(response => {
+              ElNotification({
+                title: 'Failed',
+                message: 'Failed to create account:' + response.message,
+                type: 'error'
+              })
+              console.log(response)
+            })
       }
     },
 
@@ -42,7 +65,7 @@ export default {
     },
 
     uploadFileOnClick() {
-
+      // TODO
     }
   }
 }

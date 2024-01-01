@@ -1,7 +1,7 @@
 import axiosFunctions from "@/utils/api";
 import {ElNotification} from "element-plus";
 
-export default (username, callback) => {
+export default (username, callback, error_callback) => {
     axiosFunctions.methods.getProfile(username)
         .then(response => {
             if (response.data.username !== username) {
@@ -19,5 +19,6 @@ export default (username, callback) => {
             message: 'Failed to get user info. Does it exits?',
             type: 'error',
         })
+        error_callback(response)
     })
 }
