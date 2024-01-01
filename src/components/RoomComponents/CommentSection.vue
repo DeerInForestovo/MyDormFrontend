@@ -1,39 +1,50 @@
 <script setup>
 import yuzu from "@/assets/yuzu.png"
-import {ChatRound} from "@element-plus/icons-vue";
+import {ChatRound, Position} from "@element-plus/icons-vue";
 </script>
 
 <template>
   <el-card style="width: 90%; margin: 20px;" shadow="hover">
-    <el-row type="flex">
-      <el-col :span="3">
-        <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu"/>
+    <el-row type = "flex" :gutter = "30">
+      <el-col :span = "3">
+        <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu" />
         <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
       </el-col>
+      <el-col :span = "21">
+        <el-row>
+          <el-input
+              type="textarea"
+              :rows="2"
+              placeholder="Please input the comment."
+              v-model="newComment.content">
+          </el-input>
+        </el-row>
+        <el-row justify="end">
+          <el-button type="text" @click="addComment">
+            <el-icon >
+              <Position/>
+            </el-icon>
+          </el-button>
+        </el-row>
 
-      <el-col :span="15">
-        <input type="text" v-model="newComment.content"/>
-        <button @click="addComment">
-          <el-icon>
-            <ChatRound/>
-          </el-icon>
-        </button>
       </el-col>
     </el-row>
-
-    <el-divider/>
+    <el-divider></el-divider>
 
     <div class="comment-section">
       <div class="comment-list">
-        <Comment
-            v-for="comment in comments"
-            :key="comment.id"
-            :comment="comment"
-            :current-user-id="currentUserId"
-            :flag-id="flagId"
-            :room-id="roomId"
-            @choose-reply="handleComment"
-        />
+        <el-scrollbar class="scrollbar">
+          <Comment
+              v-for="comment in comments"
+              :key="comment.id"
+              :comment="comment"
+              :current-user-id="currentUserId"
+              :flag-id = "flagId"
+              :room-id = "roomId"
+              @choose-reply="handleComment"
+          />
+        </el-scrollbar>
+
       </div>
     </div>
 
@@ -124,4 +135,31 @@ export default {
 </script>
 
 <style scoped>
+/* 样式定义 */
+.box {
+  width: 1200px;
+}
+
+
+.scrollbar {
+  height: 400px;
+}
+
+.is-horizontal {
+  display: block;
+}
+/deep/ .is-horizontal {
+  display: none;
+}
+.wrapper {
+  width: 300px;
+  border: 1px solid red;
+  margin: 20px auto;
+}
+
+/*隐藏浏览器自带的水平滚动条*/
+.el-scrollbar__wrap {
+  overflow-x: hidden !important;
+}
+
 </style>
