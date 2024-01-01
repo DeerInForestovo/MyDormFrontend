@@ -27,9 +27,29 @@ export default {
     }
   },
   mounted() {
-    axiosFunctions.methods.getAllBuildings()
+      axiosFunctions.methods.getRoomFromZone(this.$store.state.zoneId)
         .then((response) => {
-          this.buildings = response.data
+          console.log(response)
+          // 从房间信息中提取建筑信息
+          const rooms = response.data;
+
+          // 使用reduce方法来构建一个以buildingId为键，building对象为值的映射
+          const buildingMap = rooms.reduce((acc, room) => {
+            // 如果此buildingId尚未在累加器对象中创建，则创建它
+            if (!acc[room.buildingId]) {
+              acc[room.buildingId] = {
+                buildingId: room.buildingId,
+                buildingName: room.buildingName,
+                // 假设description是一个静态的字符串，或者您可以从room对象中获取它
+                description: "Description of " + room.buildingName,
+              };
+            }
+            return acc;
+          }, {});
+          console.log(buildingMap);
+          // 从建筑映射对象中提取值以创建建筑数组
+          this.buildings = Object.values(buildingMap);
+
           this.cards = this.buildings.map(
               (building) => ({
                 id: building.buildingId,
@@ -40,7 +60,7 @@ export default {
         }).catch((response) => {
           console.log(response)
     })
-  }
+  },
 }
 </script>
 

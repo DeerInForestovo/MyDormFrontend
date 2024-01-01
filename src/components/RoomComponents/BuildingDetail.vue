@@ -2,6 +2,8 @@
 </script>
 
 <script>
+import axiosFunctions from "@/utils/api";
+
 export default {
   name: 'BuildingDetail',
   props: {
@@ -18,20 +20,9 @@ export default {
       showRoom: false,
       capacities: [],
       //这里的id和楼层数相同
-      floors: [
-        {id: 1, name: '1st Floor'},
-        {id: 2, name: '2nd Floor'},
-        {id: 3, name: '3rd Floor'},
-      ],
+      floors: [],
       //这里的id是roomID
-      rooms: [
-        {id: 1, name: 'Room A', floor: 1, capacity: 1, teamID: 111},
-        {id: 2, name: 'Room B', floor: 1, capacity: 2, teamID: null},
-        {id: 3, name: 'Room C', floor: 2, capacity: 3, teamID: null},
-        {id: 4, name: 'Room D', floor: 2, capacity: 4, teamID: null},
-        {id: 5, name: 'Room E', floor: 3, capacity: 4, teamID: null},
-        {id: 6, name: 'Room F', floor: 3, capacity: 4, teamID: null},
-      ],
+      rooms: [],
       options: [
         {
           value: 'Floor',
@@ -47,10 +38,6 @@ export default {
         },
       ]
     };
-  },
-  created() {
-    // Extract unique capacity values from rooms data
-    this.capacities = [...new Set(this.rooms.map(room => room.capacity))];
   },
   methods: {
     // Filters
@@ -71,6 +58,36 @@ export default {
       return this.rooms.filter(room => room.teamID === null);
     },
   },
+  mounted() {
+    axiosFunctions.methods.getRoomFromZone(this.$store.state.zoneId)
+        .then((response) => {
+          // 假设response.data是上述房间信息的数组
+          const buildingRooms = response.data.filter(room => room.buildingId === parseInt(this.buildingId));
+
+          // 提取楼层信息
+          const floors = [...new Set(buildingRooms.map(room => room.floor))]
+              .sort((a, b) => a - b) // 对楼层进行排序
+              .map(floor => ({ id: floor, name: `${floor}st Floor` })); // 转换为所需格式
+
+
+          // 转换房间信息为所需格式
+          const rooms = buildingRooms.map(room => ({
+            id: room.roomId,
+            name: room.roomName,
+            floor: room.floor,
+            capacity: room.capacity, // capacity 和 teamID 信息需要从房间详情中获取
+            teamID: room.teamId, // 此处假设为null，需要实际数据来替代
+          }));
+
+          // 保存转换后的数据到组件的data属性
+          this.floors = floors;
+          this.rooms = rooms;
+          this.capacities = [...new Set(this.rooms.map(room => room.capacity))];
+
+        }).catch((error) => {
+      console.error(error);
+    });
+  }
 }
 </script>
 
@@ -108,8 +125,10 @@ export default {
               <el-table-column label="Actions">
                 <template #default="scope">
                   <el-space wrap>
-                    <el-button @click="this.$router.push({path: '/home/room/' + scope.row.id, props: ['scope.row.id','username']})" type="text">Details</el-button>
-                    <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
+                    <el-button @click="this.$router.push({path: '/home/room/' + scope.row.id, props: ['scope.row.id']})" type="text">Details</el-button>
+                    <el-button @click="selectRoom(scope.row.id)" type="text" :disabled="scope.row.teamID !== null">
+                      Select
+                    </el-button>
                   </el-space>
 
                 </template>
@@ -138,8 +157,10 @@ export default {
             <el-table-column label="Actions">
               <template #default="scope">
                 <el-space wrap>
-                  <el-button @click="this.$router.push({path: '/home/room/' + scope.row.id, props: ['scope.row.id','username']})" type="text">Details</el-button>
-                  <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
+                  <el-button @click="this.$router.push({path: '/home/room/' + scope.row.id, props: ['scope.row.id']})" type="text">Details</el-button>
+                    <el-button @click="selectRoom(scope.row.id)" type="text" :disabled="scope.row.teamID !== null">
+                      Select
+                    </el-button>
                 </el-space>
 
               </template>
@@ -178,10 +199,7 @@ export default {
 </template>
 
 <style scoped>
-::v-deep .el-tabs__nav-scroll {
-  width: 100% !important;
-  margin: 0 auto !important;
-}
+
 
 .select {
   position: absolute; /* 使用绝对定位 */
