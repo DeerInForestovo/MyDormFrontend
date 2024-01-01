@@ -25,7 +25,8 @@ export default {
       // 执行切换页面的动画
       const element = document.getElementById('LoginPageId')
       element.classList.add('fadeOut')
-      swal("Success!", "Welcome to MyDorm, user " + this.$store.state.username, "success");
+      swal("Success!", "Welcome to MyDorm, user " + this.$store.state.username, "success")
+      setTimeout(() => {this.$router.push('/home')}, 1000)
     },
 
     login() {
@@ -36,9 +37,8 @@ export default {
                 username: response.data.username,
                 token: response.data.token
               })
-              this.$router.push('/home')
             }, 1000)
-            this.loginDialogVisible = false;
+            this.loginDialogVisible = false
             this.loginAnimation()
           }).catch(response => {
             console.log(response)
