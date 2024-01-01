@@ -14,7 +14,7 @@ export default {
     return {
       loginDialogVisible: ref(false),
       loginForm: {
-        ID: "",
+        username: "",
         password: "",
       }
     }
@@ -26,11 +26,13 @@ export default {
       const element = document.getElementById('LoginPageId')
       element.classList.add('fadeOut')
       swal("Success!", "Welcome to MyDorm, user " + this.$store.state.username, "success")
-      setTimeout(() => {this.$router.push('/home')}, 1000)
+      setTimeout(() => {
+        this.$router.push('/home')
+      }, 1000)
     },
 
     login() {
-      axiosFunctions.methods.login(this.loginForm.ID, this.loginForm.password)
+      axiosFunctions.methods.login(this.loginForm.username, this.loginForm.password)
           .then(response => {
             setTimeout(() => {
               this.$store.commit('setUserLoginInfo', {
@@ -41,13 +43,13 @@ export default {
             this.loginDialogVisible = false
             this.loginAnimation()
           }).catch(response => {
-            console.log(response)
-            ElNotification({
-              title: 'Failed',
-              message: 'Wrong username or password',
-              type: 'error',
-            })
-          })
+        console.log(response)
+        ElNotification({
+          title: 'Failed',
+          message: 'Wrong username or password',
+          type: 'error',
+        })
+      })
     }
   },
 
@@ -79,28 +81,28 @@ export default {
 
 <template>
 
-<!--  Login Dialog  -->
+  <!--  Login Dialog  -->
   <el-dialog width="40%" title="Login" v-model="loginDialogVisible">
-    <el-form
-        ref="LoginForm"
-        label-position="right"
-        label-width="auto"
-        style="max-width: 460px"
-        class="loginForm"
-    >
-      <el-form-item label="ID：">
-        <el-input v-model="loginForm.ID"/>
-      </el-form-item>
-      <el-form-item label="Password ：">
-        <el-input type="password" v-model="loginForm.password"/>
-      </el-form-item>
-      <el-form-item style="margin-left: 50px">
-        <el-button type="primary" @click="login">Login</el-button>
-      </el-form-item>
-    </el-form>
+    <div style="height: 150px">
+      <el-form
+          ref="LoginForm"
+          label-position="right"
+          label-width="auto"
+          style="max-width: 460px"
+          class="loginForm"
+      >
+        <el-form-item label="Username: ">
+          <el-input v-model="loginForm.username"/>
+        </el-form-item>
+        <el-form-item label="Password: ">
+          <el-input type="password" v-model="loginForm.password"/>
+        </el-form-item>
+      </el-form>
+      <el-button type="primary" @click="login" style="float: right">Login</el-button>
+    </div>
   </el-dialog>
 
-<!--  Login Page  -->
+  <!--  Login Page  -->
   <div class="LoginPage" id="LoginPageId">
     <div ref="vantaRef" style="width: 100%; height: 100%"></div>
     <div class="LoginPageContainer">
@@ -112,12 +114,12 @@ export default {
           <el-space>
             <div style="margin-right: 6vw" v-if="this.$store.state.token">
               <el-button @click="loginAnimation" type="primary" plain round size="large">
-                <span>Continue with <span style="font-weight: bold">{{this.$store.state.username}}</span></span>
+                <span>Continue with <span style="font-weight: bold">{{ this.$store.state.username }}</span></span>
               </el-button>
             </div>
             <div>
               <el-button @click="loginDialogVisible=true" type="primary" plain round size="large">
-                {{this.$store.state.token ? 'Login with another account' : 'Login'}}
+                {{ this.$store.state.token ? 'Login with another account' : 'Login' }}
               </el-button>
             </div>
           </el-space>
