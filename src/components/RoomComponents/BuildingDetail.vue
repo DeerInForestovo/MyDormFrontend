@@ -89,7 +89,7 @@ export default {
         </el-select>
       </el-space>
     </div>
-    <div class="tabs-container" style="width: 100%" v-if="value === 'Floor'">
+    <div class="tabs-container" style="width: 100%" v-if="selectedBy === 'Floor'">
       <div style="margin-top: 50px">
         <el-collapse v-model="rooms">
           <el-collapse-item v-for="floor in floors" :name="floor.id" :key="floor.id">
@@ -102,14 +102,13 @@ export default {
               <el-table-column prop="capacity" label="Capacity"></el-table-column>
               <el-table-column prop="teamID" label="State">
                 <template #default="scope">
-                  <span v-if="scope.row.teamID != null">Occupied</span>
-                  <span v-else>Available</span>
+                  <span> {{ scope.row.teamID ? 'Occupied' : 'Available' }} </span>
                 </template>
               </el-table-column>
               <el-table-column label="Actions">
                 <template #default="scope">
                   <el-space wrap>
-                    <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
+                    <el-button @click="this.$router.push('/home/room/' + scope.row.id)" type="text">Details</el-button>
                     <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
                   </el-space>
 
@@ -120,7 +119,7 @@ export default {
         </el-collapse>
       </div>
     </div>
-    <div class="tabs-container" style="width: 100%" v-if="value === 'Capacity'">
+    <div class="tabs-container" style="width: 100%" v-if="selectedBy === 'Capacity'">
       <div style="margin-top: 50px">
         <el-collapse v-model="rooms">
         <el-collapse-item v-for="(capacity, index) in capacities" :name="`collapse-${index}`" :key="index">
@@ -133,14 +132,13 @@ export default {
             <el-table-column prop="capacity" label="Capacity"></el-table-column>
             <el-table-column prop="teamID" label="State">
               <template #default="scope">
-                <span v-if="scope.row.teamID != null">Occupied</span>
-                <span v-else>Available</span>
+                <span> {{ scope.row.teamID ? 'Occupied' : 'Available' }} </span>
               </template>
             </el-table-column>
             <el-table-column label="Actions">
               <template #default="scope">
                 <el-space wrap>
-                  <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
+                  <el-button @click="this.$router.push('/home/room/' + scope.row.id)" type="text">Details</el-button>
                   <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
                 </el-space>
 
@@ -167,7 +165,7 @@ export default {
             <template v-slot="scope">
 
               <el-space wrap>
-                <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
+                <el-button @click="this.$router.push('/home/room/' + scope.row.id)" type="text">Details</el-button>
                 <el-button @click="" type="text">Select</el-button>
               </el-space>
 
