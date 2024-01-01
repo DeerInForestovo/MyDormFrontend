@@ -4,16 +4,17 @@ import 'element-plus/dist/index.css'
 
 // import icons
 import {
+  House,
   InfoFilled,
   Message,
   Moon,
-  Sunny,
-  User,
-  House,
-  Tools,
+  OfficeBuilding,
   QuestionFilled,
   Search,
-  OfficeBuilding, Back
+  Sunny,
+  SwitchButton,
+  Tools,
+  User,
 } from "@element-plus/icons-vue";
 
 // import static images
@@ -165,7 +166,9 @@ export default {
     this.dynamicRouteDict['username'] = this.username
 
     // store profile to $store
-    getUserProfile(this.username, (data) => {this.$store.commit('setProfileInfo', data)})
+    getUserProfile(this.username, (data) => {
+      this.$store.commit('setProfileInfo', data)
+    })
 
     // auto route to profile
     if (this.$route.fullPath === '/home' || this.$route.fullPath === '/home/') // from /login or /home
@@ -195,6 +198,11 @@ export default {
       if (item.props) path += '/' + item.props.map((name) => (this.dynamicRouteDict[name])).join('/')
       if (item.query) path += '?' + item.query.map((name) => (name + '=' + this.dynamicRouteDict[name])).join('&')
       return path
+    },
+
+    logout() {
+      this.$store.commit('logout')
+      this.$router.push('/')
     }
   },
 
@@ -275,6 +283,12 @@ export default {
         <button class="backButton" @click="this.$router.back()">Back</button>
         <div class="HeaderButtonDiv">
           <el-space>
+            <!--      Logout Button                     -->
+            <el-tooltip content="Logout" placement="bottom">
+              <el-button @click="logout" :icon="SwitchButton"
+                         class="HeaderButton" text circle size="large"/>
+            </el-tooltip>
+
             <!--      Switch Light-Dark Mode Button     -->
             <el-tooltip :content="isLight ? 'Dark Mode' : 'Light Mode'" placement="bottom">
               <el-button @click="toggleDark" :icon="isLight ? Sunny : Moon"

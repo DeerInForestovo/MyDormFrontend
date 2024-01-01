@@ -36,6 +36,15 @@ export default {
                 password: password,
             })
         },
+        newToken(username, token) {
+            return axios.post(base_api + '/auth', {
+                username: username,
+            }, {
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                }
+            })
+        },
 
         // Me - Profile & Setting
         getProfile(username) {
@@ -45,7 +54,7 @@ export default {
             console.log(username)
             console.log(formData)
             return isManager ?
-                axios.post(base_api + '/api/manage/user/profile/' + username, formData, this.defaultConfig()):  // set user profile
+                axios.post(base_api + '/api/manage/user/profile/' + username, formData, this.defaultConfig()) :  // set user profile
                 axios.patch(base_api + '/api/profile/' + username, formData, this.defaultConfig())
         },
         getHobbyIdByName(username, hobbyName) {
