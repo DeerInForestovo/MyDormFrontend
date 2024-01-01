@@ -1,48 +1,7 @@
 <script setup>
-// const floors=[
-//   { id: 1, name: '1st Floor' },
-//   { id: 2, name: '2nd Floor' },
-//   { id: 3, name: '3rd Floor' },
-// ];
-// const rooms=[
-//   { id: 1, name: 'Room A', floor: 1 },
-//   { id: 2, name: 'Room B', floor: 1 },
-//   { id: 3, name: 'Room C', floor: 2 },
-//   { id: 4, name: 'Room D', floor: 2 },
-//   { id: 5, name: 'Room E', floor: 3 },
-//   { id: 6, name: 'Room F', floor: 3 },
-// ];
-// import { ref } from 'vue'
-// const value = ref('')
-//
-// const options = [
-//   {
-//     value: 'Option1',
-//     label: 'Option1',
-//   },
-//   {
-//     value: 'Option2',
-//     label: 'Option2',
-//   },
-//   {
-//     value: 'Option3',
-//     label: 'Option3',
-//   },
-//   {
-//     value: 'Option4',
-//     label: 'Option4',
-//   },
-//   {
-//     value: 'Option5',
-//     label: 'Option5',
-//   },
-// ]
 </script>
 
 <script>
-// import {Cache as axios} from "three";
-import {ref} from 'vue';
-
 export default {
   name: 'BuildingDetail',
   props: {
@@ -53,8 +12,7 @@ export default {
   },
   data() {
     return {
-      // floors: [],
-      value: 'Floor',
+      selectedBy: 'Floor',
       selectedFloor: '',
       selectedCapacity: '',
       showRoom: false,
@@ -94,68 +52,42 @@ export default {
     // Extract unique capacity values from rooms data
     this.capacities = [...new Set(this.rooms.map(room => room.capacity))];
   },
-  // mounted() {
-  //   // 在组件挂载后，调用后端接口获取楼层和房间信息
-  //   this.fetchBuildingData();
-  // },
   methods: {
-    // fetchBuildingData() {
-    //   // 使用 buildingId 调用后端接口获取楼层和房间信息
-    //   // 并将获取的数据赋值给 floors 和 rooms 变量
-    //   // 例如使用 Axios 进行异步请求
-    //   axios.get(`/api/buildings/${this.buildingId}`)
-    //       .then(response => {
-    //         this.floors = response.data.floors;
-    //         this.rooms = response.data.rooms;
-    //       })
-    //       .catch(error => {
-    //         console.error('Failed to fetch building data:', error);
-    //       });
-    // },
-    selectFloor(floor) {
-      this.selectedFloor = floor.id;
-    },
-    selectCapacity(capacity) {
-      this.selectedCapacity = capacity;
-    },
+    // Filters
     filteredRooms(floorId) {
       return this.rooms.filter(room => room.floor === floorId);
     },
     filteredCapacity(capacity) {
       return this.rooms.filter(room => room.capacity === capacity);
     },
-    emitBuildingInfo(roomID) {
-      this.$emit('buildingDetail-clicked', roomID);
+
+    // Database related
+    selectRoom() {
+
     },
   },
   computed: {
-
-
     filteredAvailable() {
       return this.rooms.filter(room => room.teamID === null);
     },
   },
-  watch: {
-    selectedCapacity(newCapacity) {
-      console.log(newCapacity); // Log the selected capacity
-    }
-  }
-};
+}
 </script>
-
 
 <template>
   <el-container>
     <div class="select">
-      Filter by:
-      <el-select v-model="value" placeholder="Filter by" size="large">
-        <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-        />
-      </el-select>
+      <el-space>
+        <span> Filter by: </span>
+        <el-select v-model="selectedBy" placeholder="Filter by" size="large">
+          <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+          />
+        </el-select>
+      </el-space>
     </div>
     <div class="tabs-container" style="width: 100%" v-if="value === 'Floor'">
       <div style="margin-top: 50px">
@@ -220,23 +152,20 @@ export default {
       </div>
 
     </div>
-    <div class="tabs-container" style="width: 100%" v-if="value === 'Available'">
+
+    <div class="tabs-container" style="width: 100%" v-if="selectedBy === 'Available'">
       <div style="margin-top: 50px;">
         <el-table :data="filteredAvailable" style="width: 100%">
-          <el-table-column prop="name" label="Room Name"></el-table-column>
-          <el-table-column prop="capacity" label="Capacity"></el-table-column>
+          <el-table-column prop="name" label="Room Name"/>
+          <el-table-column prop="capacity" label="Capacity"/>
           <el-table-column prop="teamID" label="State">
             <template v-slot="scope">
-              <span v-if="scope.row.teamID!=null">Occupied</span>
-              <span v-else>Available</span>
+              <span> {{ scope.row.teamID ? 'Occupied' : 'Available' }} </span>
             </template>
-
           </el-table-column>
           <el-table-column label="Actions">
-            <!--                <template slot-scope="scope">-->
-            <!--                  <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>-->
-            <!--                </template>-->
             <template v-slot="scope">
+
               <el-space wrap>
                 <el-button @click="emitBuildingInfo(scope.row.id)" type="text">Details</el-button>
                 <el-button @click="" type="text">Select</el-button>

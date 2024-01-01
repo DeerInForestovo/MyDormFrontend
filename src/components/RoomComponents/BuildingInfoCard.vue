@@ -1,15 +1,6 @@
-
-<!--<script setup>-->
-<!--const name = 'Card';-->
-<!--const props = {-->
-<!--  card: {-->
-<!--    type: Object,-->
-<!--    required: true-->
-<!--  }-->
-<!--};-->
-<!--</script>-->
 <script setup>
 </script>
+
 <script>
 export default {
   name: 'Card',
@@ -20,39 +11,36 @@ export default {
       title: String,
       content: String,
       required: true,
-    },
-  },
-  methods: {
-    emitCardInfo() {
-      // 触发自定义事件 'card-clicked'，并传递 card 对象作为参数
-      this.$emit('card-clicked', this.id);
-    },
-  },
-};
+    }
+  }
+}
 </script>
+
 <template>
-  <div class="card">
-    <div class="header">
-      <!--      <h2 class="title">{{ card.title }}</h2>-->
-    </div>
+  <el-card class="card" shadow="hover">
     <div class="info">
-      <h2 class="title">{{ card.title }}</h2>
-      <p>{{ card.content }}</p>
+      <h2 class="title">{{ this.card.title }}</h2>
+      <p>{{ this.card.content }}</p>
     </div>
+
     <div class="footer">
-      <p class="tag">See more info. </p>
-      <button type="button" class="action" @click="emitCardInfo">Go</button>
+      <p class="tag"> See more info. </p>
+      <button type="button" class="action"
+              @click="this.$router.push('building/' + this.card.id)"
+      > Go </button>
     </div>
-  </div>
+  </el-card>
 </template>
+
 <style scoped>
 .card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   border-radius: 0.75rem;
+  margin: 15px;
   width: 300px;
-  height: 300px;
+  //height: 300px;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,.1),
   0 2px 4px -2px rgba(0,0,0,.1);
 }

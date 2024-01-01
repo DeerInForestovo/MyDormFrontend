@@ -8,12 +8,12 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
   <div class="comment">
     <el-row type="flex" :gutter="30">
       <el-col :span = "3">
-
         <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu" />
         <!--根据userId获取头像-->
         <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
       </el-col>
-      <el-col :span = "21">
+
+      <el-col :span="21">
         <div class="username" style="display: flex; align-items: center;">
           <el-space>
             {{ comment.name }}
@@ -28,6 +28,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
             </el-icon>
           </el-button>
           <el-button type="text" v-if="isCurrentUser(comment.id)" @click="deleteComment(comment.commentId)" >
+
             <el-icon>
               <Delete/>
             </el-icon>
@@ -39,12 +40,14 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
         </div>
 
         <div v-if="comment.replies.length">
+
           <div v-for = "reply in comment.replies">
             <el-row :gutter = "30">
               <el-col :span = "3">
                 <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu" />
+
               </el-col>
-              <el-col :span = "21">
+              <el-col :span="21">
                 <div class="username" style="display: flex; align-items: center;">
                   <el-space>
                     {{ reply.name}}
@@ -54,17 +57,18 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
                   </el-space>
 
                   <el-button type="text" @click = "chooseReply(reply.name)">
+
                     <el-icon>
                       <ChatRound/>
                     </el-icon>
                   </el-button>
                 </div>
                 <div class="info">
-                  <div v-if ="reply.toUser === ''">
-                    {{reply.content}}
+                  <div v-if="reply.toUser === ''">
+                    {{ reply.content }}
                   </div>
                   <div v-else>
-                    Reply to {{reply.toUser}}: {{reply.content}}
+                    Reply to {{ reply.toUser }}: {{ reply.content }}
                   </div>
                 </div>
                 <el-divider></el-divider>
@@ -72,6 +76,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
             </el-row>
           </div>
         </div>
+
         <div v-show = "flagId === comment.commentId">
           <el-row type = "flex" :gutter = "30">
             <el-col :span = "3">
@@ -106,7 +111,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
 <script>
 export default {
   name: 'Comment',
-  props: ['comment', 'currentUserId', 'flagId','roomId'],
+  props: ['comment', 'currentUserId', 'flagId', 'roomId'],
   addReplyUsername: null,
   data(){
     return{
@@ -130,19 +135,19 @@ export default {
     isCurrentUser(userId) {
       return userId === this.currentUserId;
     },
-    chooseReply(username){
+    chooseReply(username) {
       console.log(this.comment.commentId);
       this.reply.replyToName = username;
-      this.$emit( 'choose-reply',this.comment.commentId);
+      this.$emit('choose-reply', this.comment.commentId);
     },
-    addReply(){
+    addReply() {
       this.reply.roomId = this.roomId;
       this.reply.replyToCommentId = this.comment.commentId;
       this.reply.replyToUsername = this.addReplyUsername;
       // 存到后端当中
 
     },
-    deleteReply(commentId){
+    deleteReply(commentId) {
       // 从后端中删除
     },
     deleteComment(commentId) {
@@ -161,5 +166,4 @@ export default {
 </script>
 
 <style scoped>
-/* 样式定义 */
 </style>

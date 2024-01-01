@@ -47,6 +47,7 @@ import {ChatRound, Position} from "@element-plus/icons-vue";
 
       </div>
     </div>
+
   </el-card>
 </template>
 
@@ -83,7 +84,7 @@ export default {
           name: 'John',
           avatar: 'john.jpg',
           date: null,
-          replies:[
+          replies: [
             {
               id: 123,
               name: 'John',
@@ -119,37 +120,15 @@ export default {
     };
   },
   mounted() {
-    // 在组件挂载后，调用后端接口获取评论列表数据
     this.fetchComments();
   },
   methods: {
-    handleComment(flagId){
-      console.log('change Id: ', flagId);
+    handleComment(flagId) {
       this.flagId = flagId;
-      console.log('new flagId: ', this.flagId);
     },
     fetchComments() {
-      // // 调用后端接口获取评论列表数据
-      // axios.get('/api/comments')
-      //     .then(response => {
-      //       this.comments = response.data;
-      //     })
-      //     .catch(error => {
-      //       console.error('Failed to fetch comments:', error);
-      //     });
     },
     addComment() {
-      // // 调用后端接口添加评论
-      // // 例如使用 Axios 进行异步请求
-      // axios.post('/api/comments', { content: this.newComment })
-      //     .then(response => {
-      //       // 添加评论成功的处理逻辑
-      //       this.newComment = ''; // 清空输入框
-      //       this.comments.unshift(response.data); // 将新增评论添加到评论列表的开头
-      //     })
-      //     .catch(error => {
-      //       console.error('Failed to add comment:', error);
-      //     });
     },
   },
 };
