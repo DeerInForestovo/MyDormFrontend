@@ -108,8 +108,10 @@ router.beforeEach(async (to, from) => {
     if (  // Did you log in?
         !store.state.token  // ! LoggedIn
         && to.path !== '/login'  // to != LoginPage
-    ) return {
-        path: '/login'  // LoginPage
+    ) {
+        return {
+            path: '/login'  // LoginPage
+        }
     }
 })
 

@@ -32,9 +32,7 @@ export default {
             // 执行切换页面的动画
             const element = document.getElementById('LoginPageId')
             element.classList.add('fadeOut')
-            setTimeout(() => {
-              this.$router.push('/home')
-            }, 1000)
+            setTimeout(() => {this.$router.push('/home')}, 1000)
             swal("Success!", "Welcome to MyDorm, user " + this.$store.state.username, "success");
           }).catch(response => {
             console.log(response)

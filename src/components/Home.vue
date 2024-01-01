@@ -133,13 +133,16 @@ const buildMenuItemJsonList = [
 
 <script>
 import {ref} from "vue"
+import getUserProfile from "@/components/ProfileComponents/getUserProfile";
 
 export default {
-  // ref: https://stackoverflow.com/questions/47219272/how-can-i-monitor-changing-window-sizes-in-vue
   name: 'MainPage',
   data() {
     return {
+      username: null,
+
       // window size
+      // ref: https://stackoverflow.com/questions/47219272/how-can-i-monitor-changing-window-sizes-in-vue
       windowHeight: window.innerHeight,
       windowWidth: window.innerWidth,
       ifCollapse: ref(false),
@@ -154,6 +157,8 @@ export default {
   },
 
   mounted() {
+    this.username = this.$store.state.username
+
     // window size
     window.addEventListener('resize', this.onResize);
     this.onResize()
@@ -162,10 +167,14 @@ export default {
     this.setActivateIndex()
 
     // build query dict
-    this.dynamicRouteDict['username'] = this.$store.state.username
+    this.dynamicRouteDict['username'] = this.username
+
+    // store profile to $store
+    getUserProfile(this.username, (data) => {this.$store.commit('setProfileInfo', data)})
 
     // auto route to profile
-    this.$router.push(this.buildRoute({path: '/home/profile', props: ['username']}))
+    if (this.$route.fullPath === '/home') // from /login or /home
+      this.$router.push(this.buildRoute({path: '/home/profile', props: ['username']}))
   },
 
   unmounted() {

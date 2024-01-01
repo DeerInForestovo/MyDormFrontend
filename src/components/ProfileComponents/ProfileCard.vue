@@ -19,6 +19,7 @@ const iconStyle = computed(() => {
 <script>
 import axiosFunctions from '@/utils/api'
 import {ElNotification} from "element-plus";
+import getUserProfile from "@/components/ProfileComponents/getUserProfile";
 
 export default {
   data() {
@@ -49,34 +50,7 @@ export default {
       if (this.username === null) {
         return;
       }
-      console.log(this.username)
-      this.form.username = this.username
-      // database -> form
-      axiosFunctions.methods.getProfile(this.form.username)
-          .then(response => {
-            if (response.data.username !== this.form.username) {
-              console.log(response)
-              ElNotification({
-                title: 'Failed',
-                message: 'Failed to get user info (response = ' + response.data.username + ', this = ' + this.form.username + ').',
-                type: 'error',
-              })
-              return
-            }
-            this.form = response.data
-            console.log(this.form)
-            // form -> store
-            if (this.username === this.$store.state.username) {
-              this.$store.commit('setProfileInfo', this.form.name)
-            }
-          }).catch(response => {
-            console.log(response)
-            ElNotification({
-              title: 'Failed',
-              message: 'Failed to get user info. Does it exits?',
-              type: 'error',
-            })
-          })
+      getUserProfile(this.username, (data) => {this.form = data})
     },
   },
   props: {

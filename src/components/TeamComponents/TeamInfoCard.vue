@@ -30,9 +30,7 @@ export default {
   },
 
   mounted() {
-    this.$nextTick(() => {
-      this.refreshTeamInfo()
-    })
+    this.refreshTeamInfo()
   },
 
   methods: {
@@ -46,17 +44,7 @@ export default {
     },
 
     refreshTeamInfo() {
-      // this.teamID = 0
-      this.teamMemberList = [
-        {
-          username: 1,
-          name: 'Anon',
-        },
-        {
-          username: 2,
-          name: 'Soyo',
-        }
-      ]
+      
     },
 
     kickTeamMember() {
@@ -87,6 +75,7 @@ export default {
         <el-button :icon="Refresh" size="small" text @click="refreshTeamInfo"/>
       </el-space>
     </template>
+
     <!--  User Name  -->
     <p>
       <el-space>
@@ -196,7 +185,7 @@ export default {
           <el-icon>
             <Promotion/>
           </el-icon>
-          <span> Join a Team! </span>
+          <span> Apply for a Team! </span>
         </el-space>
       </el-button>
     </div>

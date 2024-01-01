@@ -83,6 +83,65 @@ export default {
             return axios.get(base_api + '/api/building', this.defaultConfig(token))
         },
 
+        // Team
+        createTeam() {
+            return axios.post(base_api + '/api/team', this.defaultConfig(token))
+        },
+        sendInvitation(username, toUsername, code) {
+            return axios.post(base_api + '/api/team/invitation', {
+                username: username,
+                toUsername: toUsername,
+                code: code,
+            }, this.defaultConfig(token))
+        },
+        acceptApplication(username, applicationId) {
+            return axios.post(base_api + '/api/team/application/accept', {
+                username: username,
+                applicationId: applicationId,
+            }, this.defaultConfig(token))
+        },
+        denyApplication(username, applicationId) {
+            return axios.post(base_api + '/api/team/application/deny', {
+                username: username,
+                applicationId: applicationId,
+            }, this.defaultConfig(token))
+        },
+        kickMember(username, code, kickedUsername) {
+            return axios.post(base_api + '/api/team/kick', {
+                username: username,
+                code: code,
+                kickedUsername: kickedUsername,
+            }, this.defaultConfig(token))
+        },
+        sendTeamApplication(username, code) {
+            return axios.post(base_api + '/api/team/application', {
+                username: username,
+                code: code,
+            }, this.defaultConfig(token))
+        },
+        getTeamInfo() {
+            return axios.get(base_api + '/api/team', this.defaultConfig(token))
+        },
+        denyInvitation(username, invitationId) {
+            return axios.post(base_api + '/api/team/invitation/deny', {
+                username: username,
+                invitationId: invitationId,
+            }, this.defaultConfig(token))
+        },
+        getTeamInvitation() {
+            return axios.get(base_api + '/api/team/invitation', this.defaultConfig(token))
+        },
+        acceptInvitation(username, invitationId) {
+            return axios.post(base_api + '/api/team/invitation/accept', {
+                username: username,
+                invitationId: invitationId,
+            }, this.defaultConfig(token))
+        },
+        leaveTeam() {
+            return axios.post(base_api + '/api/team/leave', this.defaultConfig(token))
+        },
+
+
         // Manage
         createUser(username, password) {
             return axios.post(base_api + '/api/manage/user', {
