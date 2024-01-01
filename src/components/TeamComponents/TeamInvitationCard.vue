@@ -23,6 +23,8 @@ export default {
 
   methods: {
     refreshInvitations() {
+      this.username = this.$store.state.username
+      this.name = this.$store.state.name
       axiosFunctions.methods.getTeamInvitation()
           .then(response => {
             this.invitations = response.data

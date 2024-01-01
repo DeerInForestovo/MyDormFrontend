@@ -175,7 +175,7 @@ export default {
             return axios.post(base_api + '/api/manage/user', {
                 username: username,
                 password: password
-            })
+            }, this.defaultConfig())
         },
 
         // Room-Comment
