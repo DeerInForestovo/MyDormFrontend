@@ -3,8 +3,6 @@ import store from "./store";
 
 const base_api = 'http://10.16.165.147:8081';
 
-let token = '';
-
 export default {
     methods: {
         // Basic
@@ -82,7 +80,7 @@ export default {
                         hobbyId: hobbyId
                     },
                     headers: {
-                        Authorization: 'Bearer ' + token,
+                        Authorization: 'Bearer ' + this.getToken(),
                     }
                 })
         },
@@ -97,7 +95,7 @@ export default {
         getRoomFromZone(zoneId) {
             return axios.get(base_api + '/api/room', {
                 headers: {
-                    Authorization: 'Bearer ' + token,
+                    Authorization: 'Bearer ' + this.getToken(),
                 },
                 params: {
                     zoneId: zoneId
@@ -192,7 +190,7 @@ export default {
                     commentId: commentId
                 },
                 headers: {
-                    Authorization: 'Bearer ' + token,
+                    Authorization: 'Bearer ' + this.getToken(),
                 }
             })
         },
@@ -210,7 +208,7 @@ export default {
                     roomId: roomId
                 },
                 headers: {
-                    Authorization: 'Bearer ' + token,
+                    Authorization: 'Bearer ' + this.getToken(),
                 }
             })
         }
