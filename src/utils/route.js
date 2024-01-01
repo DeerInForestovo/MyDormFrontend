@@ -8,7 +8,7 @@ import ProfileFavorite from "@/components/ProfileComponents/FavoriteCard.vue";
 
 import Team from "@/components/TeamComponents/TeamInfoCard.vue";
 import TeamMemberRecommend from "@/components/TeamComponents/TeamMemberRecommendCard.vue";
-import TeamNotification from "@/components/TeamComponents/TeamNotificationCard.vue";
+import TeamNotification from "@/components/TeamComponents/TeamInvitationCard.vue";
 
 import ManageStudents from "@/components/ManageComponents/Accounts.vue";
 import ManageDorms from "@/components/ManageComponents/Dorm.vue";
@@ -33,6 +33,10 @@ const routes = [
         path: '/:pathMatch(.*)*',
         name: 'NotFound',
         component: NotFoundPage,
+    },
+    {
+        path: '/',
+        redirect: '/login',
     },
     {
         path: '/login',

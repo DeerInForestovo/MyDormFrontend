@@ -1,8 +1,7 @@
 import axios from "axios";
+import store from "./store";
 
 const base_api = 'http://10.16.165.147:8081';
-
-let token = '';
 
 export default {
     methods: {
@@ -10,24 +9,24 @@ export default {
         getBaseApi() {
             return base_api
         },
-        setToken(userToken) {
-            token = userToken
+        getToken() {
+            return store.state.token
         },
-        defaultConfig(token) {
+        defaultConfig() {
             return {
                 headers: {
-                    Authorization: 'Bearer ' + token,
+                    Authorization: 'Bearer ' + this.getToken(),
                 }
             }
         },
         getResourceByFilename(filename) {
-            return this.getBaseApi() + '/resources/' + filename
+            return filename ? this.getBaseApi() + '/resources/' + filename : null;
         },
         uploadResources(type, file) {
             // ref: https://apifox.com/apiskills/axios-upload-file/
             const formData = new FormData()
             formData.append(type, file)
-            return axios.post(base_api + '/api/image/upload', formData, this.defaultConfig(token))
+            return axios.post(base_api + '/api/image/upload', formData, this.defaultConfig())
         },
 
         // Login Dialog
@@ -40,30 +39,34 @@ export default {
 
         // Me - Profile & Setting
         getProfile(username) {
-            return axios.get(base_api + '/api/profile/' + username, this.defaultConfig(token))
+            return axios.get(base_api + '/api/profile/' + username, this.defaultConfig())
         },
         updateUserProfile(isManager, username, formData) {  // update or set
-            return axios.post(base_api + (isManager ? '/api/manage/user/profile/' : '/api/profile/') + username, formData, this.defaultConfig(token))
+            console.log(username)
+            console.log(formData)
+            return isManager ?
+                axios.post(base_api + '/api/manage/user/profile/' + username, formData, this.defaultConfig()):  // set user profile
+                axios.patch(base_api + '/api/profile/' + username, formData, this.defaultConfig())
         },
-        updateUserProfileImage(username, filename) {
-            return axios.post(base_api + '/api/profile/image/' + username, {
-                url: filename
-            }, this.defaultConfig(token))
-        },
+        // updateUserProfileImage(username, filename) {
+        //     return axios.post(base_api + '/api/profile/image/' + username, {
+        //         url: filename
+        //     }, this.defaultConfig())
+        // },
         getHobbyIdByName(username, hobbyName) {
-            return axios.get(base_api + '/api/hobby/' + hobbyName, this.defaultConfig(token))
+            return axios.get(base_api + '/api/hobby/' + hobbyName, this.defaultConfig())
         },
         createHobby(username, hobbyName) {
             return axios.post(base_api + '/api/hobby', {
                 name: hobbyName
-            }, this.defaultConfig(token))
+            }, this.defaultConfig())
         },
         userAddHobby(username, hobbyItem) {
             let hobbyId = hobbyItem.hobbyId
             return axios.put(base_api + '/api/hobby', {
                 username: username,
                 hobbyId: hobbyId
-            }, this.defaultConfig(token))
+            }, this.defaultConfig())
         },
         userDeleteHobby(username, hobbyId) {
             return axios.delete(base_api + '/api/hobby',
@@ -80,67 +83,66 @@ export default {
 
         // Dorm
         getAllBuildings() {
-            return axios.get(base_api + '/api/building', this.defaultConfig(token))
+            return axios.get(base_api + '/api/building', this.defaultConfig())
         },
 
         // Team
         createTeam() {
-            return axios.post(base_api + '/api/team', this.defaultConfig(token))
+            return axios.post(base_api + '/api/team', {}, this.defaultConfig())
         },
         sendInvitation(username, toUsername, code) {
             return axios.post(base_api + '/api/team/invitation', {
                 username: username,
                 toUsername: toUsername,
                 code: code,
-            }, this.defaultConfig(token))
+            }, this.defaultConfig())
         },
         acceptApplication(username, applicationId) {
             return axios.post(base_api + '/api/team/application/accept', {
                 username: username,
                 applicationId: applicationId,
-            }, this.defaultConfig(token))
+            }, this.defaultConfig())
         },
         denyApplication(username, applicationId) {
             return axios.post(base_api + '/api/team/application/deny', {
                 username: username,
                 applicationId: applicationId,
-            }, this.defaultConfig(token))
+            }, this.defaultConfig())
         },
         kickMember(username, code, kickedUsername) {
             return axios.post(base_api + '/api/team/kick', {
                 username: username,
                 code: code,
                 kickedUsername: kickedUsername,
-            }, this.defaultConfig(token))
+            }, this.defaultConfig())
         },
         sendTeamApplication(username, code) {
             return axios.post(base_api + '/api/team/application', {
                 username: username,
                 code: code,
-            }, this.defaultConfig(token))
+            }, this.defaultConfig())
         },
         getTeamInfo() {
-            return axios.get(base_api + '/api/team', this.defaultConfig(token))
+            return axios.get(base_api + '/api/team', this.defaultConfig())
         },
         denyInvitation(username, invitationId) {
             return axios.post(base_api + '/api/team/invitation/deny', {
                 username: username,
                 invitationId: invitationId,
-            }, this.defaultConfig(token))
+            }, this.defaultConfig())
         },
         getTeamInvitation() {
-            return axios.get(base_api + '/api/team/invitation', this.defaultConfig(token))
+            return axios.get(base_api + '/api/team/invitation', this.defaultConfig())
         },
         acceptInvitation(username, invitationId) {
             return axios.post(base_api + '/api/team/invitation/accept', {
                 username: username,
                 invitationId: invitationId,
-            }, this.defaultConfig(token))
+            }, this.defaultConfig())
         },
         leaveTeam() {
-            return axios.post(base_api + '/api/team/leave', this.defaultConfig(token))
+            return axios.post(base_api + '/api/team/leave', {}, this.defaultConfig())
         },
-
 
         // Manage
         createUser(username, password) {

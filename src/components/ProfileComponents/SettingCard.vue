@@ -1,5 +1,6 @@
 <script setup>
 import axiosFunctions from '@/utils/api'
+import {Picture} from "@element-plus/icons-vue";
 </script>
 
 <script>
@@ -11,7 +12,7 @@ export default {
   data() {
     return {
       username: null,
-      form: ref({
+      form: {
         username: null,
         name: null,
         sid: null,
@@ -26,7 +27,7 @@ export default {
         qqNumber: null,
         wechatAccount: null,
         hobbies: [],
-      }),
+      },
       passwordForm: {
         oldPassword: null,
         newPassword: null,
@@ -36,8 +37,6 @@ export default {
       // Hobby
       newTag: '',
       rules: {
-        sleepTime: [{required: true, message: 'Time to sleep is required!'}],
-        wakeUpTime: [{required: true, message: 'Time to wake up is required!'}],
         newPassword: [
           {required: true, message: 'Please input the password', trigger: 'blur'},
           {
@@ -77,20 +76,20 @@ export default {
       }
       this.$refs.form.validate((valid) => {
         if (!valid) return
-        axiosFunctions.methods.updateUserProfile(this.isManager, this.form.username, this.form).then((response) => {
-          ElNotification({
-            title: "Success!",
-            type: "success",
-            message: "You have updated the profile!",
-          })
-          this.setToDefault()
-        }).catch((response) => {
+        axiosFunctions.methods.updateUserProfile(this.isManager, this.form.username, this.form)
+            .then((response) => {
+              ElNotification({
+                title: "Success!",
+                type: "success",
+                message: "You have updated the profile!",
+              })
+              this.$router.push('/home')  // 回到首页，会顺便更新store里的信息
+            }).catch((response) => {
           ElNotification({
             title: "Failed",
             type: "error",
-            message: "Error occurred.",
+            message: response.data,
           })
-          console.log('save info error.')
           console.log(response)
         })
       })
@@ -110,25 +109,34 @@ export default {
           })
           return
         }
-        axiosFunctions.methods.uploadResources('image', image).then((response) => {
-          ElNotification({
-            title: "Success!",
-            type: "success",
-            message: "You have updated the profile image!",
-          })
-          const filename = response.data.url
-          console.log(response.data)
-          console.log(filename)
-          axiosFunctions.methods.updateUserProfileImage(this.form.username, filename)
-              .then((response) => {}).catch((response) => {})
-          this.setToDefault()
-        }).catch((response) => {
+        axiosFunctions.methods.uploadResources('image', image)
+            .then((response) => {
+              console.log(response.data.url)
+              axiosFunctions.methods.updateUserProfile(this.isManager, this.form.username,
+                  {
+                    username: this.form.username,
+                    profilePhotoUrl: response.data.url,
+                  }
+              ).then((response) => {
+                ElNotification({
+                  title: "Success!",
+                  type: "success",
+                  message: "You have updated the profile image!",
+                })
+              }).catch((response) => {
+                ElNotification({
+                  title: "Failed",
+                  type: "error",
+                  message: response.data,
+                })
+                console.log(response)
+              })
+            }).catch((response) => {
           ElNotification({
             title: "Failed",
             type: "error",
-            message: "Failed to upload profile image.",
+            message: response.data,
           })
-          console.log('upload profile image error')
           console.log(response)
         })
       }
@@ -169,7 +177,7 @@ export default {
         console.log(response)
         ElNotification({
           title: 'Failed',
-          message: 'Failed to get user info. Does it exist?',
+          message: response.data,
           type: 'error',
         })
         this.$emit('userNotExists')
@@ -183,6 +191,7 @@ export default {
           return true
       return false
     },
+
     addCustomTag() {
       const hobbyName = this.newTag.trim().toLowerCase();
       if (!hobbyName) {
@@ -257,6 +266,7 @@ export default {
       default: false,
     }
   },
+
   watch: {
     username() {
       this.setToDefault()
@@ -272,7 +282,7 @@ export default {
         <div style="width: 90%">
           <el-tooltip
               content="Upload avatar (jpg/png and 500 KB at most)"
-              placement="bottom"
+              placement="bottom-end"
           >
             <el-upload
                 class="avatar-uploader"
@@ -284,8 +294,16 @@ export default {
                 accept="image/png, image/jpeg"
             >
               <el-image
-                  :src="this.form.profilePhotoUrl ? axiosFunctions.methods.getResourceByFilename(this.form.profilePhotoUrl) : null"
-                  :fit="'contain'"/>
+                  :src="axiosFunctions.methods.getResourceByFilename(this.form.profilePhotoUrl)"
+                  :fit="'contain'">
+                <template #error>
+                  <div class="image-slot">
+                    <el-icon size="xxx-large">
+                      <Picture/>
+                    </el-icon>
+                  </div>
+                </template>
+              </el-image>
             </el-upload>
           </el-tooltip>
         </div>
@@ -404,7 +422,7 @@ export default {
                       :autosize="{minRows: 2, maxRows: 5}"
                       maxlength="200"
                       show-word-limit
-                      placeholder="No more than 200 words"></el-input>
+                      placeholder="No more than 200 characters"></el-input>
           </el-form-item>
 
           <el-button type="primary" @click="save">Save</el-button>
@@ -413,7 +431,8 @@ export default {
 
         <el-divider/>
 
-        <el-form label-width="auto" size="small" :model="passwordForm" :rules="rules" ref="passwordForm" @submit.native.prevent>
+        <el-form label-width="auto" size="small" :model="passwordForm" :rules="rules" ref="passwordForm"
+                 @submit.native.prevent>
           <el-form-item label="Old Password" prop="oldPassword">
             <el-input v-model="passwordForm.oldPassword" placeholder="Old password" type="password" show-password
                       style="width: 500px"/>

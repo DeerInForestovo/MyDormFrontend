@@ -13,7 +13,7 @@ import {
   Tools,
   QuestionFilled,
   Search,
-  OfficeBuilding
+  OfficeBuilding, Back
 } from "@element-plus/icons-vue";
 
 // import static images
@@ -276,7 +276,7 @@ export default {
     <el-container class="MainPageMainPart">
       <el-header class="Header">
         <!--      Buttons                             -->
-        <button class="backButton" @click="this.$router.back()"> Back </button>
+        <button class="backButton" @click="this.$router.back()">Back</button>
         <div class="HeaderButtonDiv">
           <el-space>
             <!--      Switch Light-Dark Mode Button     -->
