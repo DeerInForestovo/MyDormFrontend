@@ -79,35 +79,6 @@ export default {
         replyToCommentId: null,
         replyToUsername: null,
       },
-      comments: [
-        {
-          commentId: 1,
-          // replyToCommentId: 0,
-          username: 'John',
-          name :'',
-          avatar: 'john.jpg',
-          time: null,
-          replies: [
-            {
-              id: 123,
-              username: 'John',
-              content: "This is the reply to the first comment.",
-              toUser: 'Alice',
-              time: '10:10',
-              // replyToCommentId: 1,
-            },
-            {
-              id: 123,
-              username: 'John',
-              content: "This is the reply to the first comment.",
-              toUser: '',
-              date: '10:10',
-              // replyToCommentId: 1,
-            },
-          ],
-          content: 'This is the first comment.',
-        },
-      ],
     };
   },
   mounted() {

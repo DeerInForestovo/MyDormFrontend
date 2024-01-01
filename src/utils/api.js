@@ -173,6 +173,24 @@ export default {
                     Authorization: 'Bearer ' + token,
                 }
             })
+        },
+        //star
+        addStar(username, roomId){
+            return axios.post(base_api + '/api/profile/star', {
+                username: username,
+                roomId: roomId
+            }, this.defaultConfig(token))
+        },
+        removeStar(username, roomId){
+            return axios.delete(base_api + '/api/profile/star', {
+                params: {
+                    username: username,
+                    roomId: roomId
+                },
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                }
+            })
         }
     }
 }

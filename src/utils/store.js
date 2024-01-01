@@ -11,6 +11,7 @@ let store = createStore({
             // user basic info
             name: null,
             profilePhotoUrl: null,
+            stars: [],
         }
     },
     mutations: {
@@ -25,6 +26,7 @@ let store = createStore({
         setProfileInfo(state, data) {
             state.name = data.name
             state.profilePhotoUrl = data.profilePhotoUrl
+            state.stars = data.stars
         }
     }
 })
