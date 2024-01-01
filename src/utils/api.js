@@ -92,6 +92,16 @@ export default {
         getAllBuildings() {
             return axios.get(base_api + '/api/building', this.defaultConfig())
         },
+        getRoomFromZone(zoneId) {
+            return axios.get(base_api + '/api/room', {
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                },
+                params: {
+                    zoneId: zoneId
+                }
+            })
+        },
 
         // Team
         createTeam() {

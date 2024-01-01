@@ -10,20 +10,28 @@
     data(){
       return{
         //TODO: 根据后端的list变量来传
-        notificationList: [
+        MessageList: [
           {
-            subject: "通知主题1",
-            content: "通知内容1",
-            time: "10:10"
+            type:1,
+            content: "This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.",
+            id: 1,
+            time: "10:10",
+            showDetail: false,
           },
           {
-            subject: "通知主题2",
-            content: "通知内容2",
-            time: "时间2"
+            type:1,
+            content: "This is a notification.",
+            id: 2,
+            time: "10:10",
+            showDetail: false,
+          },
+          {
+            type:1,
+            content: "This is a reply.",
+            id: 3,
+            time: "10:10",
+            showDetail: false,
           }],
-        replyList:[],
-        teamList:[]
-        //replyList = this.$store.state.replyList
       }
     },
     mounted() {
@@ -33,68 +41,61 @@
       // this.fetchNotificationList();
     },
     methods: {
+      //filter
+      filterMessage(type){
+        return this.MessageList.filter(message => message.type === type);
+      },
       refreshNotifications() {
-        if (this.username == null) {
-          return;
-        }
         //database -> list
-        axiosFunctions.methods.getMessageList(this.form.username, this.$store.state.token)
-            .then(response => {
-              if (response.data.username !== this.form.username) {
-                console.log(response)
-                ElNotification({
-                  title: 'Failed',
-                  message: 'Failed to get user info (response = ' + response.data.username + ', this = ' + this.form.username + ').',
-                  type: 'error',
-                })
-              }
-              this.form = response.data
-              // form -> store
-              if (this.username === this.$store.state.username) {
-                this.$store.commit('setProfileInfo', this.form.name)
-              }
-            }).catch(response => {
-          console.log(response)
-          ElNotification({
-            title: 'Failed',
-            message: 'Failed to get user info. Does it exits?',
-            type: 'error',
-          })
-        })
 
       },
-      deleteNotification(index) {
+      deleteMessage(index) {
         // 删除指定索引处的通知
-        this.notificationList.splice(index, 1);
-        //TODO: 给后端发送删除的请求
+      },
+      toggleDetails(reply) {
+        reply.showDetail = !reply.showDetail;
       }
     },
     watch:{
-      username(){
-        this.refreshNotifications();
-      }
     }
   }
 </script>
 
 <template>
   <el-card>
-    <el-collapse>
+    <el-collapse v-model="MessageList">
       <el-collapse-item>
         <template #title>
-          <el-text size = "small" tag = "b"> Notification{{}}</el-text>
+          <el-text size = "small" tag = "b"> Notification</el-text>
         </template>
         <el-card>
-          <el-collapse>
-            <el-collapse-item>
-              <template #title>
-                <el-text size = "small" tag = "b"> Notification{{}}</el-text>
-                <div @click.stop = "showCollapse()" >
-                  <el-button :icon = "Delete" size="small" text />
-                </div>
-              </template>
-            </el-collapse-item>
-          </el-collapse>
+
+          <div v-if = "filterMessage(1).length === 0 ">
+            <el-empty description="No message">
+            </el-empty>
+          </div>
+          <div v-else>
+            <div v-for="(reply, index) in filterMessage(1)" :key="index">
+              <div class="reply-header">
+                <span>{{ reply.time }}</span>
+                <el-button @click="deleteMessage(index)" text>
+                  <el-icon>
+                    <Delete/>
+                  </el-icon>
+                </el-button>
+              </div>
+              <div
+                  :class="{'ellipsis-text': !reply.showDetail}"
+                  @click="toggleDetails(reply)"
+              >
+                {{ reply.content }}
+              </div>
+              <div v-if="!reply.showDetail" @click="toggleDetails(reply)" style="color: blue;">
+                Show Details
+              </div>
+              <el-divider></el-divider>
+            </div>
+          </div>
         </el-card>
       </el-collapse-item>
       <el-collapse-item>
@@ -102,15 +103,32 @@
           <el-text size = "small" tag = "b"> Reply{{}}</el-text>
         </template>
         <el-card>
-          <div v-if = "replyList.length === 0 ">
+          <div v-if = "filterMessage(2).length === 0 ">
               <el-empty description="No message">
               </el-empty>
           </div>
           <div v-else>
-            <el-collapse>
-              <el-collapse-item v-for="(reply, index) in replyList" :key="index" >
-              </el-collapse-item>
-            </el-collapse>
+            <div v-for="(reply, index) in filterMessage(2)" :key="index">
+              <div class="reply-header">
+                <span>{{ reply.time }}</span>
+                <el-button @click="deleteMessage(index)" text>
+                  <el-icon>
+                    <Delete/>
+                  </el-icon>
+                </el-button>
+              </div>
+              <div
+                  :class="{'ellipsis-text': !reply.showDetail}"
+                  @click="toggleDetails(reply)"
+              >
+                {{ reply.content }}
+              </div>
+
+              <div v-if="!reply.showDetail" @click="toggleDetails(reply)" style="color: blue;">
+                Show Details
+              </div>
+              <el-divider></el-divider>
+            </div>
           </div>
         </el-card>
       </el-collapse-item>
@@ -153,5 +171,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
     font-size: 12px;
+  }
+
+  .ellipsis-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
   }
 </style>
