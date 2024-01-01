@@ -1,12 +1,3 @@
-<!--<script setup>-->
-<!--// import { createApp } from 'vue';-->
-<!--// import ElementPlus from 'element-plus';-->
-<!--// import 'element-plus/lib/theme-chalk/index.css';-->
-<!--//-->
-<!--// const app = createApp({});-->
-<!--// app.use(ElementPlus);-->
-<!--// app.mount('#app');-->
-<!--</script>-->
 <script setup>
 import {ref, onMounted, nextTick} from 'vue'
 // import mapSvgFile from './MapComponents/MapSvg.svg'
@@ -19,7 +10,16 @@ const areas = [
     id: 1,
     alt: "area1",
     coords: "733,1608,739,1627,796,1614,796,1594",
-    shape: "poly"
+  },
+  {
+    id: 2,
+    alt: "area2",
+    coords: "799,1558,802,1578,861,1568,854,1549",
+  },
+  {
+    id: 3,
+    alt: "area3",
+    coords: "781,1657,772,1678,818,1691,835,1674",
   },
   // Add more areas if needed
 ];
@@ -40,19 +40,24 @@ function drawMask(scale = 1) {
   const ctx = canvas.value.getContext('2d');
   ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
 
-  // 定义遮罩区域的坐标，根据缩放比例调整
-  const coords = [733, 1608, 739, 1627, 796, 1614, 796, 1594].map(coord => coord * scale);
 
-  // 绘制多边形遮罩
-  ctx.beginPath();
-  ctx.moveTo(coords[0], coords[1]);
-  for (let i = 2; i < coords.length; i += 2) {
-    ctx.lineTo(coords[i], coords[i + 1]);
-  }
-  ctx.closePath();
 
-  ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-  ctx.fill();
+// 遍历 areas 数组并绘制每个区域
+  areas.forEach(area => {
+    // 解析每个区域的坐标并根据缩放比例调整
+    const coords = area.coords.split(',').map(coord => parseInt(coord) * scale);
+
+    // 绘制多边形遮罩
+    ctx.beginPath();
+    ctx.moveTo(coords[0], coords[1]);
+    for (let i = 2; i < coords.length; i += 2) {
+      ctx.lineTo(coords[i], coords[i + 1]);
+    }
+    ctx.closePath();
+
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+    ctx.fill();
+  });
 }
 
 const rollImg = (e) => {
@@ -107,10 +112,8 @@ export default {
     changeBuildingId: Number,
   },
   methods: {
-    handleAreaClick(building) {
-      // 触发自定义事件，将alt信息传递给父组件
-      this.$emit('area-click', building);
-      console.log('changeBuildingId', this.changeBuildingId)
+    handleAreaClick(buildingId) {
+      this.$router.push('/home/building/' + buildingId)
     }
   },
 }
@@ -123,7 +126,7 @@ export default {
          @mousedown.prevent="moveImg">
     <canvas ref="canvas" class="canvas-overlay"></canvas>
     <map name="image-map">
-      <area target="_self" :alt="area.alt" :coords="area.coords" :shape="area.shape" v-for="area in areas"
+      <area target="_self" :alt="area.alt" :coords="area.coords" shape="poly" v-for="area in areas"
             :key="area.id" @click="handleAreaClick(area.id)">
       <!--      <el-popover-->
       <!--          title="二期宿舍11栋"-->
@@ -147,9 +150,6 @@ export default {
 
 
 <style scoped>
-#popover {
-  z-index: 9999; /* 设置较高的 z-index 值 */
-}
 
 .wrap {
   position: relative;
@@ -166,9 +166,7 @@ export default {
   cursor: move;
 }
 
-.canvas-container {
-  position: relative;
-}
+
 
 .canvas-overlay {
   pointer-events: none; /* 确保 Canvas 不阻止对图片的交互 */
