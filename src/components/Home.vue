@@ -130,6 +130,7 @@ const buildMenuItemJsonList = [
 <script>
 import {ref} from "vue"
 import getUserProfile from "@/components/ProfileComponents/getUserProfile";
+import axiosFunctions from "@/utils/api";
 
 export default {
   name: 'MainPage',
@@ -169,6 +170,15 @@ export default {
     getUserProfile(this.username, (data) => {
       this.$store.commit('setProfileInfo', data)
     })
+
+    // auto subscription every 9 minutes
+    setInterval(() => {
+      if (axiosFunctions.methods.isTokenUsed())
+        axiosFunctions.methods.newToken(this.username, this.$store.state.token)
+      else {
+        swal("Notice!", "")
+      }
+    }, 540000)
 
     // auto route to profile
     if (this.$route.fullPath === '/home' || this.$route.fullPath === '/home/') // from /login or /home

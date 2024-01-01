@@ -2,6 +2,7 @@ import axios from "axios";
 import store from "./store";
 
 const base_api = 'http://10.16.165.147:8081';
+let useToken = true;
 
 export default {
     methods: {
@@ -10,7 +11,14 @@ export default {
             return base_api
         },
         getToken() {
+            useToken = true
             return store.state.token
+        },
+        isTokenUsed() {  // used for auto subscription
+            if (useToken) {
+                useToken = false;
+                return true;
+            } else return false;
         },
         defaultConfig() {
             return {
@@ -80,7 +88,7 @@ export default {
                         hobbyId: hobbyId
                     },
                     headers: {
-                        Authorization: 'Bearer ' + token,
+                        Authorization: 'Bearer ' + this.getToken(),
                     }
                 })
         },
