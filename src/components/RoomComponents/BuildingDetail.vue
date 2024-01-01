@@ -62,7 +62,7 @@ export default {
     axiosFunctions.methods.getRoomFromZone(this.$store.state.zoneId)
         .then((response) => {
           // 假设response.data是上述房间信息的数组
-          const buildingRooms = response.data.filter(room => room.buildingId === 1);
+          const buildingRooms = response.data.filter(room => room.buildingId === parseInt(this.buildingId));
 
           // 提取楼层信息
           const floors = [...new Set(buildingRooms.map(room => room.floor))]
