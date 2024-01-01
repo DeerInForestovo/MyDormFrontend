@@ -8,6 +8,7 @@ import {ElNotification} from "element-plus";
 <script>
 import axiosFunctions from '@/utils/api'
 import {ElNotification} from "element-plus";
+import {toRaw} from "@vue/reactivity";
 export default {
   name: 'Room',
   props: {
@@ -28,7 +29,7 @@ export default {
       rooms:{
         roomPicturePath: null,
         comments: [],
-      }
+      },
     }
   },
 
@@ -43,6 +44,8 @@ export default {
             type: "success",
             message: "You have added this room into your favourite rooms!",
           })
+
+          this.$store.commit('starRoom', this.rooms);
           console.log(response)
         }).catch((response) => {
           ElNotification({
@@ -60,7 +63,7 @@ export default {
             type: "success",
             message: "You have removed this room from your favourite rooms!",
           })
-          console.log(response)
+          this.$store.commit('removeStarRoom', this.roomId)
         }).catch((response) => {
           ElNotification({
             title: "Failed",
@@ -73,11 +76,19 @@ export default {
       }
     },
     refreshRoom(){
-      this.isHeartChecked = this.stars.some(room => room.roomId === this.roomId);
+
       axiosFunctions.methods.getRoomInfo(this.roomId)
           .then(response => {
-            this.rooms = response.data
-            console.log(this.rooms)
+            this.rooms = response.data;
+            this.stars = this.$store.state.stars;
+            console.log(this.rooms);
+            console.log(toRaw(this.rooms));
+            console.log(this.roomId);
+
+            this.isHeartChecked = this.stars.some(room => room.roomId === this.roomId);
+
+            console.log(this.stars);
+            console.log(this.isHeartChecked);
           }).catch(response => { // possibly user not exist
         console.log(response)
         ElNotification({

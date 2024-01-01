@@ -2,6 +2,7 @@ import {createStore} from "vuex";
 import Cookies from 'js-cookie';
 import {ElNotification} from "element-plus";
 import api from "@/utils/api";
+import {toRaw} from "@vue/reactivity";
 
 const username_cookie_name = 'MyDorm_username'
 const token_cookie_name = 'MyDorm_token'
@@ -38,8 +39,10 @@ let store = createStore({
             state.name = data.name
             state.profilePhotoUrl = data.profilePhotoUrl
             state.zoneId = data.zoneId
-
-            state.stars = data.stars
+            console.log(state.name);
+            console.log(data.stars)
+            state.stars = Array.from(data.stars);
+            console.log(state.stars)
         },
 
         logout(state) {
@@ -47,6 +50,17 @@ let store = createStore({
             state.token = null
             Cookies.set(username_cookie_name, '', {expires: 1, secure: true})
             Cookies.set(token_cookie_name, '', {expires: 1, secure: true})
+        },
+
+        starRoom(state, room) {
+            console.log(state.stars);
+            console.log(room);
+            state.stars.push(toRaw(room));
+            console.log(state.stars)
+        },
+
+        removeStarRoom(state, roomId){
+            state.stars = state.stars.filter(item => item.roomId !== roomId); //
         }
     }
 })

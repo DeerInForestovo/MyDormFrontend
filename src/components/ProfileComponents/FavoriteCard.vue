@@ -15,7 +15,11 @@ export default {
       username: this.$store.state.username
     }
   },
+  mounted() {
+
+  },
   methods: {
+
     Delete(roomId) {
       axiosFunctions.methods.removeStar(this.username, roomId).then((response) => {
         ElNotification({
@@ -23,7 +27,7 @@ export default {
           type: "success",
           message: "You have removed this room from your favourite rooms!",
         })
-        this.stars =this.stars.filter(room => room.roomId !== roomId);
+        this.$store.commit('removeStarRoom', roomId)
         console.log(response)
       }).catch((response) => {
         ElNotification({
