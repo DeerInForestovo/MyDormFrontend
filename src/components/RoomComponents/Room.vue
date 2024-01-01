@@ -17,10 +17,6 @@ export default {
       type: Number,
       required: true,
     },
-    username: {
-      required: false,
-      default: null,
-    }
   },
   mounted() {
     this.refreshRoom();
