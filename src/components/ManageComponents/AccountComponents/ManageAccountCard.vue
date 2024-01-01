@@ -20,6 +20,8 @@ export default {
   methods: {
     searchButtonOnClick() {
       this.searchUsername = this.searchForm.username
+      console.log('search')
+      console.log(this.searchUsername)
       this.settingCardVisible = true
     },
 
@@ -56,8 +58,12 @@ export default {
         <el-button type="success" round @click="searchButtonOnClick"> Search</el-button>
       </div>
 
-      <div class="items" v-show="this.settingCardVisible">
-        <SettingCard :username="this.searchUsername" :isManager="true" @userNotExists="this.settingCardVisible=false"/>
+      <div class="items" v-if="this.settingCardVisible">
+        <SettingCard
+            :username="this.searchUsername"
+            :isManager="true"
+            @userNotExists="this.settingCardVisible=false"
+        />
       </div>
     </div>
   </el-card>

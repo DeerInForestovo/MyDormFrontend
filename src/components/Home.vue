@@ -4,16 +4,17 @@ import 'element-plus/dist/index.css'
 
 // import icons
 import {
+  House,
   InfoFilled,
   Message,
   Moon,
-  Sunny,
-  User,
-  House,
-  Tools,
+  OfficeBuilding,
   QuestionFilled,
   Search,
-  OfficeBuilding
+  Sunny,
+  SwitchButton,
+  Tools,
+  User,
 } from "@element-plus/icons-vue";
 
 // import static images
@@ -67,7 +68,6 @@ const buildSubMenuJsonList = [
       {
         name: 'Setting',
         path: '/home/setting',
-        props: ['username'],
       },
       {
         name: 'Favorite',
@@ -84,8 +84,8 @@ const buildSubMenuJsonList = [
         path: '/home/team',
       },
       {
-        name: 'Notification',
-        path: '/home/team_notification',
+        name: 'Invitation',
+        path: '/home/team_invitation',
       },
       {
         name: 'Recommendation',
@@ -100,10 +100,6 @@ const buildSubMenuJsonList = [
       {
         name: 'Student',
         path: '/home/manage_students',
-      },
-      {
-        name: 'Dorms',
-        path: '/home/manage_dorms',
       },
       {
         name: 'Options',
@@ -170,10 +166,12 @@ export default {
     this.dynamicRouteDict['username'] = this.username
 
     // store profile to $store
-    getUserProfile(this.username, (data) => {this.$store.commit('setProfileInfo', data)})
+    getUserProfile(this.username, (data) => {
+      this.$store.commit('setProfileInfo', data)
+    })
 
     // auto route to profile
-    if (this.$route.fullPath === '/home') // from /login or /home
+    if (this.$route.fullPath === '/home' || this.$route.fullPath === '/home/') // from /login or /home
       this.$router.push(this.buildRoute({path: '/home/profile', props: ['username']}))
   },
 
@@ -199,15 +197,19 @@ export default {
       let path = item.path
       if (item.props) path += '/' + item.props.map((name) => (this.dynamicRouteDict[name])).join('/')
       if (item.query) path += '?' + item.query.map((name) => (name + '=' + this.dynamicRouteDict[name])).join('&')
-      // console.log(path)
       return path
+    },
+
+    logout() {
+      this.$store.commit('logout')
+      this.$router.push('/')
     }
   },
 
   watch: {
-    $route(newVal) {
-      console.log('route to')
-      console.log(newVal)
+    $route(newVal) {  // Useful!
+      if (this.$route.fullPath === '/home' || this.$route.fullPath === '/home/') // from /login or /home
+        this.$router.push(this.buildRoute({path: '/home/profile', props: ['username']}))
       this.setActivateIndex()
     }
   }
@@ -278,8 +280,15 @@ export default {
     <el-container class="MainPageMainPart">
       <el-header class="Header">
         <!--      Buttons                             -->
+        <button class="backButton" @click="this.$router.back()">Back</button>
         <div class="HeaderButtonDiv">
           <el-space>
+            <!--      Logout Button                     -->
+            <el-tooltip content="Logout" placement="bottom">
+              <el-button @click="logout" :icon="SwitchButton"
+                         class="HeaderButton" text circle size="large"/>
+            </el-tooltip>
+
             <!--      Switch Light-Dark Mode Button     -->
             <el-tooltip :content="isLight ? 'Dark Mode' : 'Light Mode'" placement="bottom">
               <el-button @click="toggleDark" :icon="isLight ? Sunny : Moon"
@@ -353,5 +362,53 @@ export default {
 
 .HeaderButton {
   margin-right: 15px;
+}
+
+.backButton {
+  --color: rgb(33 150 243);
+  font-family: inherit;
+  display: inline-block;
+  width: 4em;
+  height: 2em;
+  line-height: 1.9em;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid var(--color);
+  transition: color .5s;
+  z-index: 1;
+  font-size: 17px;
+  border-radius: 6px;
+  font-weight: 500;
+  color: var(--color);
+}
+
+.backButton:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  background: var(--color);
+  height: 150px;
+  width: 200px;
+  border-radius: 50%;
+}
+
+.backButton:hover {
+  color: #fff;
+}
+
+.backButton:before {
+  top: 100%;
+  left: 100%;
+  transition: all .7s;
+}
+
+.backButton:hover:before {
+  top: -30px;
+  left: -30px;
+}
+
+.backButton:active:before {
+  background: #0720c4;
+  transition: background 0s;
 }
 </style>

@@ -1,7 +1,20 @@
 <script setup>
-import {House, Refresh} from "@element-plus/icons-vue"
+import {
+  ChatDotRound,
+  ChatRound,
+  House,
+  Iphone,
+  Moon,
+  Opportunity,
+  Picture,
+  Promotion,
+  Refresh,
+  Star,
+  Sunny,
+  User,
+  View
+} from "@element-plus/icons-vue"
 import {computed, ref} from 'vue'
-import {Iphone, User, Star, Promotion, Sunny, Moon, Opportunity, ChatRound, View, ChatDotRound} from '@element-plus/icons-vue'
 
 const size = ref('')
 const iconStyle = computed(() => {
@@ -50,7 +63,9 @@ export default {
       if (this.username === null) {
         return;
       }
-      getUserProfile(this.username, (data) => {this.form = data})
+      getUserProfile(this.username, (data) => {
+        this.form = data
+      })
     },
   },
   props: {
@@ -71,7 +86,15 @@ export default {
     <el-row>
       <el-col :span="6">
         <div style="width: 80%">
-          <el-image :src="this.form.profilePhotoUrl ? axiosFunctions.methods.getResourceByFilename(this.form.profilePhotoUrl) : null" :fit="'contain'"/>
+          <el-image :src="axiosFunctions.methods.getResourceByFilename(this.form.profilePhotoUrl)" :fit="'contain'">
+            <template #error>
+              <div class="image-slot">
+                <el-icon size="xxx-large">
+                  <Picture/>
+                </el-icon>
+              </div>
+            </template>
+          </el-image>
         </div>
       </el-col>
       <el-col :span="18">

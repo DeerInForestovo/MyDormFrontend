@@ -6,6 +6,8 @@ import {ref} from "vue";
 
 <script>
 import {ref} from "vue";
+import axiosFunctions from "@/utils/api";
+import {ElNotification} from "element-plus";
 
 export default {
   data() {
@@ -36,7 +38,21 @@ export default {
     },
 
     inviteMember(username) {
-
+      axiosFunctions.methods.sendInvitation(this.username, username, this.teamInfo.code)
+          .then((response) => {
+            ElNotification({
+              title: 'Success!',
+              message: 'Invitation has been sent.',
+              type: "success",
+            })
+          }).catch((response) => {
+        ElNotification({
+          title: 'Failed!',
+          message: response.message,
+          type: "error",
+        })
+        console.log(response)
+      })
     },
 
     shiftToNext() {
