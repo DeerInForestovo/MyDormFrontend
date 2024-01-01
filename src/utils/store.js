@@ -52,6 +52,8 @@ let store = createStore({
 })
 
 // Get username and token from Cookies
+store.state.username = Cookies.get(username_cookie_name)
+store.state.token = Cookies.get(token_cookie_name)
 let username = store.state.username
 let token = store.state.token
 if (username && token) {
