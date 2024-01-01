@@ -158,7 +158,7 @@ export default {
           type: "success",
           message: "You have added the reply!",
         })
-        this.comment.content="";
+        this.reply.content="";
         this.$router.go(0);
         console.log(response)
       }).catch((response) => {
