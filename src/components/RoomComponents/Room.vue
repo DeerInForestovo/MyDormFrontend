@@ -21,6 +21,7 @@ export default {
     }
   },
   mounted() {
+    this.refreshRoom();
   },
   data(){
     return{
@@ -45,6 +46,7 @@ export default {
         })
         this.$emit('roomNotExists')
       })
+      console.log(this.rooms.comments)
     }
   },
   watch:{

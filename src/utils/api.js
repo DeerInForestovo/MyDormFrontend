@@ -165,8 +165,13 @@ export default {
         },
         deleteComment(username, commentId){
             return axios.delete(base_api + '/api/comment', {
-                username: username,
-                commentId: commentId
+                params: {
+                    username: username,
+                    commentId: commentId
+                },
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                }
             })
         }
     }

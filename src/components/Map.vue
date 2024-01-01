@@ -107,10 +107,11 @@ export default {
     changeBuildingId: Number,
   },
   methods: {
-    handleAreaClick(building) {
+    handleAreaClick(buildingId) {
       // 触发自定义事件，将alt信息传递给父组件
-      this.$emit('area-click', building);
-      console.log('changeBuildingId', this.changeBuildingId)
+      this.$router.push('/home/building/' + buildingId)
+      // this.$emit('area-click', building);
+      // console.log('changeBuildingId', this.changeBuildingId)
     }
   },
 }

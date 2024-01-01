@@ -22,7 +22,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
             </div>
           </el-space>
 
-          <el-button type="text" @click = "chooseReply(null)">
+          <el-button type="text" @click = "chooseReply(comment.username)">
             <el-icon>
               <ChatRound/>
             </el-icon>
@@ -119,7 +119,7 @@ import {ElNotification} from "element-plus";
 
 export default {
   name: 'Comment',
-  props: ['comment', 'flagId'],
+  props: ['comment', 'flagId','roomId'],
   addReplyUsername: null,
   data(){
     return{
@@ -151,19 +151,23 @@ export default {
     },
     addReply() {
       this.reply.roomId = this.roomId;
+      console.log(this.reply.roomId);
       axiosFunctions.methods.postComment(this.username, this.reply).then((response) => {
         ElNotification({
           title: "Success!",
           type: "success",
-          message: "You have added the comment!",
+          message: "You have added the reply!",
         })
+        this.comment.content="";
+        this.$router.go(0);
+        console.log(response)
       }).catch((response) => {
         ElNotification({
           title: "Failed",
           type: "error",
-          message: "Failed to add comment.",
+          message: "Failed to add reply.",
         })
-        console.log('Failed to add comment!')
+        console.log('Failed to add reply!')
         console.log(response)
       })
     },
@@ -174,6 +178,7 @@ export default {
           type: "success",
           message: "You have deleted the comment!",
         })
+        this.$router.go(0);
       }).catch((response) => {
         ElNotification({
           title: "Failed",

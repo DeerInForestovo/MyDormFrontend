@@ -45,6 +45,7 @@ import {ChatRound, Position} from "@element-plus/icons-vue";
               :key="comment.id"
               :comment="comment"
               :flag-id = "flagId"
+              :room-id = "roomId"
               @choose-reply="handleComment"
           />
         </el-scrollbar>
@@ -128,6 +129,8 @@ export default {
           type: "success",
           message: "You have added the comment!",
         })
+        this.newComment.content = "";
+
       }).catch((response) => {
         ElNotification({
           title: "Failed",
@@ -137,6 +140,7 @@ export default {
         console.log('Failed to add comment!')
         console.log(response)
       })
+
     },
 
   },
