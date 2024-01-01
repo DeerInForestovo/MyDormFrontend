@@ -29,8 +29,8 @@ let store = createStore({
         setUserLoginInfo(state, data) {
             state.username = data.username
             state.token = data.token
-            Cookies.set(username_string, data.username, {expires: 1, secure: true})
-            Cookies.set(token_string, data.token, {expires: 1, secure: true})
+            Cookies.set(username_cookie_name, data.username, {expires: 1, secure: true})
+            Cookies.set(token_cookie_name, data.token, {expires: 1, secure: true})
         },
 
         setProfileInfo(state, data) {
