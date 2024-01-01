@@ -1,10 +1,13 @@
 <script setup>
 import CommentSection from './CommentSection.vue';
+import {Refresh} from "@element-plus/icons-vue"
 import alice from "@/assets/alice.png";
 
 </script>
 
 <script>
+import axiosFunctions from '@/utils/api'
+import {ElNotification} from "element-plus";
 export default {
   name: 'Room',
   props: {
@@ -12,26 +15,74 @@ export default {
       type: Number,
       required: true,
     },
+    username: {
+      required: false,
+      default: null,
+    }
   },
+  mounted() {
+  },
+  data(){
+    return{
+      rooms:{
+        roomPicturePath: null,
+        comments: [],
+      }
+    }
+  },
+  methods:{
+    refreshRoom(){
+      axiosFunctions.methods.getRoomInfo(this.roomId)
+          .then(response => {
+            this.rooms = response.data
+            console.log(this.rooms)
+          }).catch(response => { // possibly user not exist
+        console.log(response)
+        ElNotification({
+          title: 'Failed',
+          message: 'Failed to get room info. Does it exist?',
+          type: 'error',
+        })
+        this.$emit('roomNotExists')
+      })
+    }
+  },
+  watch:{
+    username(){
+      this.refreshRoom();
+    }
+  }
 }
 </script>
 
 <template>
   <div>
     <div class="container">
-      <el-card>
+      <el-card style="width: 90%; margin: 1%">
+        <el-button :icon="Refresh" size="small" text @click="refreshRoom" />
         <div class = "hidden-sm-and-up">
-          <el-image :src="alice" class="Images"/>
+          <el-image :src="axiosFunctions.methods.getResourceByFilename(this.rooms.roomPicturePath)" class="Images">
+          <template #error>
+            <div class="image-slot">
+            </div>
+          </template>
+          </el-image>
         </div>
         <el-row>
           <el-col :xs="0" :sm="10" :md="10" :lg="10" :xl="10">
             <div class = "hidden-xs-only">
-                <el-image :src="alice" class="Images"/>
+                <el-image :src="axiosFunctions.methods.getResourceByFilename(this.rooms.roomPicturePath)" class="Images">
+                <template #error>
+                  <div class="image-slot">
+                  </div>
+                </template>
+                </el-image>
             </div>
           </el-col>
           <el-col :xs="24" :sm="14" :md="14" :lg="14" :xl="14">
             <CommentSection
                 :room-id="roomId"
+                :comments-list="this.rooms.comments"
             />
             <!--change the roomId-->
           </el-col>

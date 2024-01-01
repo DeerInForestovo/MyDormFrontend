@@ -148,6 +148,26 @@ export default {
                 username: username,
                 password: password
             })
+        },
+
+        // Room-Comment
+        postComment(username, comment){
+            return axios.post(base_api + '/api/comment', {
+                roomId : comment.roomId,
+                username: username,
+                content: comment.content,
+                replyToCommentId: comment.replyToCommentId,
+                replyToUsername: comment.replyToUsername
+            }, this.defaultConfig(token))
+        },
+        getRoomInfo(roomId){
+            return axios.get(base_api + '/api/room/'+roomId, this.defaultConfig(token))
+        },
+        deleteComment(username, commentId){
+            return axios.delete(base_api + '/api/comment', {
+                username: username,
+                commentId: commentId
+            })
         }
     }
 }

@@ -108,7 +108,7 @@ export default {
               <el-table-column label="Actions">
                 <template #default="scope">
                   <el-space wrap>
-                    <el-button @click="this.$router.push('/home/room/' + scope.row.id)" type="text">Details</el-button>
+                    <el-button @click="this.$router.push({path: '/home/room/' + scope.row.id, props: ['scope.row.id','username']})" type="text">Details</el-button>
                     <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
                   </el-space>
 
@@ -138,7 +138,7 @@ export default {
             <el-table-column label="Actions">
               <template #default="scope">
                 <el-space wrap>
-                  <el-button @click="this.$router.push('/home/room/' + scope.row.id)" type="text">Details</el-button>
+                  <el-button @click="this.$router.push({path: '/home/room/' + scope.row.id, props: ['scope.row.id','username']})" type="text">Details</el-button>
                   <el-button @click="selectRoom(scope.row.id)" type="text">Select</el-button>
                 </el-space>
 
@@ -165,7 +165,7 @@ export default {
             <template v-slot="scope">
 
               <el-space wrap>
-                <el-button @click="this.$router.push('/home/room/' + scope.row.id)" type="text">Details</el-button>
+                <el-button @click="this.$router.push({path: '/home/room/' + scope.row.id, props: ['scope.row.id','username']})" type="text">Details</el-button>
                 <el-button @click="" type="text">Select</el-button>
               </el-space>
 

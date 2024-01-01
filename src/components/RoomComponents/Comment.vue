@@ -8,7 +8,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
   <div class="comment">
     <el-row type="flex" :gutter="30">
       <el-col :span = "3">
-        <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu" />
+        <el-avatar shape="square" :size="30" :fit="fill" :src="this.comment.profilePhotoUrl ? axiosFunctions.methods.getResourceByFilename(this.comment.profilePhotoUrl):null"/>
         <!--根据userId获取头像-->
         <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
       </el-col>
@@ -16,9 +16,9 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
       <el-col :span="21">
         <div class="username" style="display: flex; align-items: center;">
           <el-space>
-            {{ comment.name }}
+            {{ comment.username }}
             <div :style="{color: 'grey'}">
-              {{comment.date}}
+              {{comment.time}}
             </div>
           </el-space>
 
@@ -27,7 +27,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
               <ChatRound/>
             </el-icon>
           </el-button>
-          <el-button type="text" v-if="isCurrentUser(comment.id)" @click="deleteComment(comment.commentId)" >
+          <el-button type="text" v-if="isCurrentUser(comment.username)" @click="deleteComment(comment.commentId)" >
 
             <el-icon>
               <Delete/>
@@ -44,19 +44,19 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
           <div v-for = "reply in comment.replies">
             <el-row :gutter = "30">
               <el-col :span = "3">
-                <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu" />
+                <el-avatar shape="square" :size="30" :fit="fill" :src="reply.profilePhotoUrl ? axiosFunctions.methods.getResourceByFilename(reply.profilePhotoUrl):null"/>
 
               </el-col>
               <el-col :span="21">
                 <div class="username" style="display: flex; align-items: center;">
                   <el-space>
-                    {{ reply.name}}
+                    {{ reply.username}}
                     <div :style="{color: 'grey'}">
-                      {{reply.date}}
+                      {{reply.time}}
                     </div>
                   </el-space>
 
-                  <el-button type="text" @click = "chooseReply(reply.name)">
+                  <el-button type="text" @click = "chooseReply(reply.username)">
 
                     <el-icon>
                       <ChatRound/>
@@ -64,11 +64,11 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
                   </el-button>
                 </div>
                 <div class="info">
-                  <div v-if="reply.toUser === ''">
+                  <div v-if="reply.replyToName === ''">
                     {{ reply.content }}
                   </div>
                   <div v-else>
-                    Reply to {{ reply.toUser }}: {{ reply.content }}
+                    Reply to {{ reply.replyToName }}: {{ reply.content }}
                   </div>
                 </div>
                 <el-divider></el-divider>
@@ -80,7 +80,12 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
         <div v-show = "flagId === comment.commentId">
           <el-row type = "flex" :gutter = "30">
             <el-col :span = "3">
-              <el-avatar shape="square" :size="30" :fit="fill" :src="yuzu" />
+              <el-avatar shape="square" :size="30" :fit="fill" :src="axiosFunctions.methods.getResourceByFilename(this.$store.state.profilePhotoUrl)">
+                <template #error>
+                  <div class="image-slot">
+                  </div>
+                </template>
+              </el-avatar>
               <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
             </el-col>
             <el-col :span = "21">
@@ -109,57 +114,75 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
 </template>
 
 <script>
+import axiosFunctions from "@/utils/api";
+import {ElNotification} from "element-plus";
+
 export default {
   name: 'Comment',
-  props: ['comment', 'currentUserId', 'flagId', 'roomId'],
+  props: ['comment', 'flagId'],
   addReplyUsername: null,
   data(){
     return{
+      username: this.$store.state.username,
       textarea: '',
       reply:{
         commentId: null,
         roomId: null,
         username: null,
-        name: null,
         content: "",
         replyToCommentId: null,
         replyToUsername: null,
-        replyToName: null,
-        unread: false
       },
     }
 
   },
 
   methods: {
-    isCurrentUser(userId) {
-      return userId === this.currentUserId;
+    isCurrentUser(username) {
+      return username === this.username;
     },
     chooseReply(username) {
-      console.log(this.comment.commentId);
-      this.reply.replyToName = username;
+      console.log(this.flagId);
+      // console.log(this.comment.commentId);
+      this.reply.replyToUsername = username;
+      this.reply.replyToCommentId = this.comment.commentId;
       this.$emit('choose-reply', this.comment.commentId);
+      console.log(this.flagId);
     },
     addReply() {
       this.reply.roomId = this.roomId;
-      this.reply.replyToCommentId = this.comment.commentId;
-      this.reply.replyToUsername = this.addReplyUsername;
-      // 存到后端当中
-
-    },
-    deleteReply(commentId) {
-      // 从后端中删除
+      axiosFunctions.methods.postComment(this.username, this.reply).then((response) => {
+        ElNotification({
+          title: "Success!",
+          type: "success",
+          message: "You have added the comment!",
+        })
+      }).catch((response) => {
+        ElNotification({
+          title: "Failed",
+          type: "error",
+          message: "Failed to add comment.",
+        })
+        console.log('Failed to add comment!')
+        console.log(response)
+      })
     },
     deleteComment(commentId) {
-      // // 调用后端接口删除评论
-      // // 例如使用 Axios 进行异步请求
-      // axios.delete(`/api/comments/${commentId}`)
-      //     .then(response => {
-      //       // 删除成功的处理逻辑
-      //     })
-      //     .catch(error => {
-      //       console.error('Failed to delete comment:', error);
-      //     });
+      axiosFunctions.methods.deleteComment(this.username, commentId).then((response) => {
+        ElNotification({
+          title: "Success!",
+          type: "success",
+          message: "You have deleted the comment!",
+        })
+      }).catch((response) => {
+        ElNotification({
+          title: "Failed",
+          type: "error",
+          message: "Failed to delete comment.",
+        })
+        console.log('Failed to delete comment!')
+        console.log(response)
+      })
     },
   },
 };
