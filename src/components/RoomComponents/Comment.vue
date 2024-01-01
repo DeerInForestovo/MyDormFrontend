@@ -63,7 +63,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
                     </el-icon>
                   </el-button>
 
-                  <el-button type="text" v-if="isCurrentUser(reply.username)" @click="deleteComment(comment.commentId)" >
+                  <el-button type="text" v-if="isCurrentUser(reply.username)" @click="deleteComment(reply.commentId)" >
 
                     <el-icon>
                       <Delete/>
