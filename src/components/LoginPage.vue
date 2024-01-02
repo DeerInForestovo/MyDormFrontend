@@ -25,7 +25,7 @@ export default {
       // 执行切换页面的动画
       const element = document.getElementById('LoginPageId')
       element.classList.add('fadeOut')
-      swal("Success!", "Welcome to MyDorm, user " + username, "success")
+      swal("Welcome!", "Welcome to MyDorm, user " + username, "success")
       setTimeout(() => {
         this.$router.push('/home')
       }, 1000)
@@ -113,7 +113,7 @@ export default {
         <div>
           <el-space>
             <div style="margin-right: 6vw" v-if="this.$store.state.token">
-              <el-button @click="loginAnimation" type="primary" plain round size="large">
+              <el-button @click="loginAnimation(this.$store.state.username)" type="primary" plain round size="large">
                 <span>Continue with <span style="font-weight: bold">{{ this.$store.state.username }}</span></span>
               </el-button>
             </div>
