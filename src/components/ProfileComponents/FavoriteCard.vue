@@ -11,15 +11,17 @@ import {ElNotification} from "element-plus";
 export default {
   data() {
     return {
-      stars: this.$store.state.stars,
-      username: this.$store.state.username
+      username: this.$store.state.username,
+      stars:[],
     }
   },
   mounted() {
-
+    this.refreshStar();
   },
   methods: {
-
+    refreshStar(){
+      this.stars = this.$store.state.stars;
+    },
     Delete(roomId) {
       axiosFunctions.methods.removeStar(this.username, roomId).then((response) => {
         ElNotification({
@@ -27,7 +29,8 @@ export default {
           type: "success",
           message: "You have removed this room from your favourite rooms!",
         })
-        this.$store.commit('removeStarRoom', roomId)
+        this.$store.commit('setStarRoom', this.$store.state.stars.filter(star => Number(star.roomId) !== Number(roomId)))
+        this.refreshStar();
         console.log(response)
       }).catch((response) => {
         ElNotification({
@@ -58,7 +61,7 @@ export default {
           <el-text tag="b"> {{room.roomName}} </el-text>
           <div class="bottom">
             <el-button @click="this.$router.push({path: '/home/room/' + room.roomId, props: ['room.roomId']})" type="text">Check</el-button>
-            <el-button text class="button" @click="new Delete(room.roomId)">Delete</el-button>
+            <el-button text class="button" @click="Delete(room.roomId)">Delete</el-button>
           </div>
         </div>
       </el-card>
