@@ -61,7 +61,7 @@ export default {
           <el-text tag="b"> {{room.roomName}} </el-text>
           <div class="bottom">
             <el-button @click="this.$router.push({path: '/home/room/' + room.roomId, props: ['room.roomId']})" type="text">Check</el-button>
-            <el-button text class="button" @click="Delete(room.roomId)">Delete</el-button>
+            <el-button @click="Delete(room.roomId)" type = "text">Delete</el-button>
           </div>
         </div>
       </el-card>
