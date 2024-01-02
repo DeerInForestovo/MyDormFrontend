@@ -6,6 +6,7 @@
 <script>
   import axiosFunctions from '@/utils/api'
   import {ElNotification} from "element-plus";
+  import {toRaw} from "@vue/reactivity";
   export default {
     data(){
       return{
@@ -13,28 +14,6 @@
         username: this.$store.state.username,
         Message: [],
         room: null,
-        MessageList: [
-          {
-            type:1,
-            content: "This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.",
-            id: 1,
-            time: "10:10",
-            showDetail: false,
-          },
-          {
-            type:1,
-            content: "This is a notification.",
-            id: 2,
-            time: "10:10",
-            showDetail: false,
-          },
-          {
-            type:1,
-            content: "This is a reply.",
-            id: 3,
-            time: "10:10",
-            showDetail: false,
-          }],
       }
     },
     mounted() {
@@ -44,11 +23,13 @@
       //filter
       refreshMessage(){
         this.username = this.$store.state.username;
-        axiosFunctions.methods.getUserNotification(this.username)
+        axiosFunctions.methods.getUserNotification()
             .then(response => {
-              this.Message = response.map(item=>{
-                return{item, showDetail:false};
-              })
+              console.log(response.data);
+              this.Message= response.data.map(item=>({
+                ...item,
+                showDetail: false
+              }));
               console.log(this.Message);
             }).catch(response => { // possibly user not exist
               console.log(response)
@@ -66,8 +47,11 @@
 
       readMessage(commentId){
         axiosFunctions.methods.readComment(commentId).then((response) => {
+          console.log(response);
+          this.$router.push({path: 'room/' + this.room.roomId, props: ['this.room.roomId']});
           console.log("read the comment!");
         }).catch((response) => {
+          console.log(response);
           console.log("failed to read the comment!");
         })
       },
@@ -76,6 +60,7 @@
         axiosFunctions.methods.getComment(commentId)
           .then(response => {
             this.room = response.data;
+            this.readMessage(commentId);
             console.log(this.room);
           }).catch(response => { // possibly user not exist
             console.log(response)
@@ -89,8 +74,6 @@
 
       gotoRoom(commentId){
         this.getRoomId(commentId);
-        this.readMessage(commentId);
-        this.$route.push({path: 'home/room/' + this.room.roomId, props: ['this.room.roomId']});
       },
 
       toggleDetails(reply) {
@@ -147,7 +130,7 @@
             <div v-for="(reply, index) in filterMessage('REPLY')" :key="index">
               <div class="reply-header">
                 <span>{{ reply.time }}</span>
-                <el-button text @click="gotoRoom(reply.commentId)"></el-button>
+                <el-button text @click="gotoRoom(reply.id)">check</el-button>
               </div>
               <div
                   :class="{'ellipsis-text': !reply.showDetail}"
