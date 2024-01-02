@@ -104,6 +104,10 @@ const buildSubMenuJsonList = [
       {
         name: 'Options',
         path: '/home/manage_options',
+      },
+      {
+        name: 'Dorms',
+        path: '/home/manage_dorms',
       }
     ]
   }

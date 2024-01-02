@@ -120,6 +120,16 @@ export default {
                 roomId: roomId
             }, this.defaultConfig())
         },
+        getRoomsFromBuilding(buildingId){
+            return axios.get(base_api + '/api/room', {
+                headers: {
+                    Authorization: 'Bearer ' + this.getToken(),
+                },
+                params: {
+                    buildingId: buildingId
+                }
+            })
+        },
 
         // Team
         createTeam() {
@@ -242,6 +252,17 @@ export default {
 
         readComment(commentId){
             return axios.post(base_api + '/api/comment/' + commentId, this.defaultConfig())
+        },
+
+        updateRoom(roomId, room){
+            return axios.patch(base_api +'/api/manage/room/' + roomId, {
+                roomName: room.roomName,
+                capacity: room.capacity,
+                floor: room.floor,
+                buildingId: room.buildingId,
+                zoneId: room.zoneId,
+                roomPicturePath: room.roomPicturePath
+            }, this.defaultConfig())
         }
     }
 }
