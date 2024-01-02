@@ -248,14 +248,12 @@ export default {
             return axios.get(base_api + '/api/comment/'+ commentId, this.defaultConfig());
         },
 
-        getUserNotification(username){
-            return axios.get(base_api + '/api/notification/'+ username, this.defaultConfig());
+        getUserNotification(){
+            return axios.get(base_api + '/api/notification', this.defaultConfig());
         },
 
         readComment(commentId){
-            return axios.post(base_api + '/api/comment', {
-                commentId: commentId,
-            }, this.defaultConfig())
+            return axios.post(base_api + '/api/comment/' + commentId, this.defaultConfig())
         }
     }
 }
