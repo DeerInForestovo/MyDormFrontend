@@ -67,29 +67,37 @@ export default {
 </script>
 <template>
   <el-card style="width: 90%; margin: 1%;" shadow="hover">
-    <div class="favorite-list">
-      <el-card v-for="(room, index) in stars" :key="index" class="favorite-card">
-        <el-image :src="axiosFunctions.methods.getResourceByFilename(room.roomPicturePath)" class="Images">
-          <template #error>
-            <div class="image-slot">
-            </div>
-          </template>
-        </el-image>
-        <br>
-        <br>
-        <div>
-          <el-text tag="b"> {{room.roomName}} </el-text>
-
-          <div class="bottom">
-            <el-button @click="this.$router.push({path: '/home/room/' + room.roomId, props: ['room.roomId']})" type="text">Check</el-button>
-            <el-button @click="selectRoom(room.roomId)" type="text" :disabled="room.teamId !== null">
-              Select
-            </el-button>
-            <el-button @click="Delete(room.roomId)" type = "text">Delete</el-button>
-          </div>
-        </div>
-      </el-card>
+    <div v-if = "stars.length === 0">
+      <el-empty description="No favourite room">
+      </el-empty>
     </div>
+    <div v-else>
+      <div class="favorite-list">
+
+        <el-card v-for="(room, index) in stars" :key="index" class="favorite-card">
+          <el-image :src="axiosFunctions.methods.getResourceByFilename(room.roomPicturePath)" class="Images">
+            <template #error>
+              <div class="image-slot">
+              </div>
+            </template>
+          </el-image>
+          <br>
+          <br>
+          <div>
+            <el-text tag="b"> {{room.roomName}} </el-text>
+
+            <div class="bottom">
+              <el-button @click="this.$router.push({path: '/home/room/' + room.roomId, props: ['room.roomId']})" type="text">Check</el-button>
+              <el-button @click="selectRoom(room.roomId)" type="text" :disabled="room.teamId !== null">
+                Select
+              </el-button>
+              <el-button @click="Delete(room.roomId)" type = "text">Delete</el-button>
+            </div>
+          </div>
+        </el-card>
+      </div>
+    </div>
+
 
   </el-card>
 </template>
