@@ -40,6 +40,7 @@ export default {
     },
     refreshStar(){
       this.stars = this.$store.state.stars;
+      console.log(this.stars);
     },
     Delete(roomId) {
       axiosFunctions.methods.removeStar(this.username, roomId).then((response) => {
@@ -78,9 +79,10 @@ export default {
         <br>
         <div>
           <el-text tag="b"> {{room.roomName}} </el-text>
+
           <div class="bottom">
             <el-button @click="this.$router.push({path: '/home/room/' + room.roomId, props: ['room.roomId']})" type="text">Check</el-button>
-            <el-button @click="selectRoom(room.roomId)" type="text" :disabled="room.teamID !== null">
+            <el-button @click="selectRoom(room.roomId)" type="text" :disabled="room.teamId !== null">
               Select
             </el-button>
             <el-button @click="Delete(room.roomId)" type = "text">Delete</el-button>
