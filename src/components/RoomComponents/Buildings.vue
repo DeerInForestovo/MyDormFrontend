@@ -4,7 +4,7 @@ import Card from './BuildingInfoCard.vue';
 
 <template>
   <!--  这个是用来强制 computed 的  -->
-  <div v-show="false"> {{zoneName}} </div>
+  <div v-show="false"> {{ zoneId }}</div>
 
   <el-container>
     <el-header class="text-animation">
@@ -29,86 +29,38 @@ export default {
       cards: [],
     }
   },
-  async mounted() {
-    try {
-      const zoneResponse = await axiosFunctions.methods.getRoomFromZone(this.$store.state.zoneId);
-      console.log(zoneResponse);
-      const rooms = zoneResponse.data;
-
-      // Building the initial buildingMap with reduced information.
-      let buildingMap = rooms.reduce((acc, room) => {
-        if (!acc[room.buildingId]) {
-          acc[room.buildingId] = {
-            buildingId: room.buildingId,
-            buildingName: room.buildingName,
-            description: '', // Will be filled later
-            buildingCoordinate: '', // Will be filled later
-          };
-        }
-        return acc;
-      }, {});
-
-      // Fetch additional information for each building.
-      for (let buildingId in buildingMap) {
-        try {
-          const buildingResponse = await axiosFunctions.methods.getSingleBuilding(buildingId);
-          // Assuming buildingResponse.data contains 'description' and 'coordinates'
-          buildingMap[buildingId].description = buildingResponse.data.description;
-          buildingMap[buildingId].buildingCoordinate = buildingResponse.data.buildingCoordinate;
-        } catch (error) {
-          console.error(`Failed to fetch data for building ${buildingId}:`, error);
-        }
-      }
-
-      // Convert the buildingMap object to an array for the Vue component.
-      this.buildings = Object.values(buildingMap);
-      console.log(this.buildings)
-      this.cards = this.buildings.map(building => ({
-        id: building.buildingId,
-        title: building.buildingName,
-        content: building.description,
-        buildingCoordinate: building.buildingCoordinate, // Now including coordinates
-      }));
-
-    } catch (error) {
-      console.error('Failed to fetch rooms:', error);
+  computed: {
+    zoneId() {
+      if (this.$store.state.zoneId)
+        axiosFunctions.methods.getRoomFromZone(this.$store.state.zoneId)
+            .then(response => {
+              const rooms = response.data;
+              const buildingIdList = new Set(rooms.map(room => room.buildingId))
+              axiosFunctions.methods.getAllBuildings()
+                  .then(response => {
+                    let buildings = response.data
+                    buildings = buildings.filter(building => buildingIdList.has(building.buildingId))
+                    this.cards = buildings.map(building => ({
+                      id: building.buildingId,
+                      title: building.buildingName,
+                      content: building.description,
+                      buildingCoordinate: building.buildingCoordinate,
+                    }));
+                  })
+                  .catch(response => {
+                    console.log(response)
+                  })
+            })
+            .catch(response => {
+              console.log(response)
+            })
+      return this.$store.state.zoneId
     }
   },
-  // mounted() {
-  //   axiosFunctions.methods.getRoomFromZone(this.$store.state.zoneId)
-  //       .then((response) => {
-  //         console.log(response)
-  //         // 从房间信息中提取建筑信息
-  //         const rooms = response.data;
-  //
-  //         // 使用reduce方法来构建一个以buildingId为键，building对象为值的映射
-  //         const buildingMap = rooms.reduce((acc, room) => {
-  //           // 如果此buildingId尚未在累加器对象中创建，则创建它
-  //           if (!acc[room.buildingId]) {
-  //             acc[room.buildingId] = {
-  //               buildingId: room.buildingId,
-  //               buildingName: room.buildingName,
-  //               // 假设description是一个静态的字符串，或者您可以从room对象中获取它
-  //               description: "Description of " + room.buildingName,
-  //             };
-  //           }
-  //           return acc;
-  //         }, {});
-  //         console.log(buildingMap);
-  //         // 从建筑映射对象中提取值以创建建筑数组
-  //         this.buildings = Object.values(buildingMap);
-  //
-  //         this.cards = this.buildings.map(
-  //             (building) => ({
-  //               id: building.buildingId,
-  //               title: building.buildingName,
-  //               content: building.description,
-  //             })
-  //         )
-  //       }).catch((response) => {
-  //     console.log(response)
-  //   })
-  // },
+
+  mounted() {
+
+  }
 }
 </script>
 
