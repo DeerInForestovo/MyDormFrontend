@@ -35,13 +35,13 @@ export default {
   <el-card shadow="hover">
     <template #header>
       <el-text>
-        Manage Students
+        Manage Student Profile
       </el-text>
     </template>
 
     <div>
       <div class="items">
-        <el-form @submit.native.prevent>
+        <el-form @submit.native.prevent size="small">
           <el-form-item
               :model="searchForm"
               label-width="auto"

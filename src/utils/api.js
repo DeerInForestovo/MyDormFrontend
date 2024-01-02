@@ -189,6 +189,9 @@ export default {
         releaseTask(formData) {
             return axios.post(base_api + '/api/manage/select', formData, this.defaultConfig())
         },
+        getAllMajor() {
+            return axios.get(base_api + '/api/major', this.defaultConfig())
+        },
 
 
         // Room-Comment

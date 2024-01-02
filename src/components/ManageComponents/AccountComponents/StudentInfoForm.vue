@@ -39,18 +39,18 @@
 <template>
   <el-form
       label-width="auto"
-      style="width: 50%"
       :rules="rules"
       :model="form"
       ref="form"
       @change="checkInput"
       hide-required-asterisk
       @submit.native.prevent
+      size="small"
   >
-    <el-form-item label="Username" prop="username">
+    <el-form-item label="Username" prop="username" style="width: 500px">
       <el-input v-model="form.username"/>
     </el-form-item>
-    <el-form-item label="Name" prop="name">
+    <el-form-item label="Name" prop="name" style="width: 500px">
       <el-input v-model="form.name"/>
     </el-form-item>
     <el-form-item label="Gender" prop="gender">
@@ -59,12 +59,11 @@
         <el-radio label="FEMALE"> FEMALE </el-radio>
       </el-radio-group>
     </el-form-item>
-    <el-form-item label="Password" prop="password">
+    <el-form-item label="Password" prop="password" style="width: 500px">
       <el-input v-model="form.password"/>
     </el-form-item>
   </el-form>
 </template>
 
 <style scoped>
-
 </style>

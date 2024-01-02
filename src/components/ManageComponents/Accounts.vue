@@ -1,6 +1,7 @@
 <script setup>
-import CreateAccountCard from "@/components/ManageComponents/AccountComponents/CreateAccountCard.vue"
-import ManageAccountCard from "@/components/ManageComponents/AccountComponents/ManageAccountCard.vue"
+import CreateAccountCard from "@/components/ManageComponents/AccountComponents/CreateAccountCard.vue";
+import ManageAccountCard from "@/components/ManageComponents/AccountComponents/ManageAccountCard.vue";
+import SetZone from "@/components/ManageComponents/AccountComponents/SetZone.vue";
 </script>
 
 <template>
@@ -9,6 +10,9 @@ import ManageAccountCard from "@/components/ManageComponents/AccountComponents/M
   </div>
   <div class="Cards">
     <ManageAccountCard/>
+  </div>
+  <div class="Cards">
+    <SetZone/>
   </div>
 </template>
 
