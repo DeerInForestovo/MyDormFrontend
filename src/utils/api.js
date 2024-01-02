@@ -177,6 +177,13 @@ export default {
                 password: password
             }, this.defaultConfig())
         },
+        getAllZones() {
+            return axios.get(base_api + '/api/zone', this.defaultConfig())
+        },
+        releaseTask(formData) {
+            return axios.post(base_api + '/api/manage/select', formData, this.defaultConfig())
+        },
+
 
         // Room-Comment
         postComment(username, comment){

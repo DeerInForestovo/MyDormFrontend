@@ -89,9 +89,8 @@ export default {
           ElNotification({
             title: "Failed",
             type: "error",
-            message: response.message,
+            message: response.data,
           })
-          console.log(response)
         })
       })
     },
@@ -128,17 +127,15 @@ export default {
                 ElNotification({
                   title: "Failed",
                   type: "error",
-                  message: response.message,
+                  message: response.data,
                 })
-                console.log(response)
               })
             }).catch((response) => {
           ElNotification({
             title: "Failed",
             type: "error",
-            message: response.message,
+            message: response.data,
           })
-          console.log(response)
         })
       }
     },

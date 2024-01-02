@@ -79,7 +79,7 @@ export default {
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
-          message: response.message,
+          message: response.data,
           type: "error",
         })
       })
@@ -97,7 +97,7 @@ export default {
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
-          message: response.message,
+          message: response.data,
           type: "error",
         })
         console.log(response)
@@ -128,7 +128,7 @@ export default {
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
-          message: response.message,
+          message: response.data,
           type: "error",
         })
         console.log(response)
@@ -154,7 +154,7 @@ export default {
             }).catch((response) => {
           ElNotification({
             title: 'Failed!',
-            message: response.message,
+            message: response.data,
             type: "error",
           })
         })
@@ -180,7 +180,7 @@ export default {
             }).catch((response) => {
           ElNotification({
             title: 'Failed!',
-            message: response.message,
+            message: response.data,
             type: "error",
           })
         })
