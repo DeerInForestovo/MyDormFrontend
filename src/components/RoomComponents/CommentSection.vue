@@ -37,9 +37,9 @@ import {ChatRound, Position} from "@element-plus/icons-vue";
     </el-row>
     <el-divider></el-divider>
 
-    <div class="comment-section">
+<!--    <div class="comment-section">-->
       <div class="comment-list">
-        <el-scrollbar class="scrollbar">
+        <el-scrollbar class="scrollbar" style="width: 100%">
           <Comment
               v-for="comment in commentsList"
               :key="comment.id"
@@ -51,7 +51,7 @@ import {ChatRound, Position} from "@element-plus/icons-vue";
         </el-scrollbar>
 
       </div>
-    </div>
+<!--    </div>-->
 
   </el-card>
 </template>
