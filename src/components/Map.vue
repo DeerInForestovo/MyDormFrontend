@@ -1,5 +1,10 @@
 <script setup>
-import {ref, onMounted, nextTick} from 'vue'
+import {ref, onMounted, nextTick, computed} from 'vue'
+import axiosFunctions from "@/utils/api";
+import {useStore} from 'vuex';
+
+const store = useStore();
+const zoneId = store.state.zoneId;
 // import mapSvgFile from './MapComponents/MapSvg.svg'
 
 const image = ref(null)
@@ -23,6 +28,7 @@ const areas = [
   },
   // Add more areas if needed
 ];
+let buildings = [];
 
 // 更新 Canvas 尺寸以匹配图片
 function updateCanvasSize() {
@@ -41,11 +47,10 @@ function drawMask(scale = 1) {
   ctx.clearRect(0, 0, canvas.value.width, canvas.value.height);
 
 
-
 // 遍历 areas 数组并绘制每个区域
-  areas.forEach(area => {
+  buildings.forEach(building => {
     // 解析每个区域的坐标并根据缩放比例调整
-    const coords = area.coords.split(',').map(coord => parseInt(coord) * scale);
+    const coords = building.coordinates.split(',').map(coordinates => parseInt(coordinates) * scale);
 
     // 绘制多边形遮罩
     ctx.beginPath();
@@ -99,9 +104,47 @@ const moveImg = (e) => {
 
 
 onMounted(() => {
-  nextTick(() => {
-    updateCanvasSize();
-  });
+  setTimeout(async () => {
+    if (zoneId) {
+
+      try {
+        const zoneResponse = await axiosFunctions.methods.getRoomFromZone(zoneId);
+        const rooms = zoneResponse.data;
+
+        // Building the initial buildingMap with reduced information.
+        let buildingMap = rooms.reduce((acc, room) => {
+          if (!acc[room.buildingId]) {
+            acc[room.buildingId] = {
+              buildingId: room.buildingId,
+              buildingName: room.buildingName,
+              description: '', // Will be filled later
+              buildingCoordinate: '', // Will be filled later
+            };
+          }
+          return acc;
+        }, {});
+
+        // Fetch additional information for each building.
+        for (let buildingId in buildingMap) {
+          try {
+            const buildingResponse = await axiosFunctions.methods.getSingleBuilding(buildingId);
+            // Assuming buildingResponse.data contains 'description' and 'coordinates'
+            buildingMap[buildingId].description = buildingResponse.data.description;
+            buildingMap[buildingId].buildingCoordinate = buildingResponse.data.buildingCoordinate;
+          } catch (error) {
+            console.error(`Failed to fetch data for building ${buildingId}:`, error);
+          }
+        }
+
+        // Convert the buildingMap object to an array for the Vue component.
+        buildings = Object.values(buildingMap);
+        console.log(buildings)
+
+      } catch (error) {
+        console.error('Failed to fetch rooms:', error);
+      }
+    }
+  }, 500);
 });
 
 
@@ -126,8 +169,8 @@ export default {
          @mousedown.prevent="moveImg">
     <canvas ref="canvas" class="canvas-overlay"></canvas>
     <map name="image-map">
-      <area target="_self" :alt="area.alt" :coords="area.coords" shape="poly" v-for="area in areas"
-            :key="area.id" @click="handleAreaClick(area.id)">
+      <area target="_self"  :coords="building.coordinates" shape="poly" v-for="building in buildings"
+            :key="building.buildingId" @click="handleAreaClick(building.buildingId)">
       <!--      <el-popover-->
       <!--          title="二期宿舍11栋"-->
       <!--          width="200"-->
@@ -139,12 +182,12 @@ export default {
     </map>
   </div>
 
-<!--  <el-popover ref="popover" placement="top" trigger="manual" v-show="popoverVisible">-->
-<!--    <template #default>-->
-<!--      &lt;!&ndash; 弹出框内容 &ndash;&gt;-->
-<!--      <div>这是一个弹出框</div>-->
-<!--    </template>-->
-<!--  </el-popover>-->
+  <!--  <el-popover ref="popover" placement="top" trigger="manual" v-show="popoverVisible">-->
+  <!--    <template #default>-->
+  <!--      &lt;!&ndash; 弹出框内容 &ndash;&gt;-->
+  <!--      <div>这是一个弹出框</div>-->
+  <!--    </template>-->
+  <!--  </el-popover>-->
 
 </template>
 
@@ -165,7 +208,6 @@ export default {
   position: absolute;
   cursor: move;
 }
-
 
 
 .canvas-overlay {
