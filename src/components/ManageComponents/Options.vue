@@ -80,7 +80,7 @@ export default {
                 ElNotification({
                   type: 'error',
                   title: 'Failed!',
-                  message: response.data,
+                  message: response.response.data,
                 })
               })
         }

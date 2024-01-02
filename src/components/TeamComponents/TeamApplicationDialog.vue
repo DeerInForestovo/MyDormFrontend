@@ -29,7 +29,7 @@ export default {
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
-          message: response.data,
+          message: response.response.data,
           type: "error",
         })
       })

@@ -169,6 +169,12 @@ export default {
         leaveTeam() {
             return axios.post(base_api + '/api/team/leave', {}, this.defaultConfig())
         },
+        deselectRoom(username, roomId) {
+            return axios.post(base_api + '/api/deselect', {
+                username: username,
+                roomId: roomId,
+            }, this.defaultConfig())
+        },
 
         // Manage
         createUser(username, password) {
