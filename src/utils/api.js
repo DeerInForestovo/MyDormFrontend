@@ -89,7 +89,7 @@ export default {
                         hobbyId: hobbyId
                     },
                     headers: {
-                        Authorization: 'Bearer ' + token,
+                        Authorization: 'Bearer ' + this.getToken(),
                     }
                 })
         },
@@ -108,6 +108,16 @@ export default {
                 },
                 params: {
                     zoneId: zoneId
+                }
+            })
+        },
+        getRoomFromBuilding(buildingId) {
+            return axios.get(base_api + '/api/room', {
+                headers: {
+                    Authorization: 'Bearer ' + this.getToken(),
+                },
+                params: {
+                    buildingId: buildingId
                 }
             })
         },
@@ -189,6 +199,24 @@ export default {
         leaveTeam() {
             return axios.post(base_api + '/api/team/leave', {}, this.defaultConfig())
         },
+        recommendRoommate(username, pageIndex, pageSize) {
+            return axios.get(base_api + '/api/recommend', {
+                headers: {
+                    Authorization: 'Bearer ' + this.getToken()
+                },
+                params: {
+                    username: username,
+                    pageIndex: pageIndex,
+                    pageSize: pageSize,
+                }
+            })
+        },
+        deselectRoom(username, roomId) {
+            return axios.post(base_api + '/api/deselect', {
+                username: username,
+                roomId: roomId,
+            }, this.defaultConfig())
+        },
 
         // Manage
         createUser(username, password) {
@@ -197,6 +225,46 @@ export default {
                 password: password
             }, this.defaultConfig())
         },
+        getAllZones() {
+            return axios.get(base_api + '/api/zone', this.defaultConfig())
+        },
+        releaseTask(formData) {
+            return axios.post(base_api + '/api/manage/select', formData, this.defaultConfig())
+        },
+        getAllMajor() {
+            return axios.get(base_api + '/api/major', this.defaultConfig())
+        },
+        searchStudent(data) {
+            return axios.get(base_api + '/api/manage/user', {
+                params: {
+                    gender: data.gender,
+                    major: data.major,
+                    grade: data.grade,
+                },
+                headers: {
+                    Authorization: 'Bearer ' + this.getToken()
+                }
+            })
+        },
+        createZone(data) {
+            return axios.post(base_api + '/api/manage/zone', {
+                zoneName: data.name,
+                description: data.description,
+                rooms: [],
+                usernames: [],
+            }, this.defaultConfig())
+        },
+        updateZoneUser(usernames, zoneId) {
+            return axios.patch(base_api + '/api/manage/zone/' + zoneId, {
+                usernames: usernames
+            }, this.defaultConfig())
+        },
+        updateZoneRoom(rooms, zoneId) {
+            return axios.patch(base_api + '/api/manage/zone/' + zoneId, {
+                rooms: rooms
+            }, this.defaultConfig())
+        },
+
 
         // Room-Comment
         postComment(username, comment) {

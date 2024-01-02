@@ -1,6 +1,6 @@
 <script setup>
-import CreateAccountCard from "@/components/ManageComponents/AccountComponents/CreateAccountCard.vue"
-import ManageAccountCard from "@/components/ManageComponents/AccountComponents/ManageAccountCard.vue"
+import CreateAccountCard from "@/components/ManageComponents/AccountComponents/CreateAccountCard.vue";
+import ManageAccountCard from "@/components/ManageComponents/AccountComponents/ManageAccountCard.vue";
 </script>
 
 <template>

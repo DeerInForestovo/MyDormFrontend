@@ -1,6 +1,6 @@
 <script setup>
 import CommentSection from './CommentSection.vue';
-import {Refresh} from "@element-plus/icons-vue";
+import {Refresh, HomeFilled, Picture} from "@element-plus/icons-vue";
 import axiosFunctions from "@/utils/api";
 import {ElNotification} from "element-plus";
 </script>
@@ -73,6 +73,7 @@ export default {
       axiosFunctions.methods.getRoomInfo(this.roomId)
           .then(response => {
             this.rooms = response.data;
+            console.log(this.rooms);
           }).catch(response => { // possibly user not exist
         console.log(response)
         ElNotification({
@@ -95,7 +96,23 @@ export default {
   <div>
     <div class="container">
       <el-card style="width: 90%; margin: 1%" shadow="hover">
+        <el-space>
+          <div>
+            {{this.rooms.buildingName}}
+            {{this.rooms.roomName}}
+          </div>
+          <div style="color: lightslategray">
+            Floor: {{this.rooms.floor}}
+          </div>
+          <div style="color: lightslategray">
+            Capacity: {{this.rooms.capacity}}
+          </div>
+        </el-space>
+        <el-divider>
+        </el-divider>
         <el-button :icon="Refresh" size="small" text @click="refreshRoom"/>
+
+
         <div class="hidden-sm-and-up">
           <el-image :src="axiosFunctions.methods.getResourceByFilename(this.rooms.roomPicturePath)" class="Images">
             <template #error>

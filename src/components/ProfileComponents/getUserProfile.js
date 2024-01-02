@@ -13,7 +13,6 @@ export default (username, callback, error_callback) => {
                 })
             } else callback(response.data)
         }).catch(response => {
-        console.log(response)
         ElNotification({
             title: 'Failed',
             message: 'Failed to get user info. Does it exits?',
