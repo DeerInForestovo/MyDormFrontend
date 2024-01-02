@@ -109,6 +109,9 @@ const buildSubMenuJsonList = [
         name: 'Zones',
         path: '/home/manage_zones',
       },
+        name: 'Dorms',
+        path: '/home/manage_dorms',
+      }
     ]
   }
 ]
