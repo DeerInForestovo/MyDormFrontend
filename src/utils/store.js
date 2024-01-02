@@ -2,7 +2,6 @@ import {createStore} from "vuex";
 import Cookies from 'js-cookie';
 import {ElNotification} from "element-plus";
 import api from "@/utils/api";
-import {toRaw} from "@vue/reactivity";
 
 const username_cookie_name = 'MyDorm_username'
 const token_cookie_name = 'MyDorm_token'
