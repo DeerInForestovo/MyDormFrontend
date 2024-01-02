@@ -94,7 +94,7 @@ export default {
 <template>
   <div>
     <div class="container">
-      <el-card style="width: 90%; margin: 1%">
+      <el-card style="width: 90%; margin: 1%" shadow="hover">
         <el-button :icon="Refresh" size="small" text @click="refreshRoom"/>
         <div class="hidden-sm-and-up">
           <el-image :src="axiosFunctions.methods.getResourceByFilename(this.rooms.roomPicturePath)" class="Images">

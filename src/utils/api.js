@@ -3,6 +3,8 @@ import store from "./store";
 
 const base_api = 'http://10.16.165.147:8081';
 
+let useToken = true;
+
 export default {
     methods: {
         // Basic
@@ -10,7 +12,14 @@ export default {
             return base_api
         },
         getToken() {
+            useToken = true
             return store.state.token
+        },
+        isTokenUsed() {  // used for auto subscription
+            if (useToken) {
+                useToken = false;
+                return true;
+            } else return false;
         },
         defaultConfig() {
             return {
@@ -80,7 +89,7 @@ export default {
                         hobbyId: hobbyId
                     },
                     headers: {
-                        Authorization: 'Bearer ' + this.getToken(),
+                        Authorization: 'Bearer ' + token,
                     }
                 })
         },
@@ -101,6 +110,15 @@ export default {
                     zoneId: zoneId
                 }
             })
+        },
+        getSingleBuilding(buildingId) {
+            return axios.get(base_api + '/api/building/' + buildingId, this.defaultConfig())
+        },
+        selectRoom(username, roomId) {
+            return axios.post(base_api + '/api/select', {
+                username: username,
+                roomId: roomId
+            }, this.defaultConfig())
         },
 
         // Team
@@ -167,23 +185,23 @@ export default {
             return axios.post(base_api + '/api/manage/user', {
                 username: username,
                 password: password
-            })
+            }, this.defaultConfig())
         },
 
         // Room-Comment
-        postComment(username, comment){
+        postComment(username, comment) {
             return axios.post(base_api + '/api/comment', {
-                roomId : comment.roomId,
+                roomId: comment.roomId,
                 username: username,
                 content: comment.content,
                 replyToCommentId: comment.replyToCommentId,
                 replyToUsername: comment.replyToUsername
             }, this.defaultConfig())
         },
-        getRoomInfo(roomId){
-            return axios.get(base_api + '/api/room/'+roomId, this.defaultConfig())
+        getRoomInfo(roomId) {
+            return axios.get(base_api + '/api/room/' + roomId, this.defaultConfig())
         },
-        deleteComment(username, commentId){
+        deleteComment(username, commentId) {
             return axios.delete(base_api + '/api/comment', {
                 params: {
                     username: username,
@@ -201,7 +219,7 @@ export default {
                 roomId: roomId
             }, this.defaultConfig())
         },
-        removeStar(username, roomId){
+        removeStar(username, roomId) {
             return axios.delete(base_api + '/api/profile/star', {
                 params: {
                     username: username,

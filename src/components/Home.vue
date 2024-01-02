@@ -130,6 +130,7 @@ const buildMenuItemJsonList = [
 <script>
 import {ref} from "vue"
 import getUserProfile from "@/components/ProfileComponents/getUserProfile";
+import axiosFunctions from "@/utils/api";
 
 export default {
   name: 'MainPage',
@@ -170,6 +171,16 @@ export default {
       this.$store.commit('setProfileInfo', data)
     })
 
+    // auto subscription every 9 minutes
+    setInterval(() => {
+      if (axiosFunctions.methods.isTokenUsed())
+        axiosFunctions.methods.newToken(this.username, this.$store.state.token)
+      else {
+        swal("Notice!", "Your token has expired due to inactivity for ten minutes.", "notice")
+        this.logout()
+      }
+    }, 540000)
+
     // auto route to profile
     if (this.$route.fullPath === '/home' || this.$route.fullPath === '/home/') // from /login or /home
       this.$router.push(this.buildRoute({path: '/home/profile', props: ['username']}))
@@ -201,6 +212,7 @@ export default {
     },
 
     logout() {
+      swal("See you!", "Your token has expired.", 'success')
       this.$store.commit('logout')
       this.$router.push('/')
     }

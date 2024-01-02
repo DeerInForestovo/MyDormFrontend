@@ -13,8 +13,8 @@ export default {
   data() {
     return {
       teamApplicationDialogVisible: false,
-      username: ref(''),
-      name: ref(''),
+      username: '',
+      name: '',
       teamInfo: {
         teamId: null,
         code: null,
@@ -75,7 +75,7 @@ export default {
               message: 'Kicked that member.',
               type: "success",
             })
-            this.$router.go(0)
+            this.refreshTeamInfo()
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
@@ -93,7 +93,7 @@ export default {
               message: 'You have leaved the team.',
               type: "success",
             })
-            this.$router.go(0)
+            this.refreshTeamInfo()
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
@@ -112,7 +112,7 @@ export default {
               title: 'Success!',
               message: "Created team.",
             })
-            this.$router.go(0)
+            this.refreshTeamInfo()
           })
     },
 
@@ -150,7 +150,7 @@ export default {
                 message: 'Accepted this application.',
                 type: "success",
               })
-              this.$router.go(0)
+              this.refreshTeamInfo()
             }).catch((response) => {
           ElNotification({
             title: 'Failed!',
@@ -161,7 +161,7 @@ export default {
       }
     },
 
-    refuseApplication(applicationId) {
+    refuseApplication(applicationId, row) {
       if (this.username !== this.teamInfo.leaderUsername) {
         ElNotification({
           type: 'error',
@@ -176,7 +176,7 @@ export default {
                 message: 'Refused this application.',
                 type: "success",
               })
-              this.$router.go(0)
+              this.teamInfo.teamApplications.splice(row)
             }).catch((response) => {
           ElNotification({
             title: 'Failed!',
@@ -314,8 +314,8 @@ export default {
 
               <el-popconfirm
                   width="280px"
-                  title="Sure to refuse this invitation?"
-                  @confirm="refuseApplication(scope.row.applicationId)">
+                  title="Sure to refuse this application?"
+                  @confirm="refuseApplication(scope.row.applicationId, scope.$index)">
                 <template #reference>
                   <el-button type="danger" size="small" :disabled="username !== teamInfo.leaderUsername"> Refuse</el-button>
                 </template>
