@@ -61,10 +61,10 @@ let token = store.state.token
 if (username && token) {
     api.methods.newToken(username, token)
         .then(response => {
-            ElNotification({
-                type: "success",
-                message: "Welcome back, " + username
-            })
+            // ElNotification({
+            //     type: "success",
+            //     message: "Welcome back, " + username
+            // })
             store.state.username = response.data.username
             store.state.token = response.data.token
         })

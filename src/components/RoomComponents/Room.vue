@@ -101,10 +101,10 @@ export default {
             {{this.rooms.buildingName}}
             {{this.rooms.roomName}}
           </div>
-          <div>
+          <div style="color: lightslategray">
             Floor: {{this.rooms.floor}}
           </div>
-          <div>
+          <div style="color: lightslategray">
             Capacity: {{this.rooms.capacity}}
           </div>
         </el-space>
