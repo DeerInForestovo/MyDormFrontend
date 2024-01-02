@@ -75,7 +75,11 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
                     {{ reply.content }}
                   </div>
                   <div v-else>
-                    Reply to {{ reply.replyToName + "@" + reply.replyToUsername }}: {{ reply.content }}
+                    <el-space>
+                      <div style = "color: deepskyblue">Reply to {{ reply.replyToName + "@" + reply.replyToUsername }}:</div>
+                      {{ reply.content }}
+                    </el-space>
+
                   </div>
                 </div>
                 <el-divider></el-divider>
