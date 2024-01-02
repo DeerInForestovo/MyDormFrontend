@@ -72,6 +72,11 @@
         })
       },
 
+      gotoTeam(){
+        this.$router.push({path : 'team_invitation'});
+      },
+
+
       gotoRoom(commentId){
         this.getRoomId(commentId);
       },
@@ -157,10 +162,44 @@
             <el-empty description="No message">
             </el-empty>
           </div>
+
           <div v-else>
             <div v-for="(reply, index) in filterMessage('APPLICATION')" :key="index">
               <div class="reply-header">
                 <span>{{ reply.time }}</span>
+                <el-button text @click="this.$router.push({path : 'team'});">check</el-button>
+              </div>
+              <div
+                  :class="{'ellipsis-text': !reply.showDetail}"
+                  @click="toggleDetails(reply)"
+              >
+                {{ reply.content }}
+              </div>
+
+              <div v-if="!reply.showDetail" @click="toggleDetails(reply)" style="color: blue;">
+                Show Details
+              </div>
+              <el-divider></el-divider>
+            </div>
+          </div>
+        </el-card>
+      </el-collapse-item>
+
+      <el-collapse-item>
+        <template #title>
+          <el-text size = "small" tag = "b"> Invitation{{}}</el-text>
+
+        </template>
+        <el-card>
+          <div v-if = "filterMessage('INVITATION').length === 0 ">
+            <el-empty description="No message">
+            </el-empty>
+          </div>
+          <div v-else>
+            <div v-for="(reply, index) in filterMessage('INVITATION')" :key="index">
+              <div class="reply-header">
+                <span>{{ reply.time }}</span>
+                <el-button text @click="this.$router.push({path : 'team_invitation'});">check</el-button>
               </div>
               <div
                   :class="{'ellipsis-text': !reply.showDetail}"

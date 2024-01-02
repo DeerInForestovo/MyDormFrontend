@@ -1,123 +1,128 @@
 <script setup>
-import yuzu from "@/assets/yuzu.png"
-import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue";
-
+import {ChatRound, Delete, Position} from "@element-plus/icons-vue";
 </script>
 
 <template>
-  <div class="comment">
-    <el-row type="flex" :gutter="30">
-      <el-col :span = "3">
-        <el-avatar shape="square" :size="30" :fit="fill" :src="axiosFunctions.methods.getResourceByFilename(this.comment.profilePhotoUrl)"/>
-        <!--根据userId获取头像-->
-        <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
-      </el-col>
+  <el-row>
+    <el-col :span="3">
+      <el-avatar shape="square" :size="30" :fit="fill"
+                 :src="axiosFunctions.methods.getResourceByFilename(this.comment.profilePhotoUrl)"/>
+      <!--根据userId获取头像-->
+      <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
+    </el-col>
 
-      <el-col :span="21">
-        <div class="username" style="display: flex; align-items: center;">
-          <el-space>
-            {{ comment.name + "@" + comment.username }}
-            <div :style="{color: 'grey'}">
-              {{comment.time}}
-            </div>
-          </el-space>
-
-          <el-button type="text" @click = "chooseReply(comment.username)">
-            <el-icon>
-              <ChatRound/>
-            </el-icon>
-          </el-button>
-          <el-button type="text" v-if="isCurrentUser(comment.username)" @click="deleteComment(comment.commentId)" >
-
-            <el-icon>
-              <Delete/>
-            </el-icon>
-          </el-button>
-        </div>
-        <div class="info">
-          <div class="content">{{ comment.content }}</div>
-          <el-divider></el-divider>
-        </div>
-
-        <div v-if="comment.replies.length">
-
-          <div v-for = "reply in comment.replies">
-            <el-row :gutter = "30">
-              <el-col :span = "3">
-                <el-avatar shape="square" :size="30" :fit="fill" :src="axiosFunctions.methods.getResourceByFilename(reply.profilePhotoUrl)"/>
-
-              </el-col>
-              <el-col :span="21">
-                <div class="username" style="display: flex; align-items: center;">
-                  <el-space>
-                    {{ reply.name + "@" + reply.username}}
-                    <div :style="{color: 'grey'}">
-                      {{reply.time}}
-                    </div>
-                  </el-space>
-
-                  <el-button type="text" @click = "chooseReply(reply.username)">
-
-                    <el-icon>
-                      <ChatRound/>
-                    </el-icon>
-                  </el-button>
-
-                  <el-button type="text" v-if="isCurrentUser(reply.username)" @click="deleteComment(reply.commentId)" >
-
-                    <el-icon>
-                      <Delete/>
-                    </el-icon>
-                  </el-button>
-                </div>
-                <div class="info">
-                  <div v-if="reply.replyToName === ''">
-                    {{ reply.content }}
-                  </div>
-                  <div v-else>
-                    Reply to {{ reply.replyToName + "@" + reply.replyToUsername }}: {{ reply.content }}
-                  </div>
-                </div>
-                <el-divider></el-divider>
-              </el-col>
-            </el-row>
+    <el-col :span="20">
+      <div class="username" style="display: flex; align-items: center;">
+        <el-space>
+          {{ comment.name + "@" + comment.username }}
+          <div :style="{color: 'grey'}">
+            {{ comment.time }}
           </div>
-        </div>
+        </el-space>
 
-        <div v-show = "flagId === comment.commentId">
-          <el-row type = "flex" :gutter = "30">
-            <el-col :span = "3">
-              <el-avatar shape="square" :size="30" :fit="fill" :src="axiosFunctions.methods.getResourceByFilename(this.$store.state.profilePhotoUrl)">
-                <template #error>
-                  <div class="image-slot">
-                  </div>
-                </template>
-              </el-avatar>
-              <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
+        <el-button type="text" @click="chooseReply(comment.username)">
+          <el-icon>
+            <ChatRound/>
+          </el-icon>
+        </el-button>
+        <el-button type="text" v-if="isCurrentUser(comment.username)" @click="deleteComment(comment.commentId)">
+
+          <el-icon>
+            <Delete/>
+          </el-icon>
+        </el-button>
+      </div>
+      <div class="info">
+        <div class="content">{{ comment.content }}</div>
+        <el-divider></el-divider>
+      </div>
+
+      <div v-if="comment.replies.length">
+
+        <div v-for="reply in comment.replies">
+          <el-row :gutter="30">
+            <el-col :span="3">
+              <el-avatar shape="square" :size="30" :fit="fill"
+                         :src="axiosFunctions.methods.getResourceByFilename(reply.profilePhotoUrl)"/>
+
             </el-col>
-            <el-col :span = "21">
-              <el-row>
-                <el-input
-                    type="textarea"
-                    :rows="2"
-                    v-model="reply.content">
-                </el-input>
-              </el-row>
-              <el-row justify="end">
-                <el-button type="text" @click="addReply">
-                  <el-icon >
-                    <Position/>
+            <el-col :span="21">
+              <div class="username" style="display: flex; align-items: center;">
+                <el-space>
+                  {{ reply.name + "@" + reply.username }}
+                  <div :style="{color: 'grey'}">
+                    {{ reply.time }}
+                  </div>
+                </el-space>
+
+                <el-button type="text" @click="chooseReply(reply.username)">
+
+                  <el-icon>
+                    <ChatRound/>
                   </el-icon>
                 </el-button>
-              </el-row>
 
+                <el-button type="text" v-if="isCurrentUser(reply.username)" @click="deleteComment(reply.commentId)">
+
+                  <el-icon>
+                    <Delete/>
+                  </el-icon>
+                </el-button>
+              </div>
+              <div class="info">
+                <div v-if="reply.replyToName === ''">
+                  {{ reply.content }}
+                </div>
+                <div v-else>
+                  <el-space>
+                    <div style="color: deepskyblue">Reply to {{
+                        reply.replyToName + "@" + reply.replyToUsername
+                      }}:
+                    </div>
+                    {{ reply.content }}
+                  </el-space>
+
+                </div>
+              </div>
+              <el-divider></el-divider>
             </el-col>
           </el-row>
         </div>
-      </el-col>
-    </el-row>
+      </div>
 
-  </div>
+      <div v-show="flagId === comment.commentId">
+        <el-row type="flex" :gutter="30">
+          <el-col :span="3">
+            <el-avatar shape="square" :size="30" :fit="fill"
+                       :src="axiosFunctions.methods.getResourceByFilename(this.$store.state.profilePhotoUrl)">
+              <template #error>
+                <div class="image-slot">
+                </div>
+              </template>
+            </el-avatar>
+            <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
+          </el-col>
+          <el-col :span="21">
+            <el-row>
+              <el-input
+                  type="textarea"
+                  :rows="2"
+                  v-model="reply.content">
+              </el-input>
+            </el-row>
+            <el-row justify="end">
+              <el-button type="text" @click="addReply">
+                <el-icon>
+                  <Position/>
+                </el-icon>
+              </el-button>
+            </el-row>
+
+          </el-col>
+        </el-row>
+      </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -126,13 +131,13 @@ import {ElNotification} from "element-plus";
 
 export default {
   name: 'Comment',
-  props: ['comment', 'flagId','roomId'],
+  props: ['comment', 'flagId', 'roomId'],
   addReplyUsername: null,
-  data(){
-    return{
+  data() {
+    return {
       username: this.$store.state.username,
       textarea: '',
-      reply:{
+      reply: {
         commentId: null,
         roomId: null,
         username: null,
@@ -165,7 +170,7 @@ export default {
           type: "success",
           message: "You have added the reply!",
         })
-        this.reply.content="";
+        this.reply.content = "";
         this.$router.go(0);
         console.log(response)
       }).catch((response) => {

@@ -89,7 +89,7 @@ export default {
           ElNotification({
             title: "Failed",
             type: "error",
-            message: response.data,
+            message: response.response.data,
           })
         })
       })
@@ -127,14 +127,14 @@ export default {
                 ElNotification({
                   title: "Failed",
                   type: "error",
-                  message: response.data,
+                  message: response.response.data,
                 })
               })
             }).catch((response) => {
           ElNotification({
             title: "Failed",
             type: "error",
-            message: response.data,
+            message: response.response.data,
           })
         })
       }
@@ -176,7 +176,6 @@ export default {
     addCustomTag() {
       const hobbyName = this.newTag.trim().toLowerCase();
       if (!hobbyName) {
-        return
       } else if (this.includeHobby(hobbyName)) {
         ElNotification({
           title: 'Failed',

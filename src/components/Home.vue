@@ -104,16 +104,15 @@ const buildSubMenuJsonList = [
       {
         name: 'Options',
         path: '/home/manage_options',
-      }
+      },
+      {
+        name: 'Zones',
+        path: '/home/manage_zones',
+      },
     ]
   }
 ]
 const buildMenuItemJsonList = [
-  {
-    name: 'Message',
-    icon: Message,
-    path: '/home/message'
-  },
   {
     name: 'Map',
     icon: Search,
@@ -149,7 +148,10 @@ export default {
       activateIndex: null,
 
       // dynamic route
-      dynamicRouteDict: {}
+      dynamicRouteDict: {},
+
+      // message
+      messageNumber: null
     }
   },
 
@@ -170,6 +172,11 @@ export default {
     getUserProfile(this.username, (data) => {
       this.$store.commit('setProfileInfo', data)
     })
+
+    // get messages
+    axiosFunctions.methods.getUserNotification()
+        .then(response => this.messageNumber = response.data.length)
+        .catch(response => console.log(response.response.data))
 
     // auto subscription every 9 minutes
     setInterval(() => {
@@ -294,31 +301,34 @@ export default {
         <!--      Buttons                             -->
         <button class="backButton" @click="this.$router.back()">Back</button>
         <div class="HeaderButtonDiv">
-          <el-space>
-            <!--      Logout Button                     -->
-            <el-tooltip content="Logout" placement="bottom">
-              <el-button @click="logout" :icon="SwitchButton"
-                         class="HeaderButton" text circle size="large"/>
-            </el-tooltip>
+          <!--      Logout Button                     -->
+          <el-tooltip content="Logout" placement="bottom">
+            <el-button @click="logout" :icon="SwitchButton" class="HeaderButton" text size="large"/>
+          </el-tooltip>
 
-            <!--      Switch Light-Dark Mode Button     -->
-            <el-tooltip :content="isLight ? 'Dark Mode' : 'Light Mode'" placement="bottom">
-              <el-button @click="toggleDark" :icon="isLight ? Sunny : Moon"
-                         class="HeaderButton" text circle size="large"/>
-            </el-tooltip>
+          <!--      Message Button                    -->
+          <el-tooltip content="Message" placement="bottom">
+            <el-badge class="HeaderButton" v-if="this.messageNumber">
+              <el-button @click="this.$router.push('/home/message')" :icon="Message" text size="large"/>
+            </el-badge>
+            <el-button @click="this.$router.push('/home/message')" :icon="Message" class="HeaderButton" text size="large" v-else/>
+          </el-tooltip>
 
-            <!--      Open Introduction Drawer Button   -->
-            <el-tooltip content="Introduction" placement="bottom">
-              <el-button @click="introOnClick=true" :icon="QuestionFilled"
-                         class="HeaderButton" text circle size="large"/>
-            </el-tooltip>
+          <!--      Switch Light-Dark Mode Button     -->
+          <el-tooltip :content="isLight ? 'Dark Mode' : 'Light Mode'" placement="bottom">
+            <el-button @click="toggleDark" :icon="isLight ? Sunny : Moon" class="HeaderButton" text size="large"/>
+          </el-tooltip>
 
-            <!--      Open Information Drawer Button   -->
-            <el-tooltip content="Developers" placement="bottom">
-              <el-button @click="infoOnClick=true" :icon="InfoFilled"
-                         class="HeaderButton" text circle size="large"/>
-            </el-tooltip>
-          </el-space>
+          <!--      Open Introduction Drawer Button   -->
+          <el-tooltip content="Introduction" placement="bottom">
+            <el-button @click="introOnClick=true" :icon="QuestionFilled" class="HeaderButton" text size="large"/>
+          </el-tooltip>
+
+          <!--      Open Information Drawer Button   -->
+
+          <el-tooltip content="Developers" placement="bottom">
+            <el-button @click="infoOnClick=true" :icon="InfoFilled" class="HeaderButton" text size="large"/>
+          </el-tooltip>
         </div>
       </el-header>
 
