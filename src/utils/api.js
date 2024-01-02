@@ -192,7 +192,7 @@ export default {
         recommendRoommate(username, pageIndex, pageSize) {
             return axios.get(base_api + '/api/recommend', {
                 headers: {
-                    Authorization: 'Bearer' + this.getToken()
+                    Authorization: 'Bearer ' + this.getToken()
                 },
                 params: {
                     username: username,
