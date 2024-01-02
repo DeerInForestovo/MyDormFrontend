@@ -4,7 +4,7 @@ import {ChatRound, Position} from "@element-plus/icons-vue";
 </script>
 
 <template>
-  <el-card style="width: 90%; margin: 20px;" shadow="hover">
+  <el-card style="width: 90%; margin: 20px; border: 0;" shadow="never">
     <el-row type = "flex" :gutter = "30">
       <el-col :span = "3">
         <el-avatar shape="square" :size="30" :fit="fill" :src="axiosFunctions.methods.getResourceByFilename(this.$store.state.profilePhotoUrl)">
@@ -145,6 +145,10 @@ export default {
 /*隐藏浏览器自带的水平滚动条*/
 .el-scrollbar__wrap {
   overflow-x: hidden !important;
+}
+
+#card {
+  border: 0;
 }
 
 </style>

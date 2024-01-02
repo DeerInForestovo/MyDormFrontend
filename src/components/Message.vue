@@ -6,52 +6,81 @@
 <script>
   import axiosFunctions from '@/utils/api'
   import {ElNotification} from "element-plus";
+  import {toRaw} from "@vue/reactivity";
   export default {
     data(){
       return{
         //TODO: 根据后端的list变量来传
-        MessageList: [
-          {
-            type:1,
-            content: "This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.This is a notification.",
-            id: 1,
-            time: "10:10",
-            showDetail: false,
-          },
-          {
-            type:1,
-            content: "This is a notification.",
-            id: 2,
-            time: "10:10",
-            showDetail: false,
-          },
-          {
-            type:1,
-            content: "This is a reply.",
-            id: 3,
-            time: "10:10",
-            showDetail: false,
-          }],
+        username: this.$store.state.username,
+        Message: [],
+        room: null,
       }
     },
     mounted() {
-      // this.$nextTick(() => {
-      //   this.refreshNotifications()
-      // })
-      // this.fetchNotificationList();
+      this.refreshMessage();
     },
     methods: {
       //filter
-      filterMessage(type){
-        return this.MessageList.filter(message => message.type === type);
+      refreshMessage(){
+        this.username = this.$store.state.username;
+        axiosFunctions.methods.getUserNotification()
+            .then(response => {
+              console.log(response.data);
+              this.Message= response.data.map(item=>({
+                ...item,
+                showDetail: false
+              }));
+              console.log(this.Message);
+            }).catch(response => { // possibly user not exist
+              console.log(response)
+              ElNotification({
+                title: 'Failed',
+                message: 'Failed to get message.',
+                type: 'error',
+              })
+        })
       },
-      refreshNotifications() {
-        //database -> list
 
+      filterMessage(type){
+        return this.Message.filter(message => message.type === type);
       },
-      deleteMessage(index) {
-        // 删除指定索引处的通知
+
+      readMessage(commentId){
+        axiosFunctions.methods.readComment(commentId).then((response) => {
+          console.log(response);
+          this.$router.push({path: 'room/' + this.room.roomId, props: ['this.room.roomId']});
+          console.log("read the comment!");
+        }).catch((response) => {
+          console.log(response);
+          console.log("failed to read the comment!");
+        })
       },
+
+      getRoomId(commentId){
+        axiosFunctions.methods.getComment(commentId)
+          .then(response => {
+            this.room = response.data;
+            this.readMessage(commentId);
+            console.log(this.room);
+          }).catch(response => { // possibly user not exist
+            console.log(response)
+            ElNotification({
+              title: 'Failed',
+              message: 'Failed to get message.',
+              type: 'error',
+            })
+        })
+      },
+
+      gotoTeam(){
+        this.$router.push({path : 'team_invitation'});
+      },
+
+
+      gotoRoom(commentId){
+        this.getRoomId(commentId);
+      },
+
       toggleDetails(reply) {
         reply.showDetail = !reply.showDetail;
       }
@@ -63,26 +92,21 @@
 
 <template>
   <el-card>
-    <el-collapse v-model="MessageList">
+    <el-collapse v-model="Message">
       <el-collapse-item>
         <template #title>
           <el-text size = "small" tag = "b"> Notification</el-text>
         </template>
         <el-card>
 
-          <div v-if = "filterMessage(1).length === 0 ">
+          <div v-if = "filterMessage('NOTIFICATION').length === 0 ">
             <el-empty description="No message">
             </el-empty>
           </div>
           <div v-else>
-            <div v-for="(reply, index) in filterMessage(1)" :key="index">
+            <div v-for="(reply, index) in filterMessage('NOTIFICATION')" :key="index">
               <div class="reply-header">
                 <span>{{ reply.time }}</span>
-                <el-button @click="deleteMessage(index)" text>
-                  <el-icon>
-                    <Delete/>
-                  </el-icon>
-                </el-button>
               </div>
               <div
                   :class="{'ellipsis-text': !reply.showDetail}"
@@ -103,19 +127,79 @@
           <el-text size = "small" tag = "b"> Reply{{}}</el-text>
         </template>
         <el-card>
-          <div v-if = "filterMessage(2).length === 0 ">
+          <div v-if = "filterMessage('REPLY').length === 0 ">
               <el-empty description="No message">
               </el-empty>
           </div>
           <div v-else>
-            <div v-for="(reply, index) in filterMessage(2)" :key="index">
+            <div v-for="(reply, index) in filterMessage('REPLY')" :key="index">
               <div class="reply-header">
                 <span>{{ reply.time }}</span>
-                <el-button @click="deleteMessage(index)" text>
-                  <el-icon>
-                    <Delete/>
-                  </el-icon>
-                </el-button>
+                <el-button text @click="gotoRoom(reply.id)">check</el-button>
+              </div>
+              <div
+                  :class="{'ellipsis-text': !reply.showDetail}"
+                  @click="toggleDetails(reply)"
+              >
+                {{ reply.content }}
+              </div>
+
+              <div v-if="!reply.showDetail" @click="toggleDetails(reply)" style="color: blue;">
+                Show Details
+              </div>
+              <el-divider></el-divider>
+            </div>
+          </div>
+        </el-card>
+      </el-collapse-item>
+
+      <el-collapse-item>
+        <template #title>
+          <el-text size = "small" tag = "b"> Application{{}}</el-text>
+        </template>
+        <el-card>
+          <div v-if = "filterMessage('APPLICATION').length === 0 ">
+            <el-empty description="No message">
+            </el-empty>
+          </div>
+
+          <div v-else>
+            <div v-for="(reply, index) in filterMessage('APPLICATION')" :key="index">
+              <div class="reply-header">
+                <span>{{ reply.time }}</span>
+                <el-button text @click="this.$router.push({path : 'team'});">check</el-button>
+              </div>
+              <div
+                  :class="{'ellipsis-text': !reply.showDetail}"
+                  @click="toggleDetails(reply)"
+              >
+                {{ reply.content }}
+              </div>
+
+              <div v-if="!reply.showDetail" @click="toggleDetails(reply)" style="color: blue;">
+                Show Details
+              </div>
+              <el-divider></el-divider>
+            </div>
+          </div>
+        </el-card>
+      </el-collapse-item>
+
+      <el-collapse-item>
+        <template #title>
+          <el-text size = "small" tag = "b"> Invitation{{}}</el-text>
+
+        </template>
+        <el-card>
+          <div v-if = "filterMessage('INVITATION').length === 0 ">
+            <el-empty description="No message">
+            </el-empty>
+          </div>
+          <div v-else>
+            <div v-for="(reply, index) in filterMessage('INVITATION')" :key="index">
+              <div class="reply-header">
+                <span>{{ reply.time }}</span>
+                <el-button text @click="this.$router.push({path : 'team_invitation'});">check</el-button>
               </div>
               <div
                   :class="{'ellipsis-text': !reply.showDetail}"

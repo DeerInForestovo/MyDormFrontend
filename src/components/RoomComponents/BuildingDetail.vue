@@ -3,6 +3,7 @@
 
 <script>
 import axiosFunctions from "@/utils/api";
+import {ElNotification} from "element-plus";
 
 export default {
   name: 'BuildingDetail',
@@ -49,8 +50,20 @@ export default {
     },
 
     // Database related
-    selectRoom() {
-
+    selectRoom(roomId) {
+      axiosFunctions.methods.selectRoom(this.$store.state.username, roomId).then((response) => {
+        ElNotification({
+          title: "Success!",
+          type: "success",
+          message: "You have selected the room successful!",
+        })
+      }).catch((response) => {
+        ElNotification({
+          title: "Failed",
+          type: "error",
+          message: response.response.data,
+        })
+      })
     },
   },
   computed: {
