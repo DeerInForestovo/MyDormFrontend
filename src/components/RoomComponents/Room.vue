@@ -8,87 +8,71 @@ import {ElNotification} from "element-plus";
 <script>
 import axiosFunctions from '@/utils/api'
 import {ElNotification} from "element-plus";
-import {toRaw} from "@vue/reactivity";
+
 export default {
   name: 'Room',
   props: {
     roomId: {
-      type: Number,
       required: true,
     },
   },
   mounted() {
     this.refreshRoom();
-
   },
-  data(){
-    return{
-      username: this.$store.state.username,
-      isHeartChecked: true,
-      stars: this.$store.state.stars,
-      rooms:{
+  data() {
+    // 不要在这里定义 isHeartCheck, stars 否则有问题
+    // 另外这里的元素初值最好都设置为 null, 在 mount 方法赋初值
+    return {
+      username: null,
+      rooms: {
         roomPicturePath: null,
         comments: [],
       },
     }
   },
 
-  methods:{
+  methods: {
     toggleHeart() {
-      this.isHeartChecked = !this.isHeartChecked;
-      console.log("toggle heart");
-      if(this.isHeartChecked){
+      if (!this.isHeartChecked) {
         axiosFunctions.methods.addStar(this.username, this.roomId).then((response) => {
           ElNotification({
             title: "Success!",
             type: "success",
             message: "You have added this room into your favourite rooms!",
           })
-
-          this.$store.commit('starRoom', this.rooms);
-          console.log(response)
+          this.$store.state.stars.push(this.rooms)
         }).catch((response) => {
           ElNotification({
             title: "Failed",
             type: "error",
             message: "Failed to add this room into your favourite rooms!",
           })
-          console.log('Failed to add this room into your favourite rooms!')
           console.log(response)
         })
-      }else{
+      } else {
         axiosFunctions.methods.removeStar(this.username, this.roomId).then((response) => {
           ElNotification({
             title: "Success!",
             type: "success",
             message: "You have removed this room from your favourite rooms!",
           })
-          this.$store.commit('removeStarRoom', this.roomId)
+          this.$store.commit('setStarRoom', this.$store.state.stars.filter(star => Number(star.roomId) !== Number(this.roomId)))
         }).catch((response) => {
           ElNotification({
             title: "Failed",
             type: "error",
             message: "Failed to remove this room from your favourite rooms!",
           })
-          console.log('Failed to remove this room from your favourite rooms!')
           console.log(response)
         })
       }
     },
-    refreshRoom(){
 
+    refreshRoom() {
+      this.username = this.$store.state.username
       axiosFunctions.methods.getRoomInfo(this.roomId)
           .then(response => {
             this.rooms = response.data;
-            this.stars = this.$store.state.stars;
-            console.log(this.rooms);
-            console.log(toRaw(this.rooms));
-            console.log(this.roomId);
-
-            this.isHeartChecked = this.stars.some(room => room.roomId === this.roomId);
-
-            console.log(this.stars);
-            console.log(this.isHeartChecked);
           }).catch(response => { // possibly user not exist
         console.log(response)
         ElNotification({
@@ -96,14 +80,14 @@ export default {
           message: 'Failed to get room info. Does it exist?',
           type: 'error',
         })
-        this.$emit('roomNotExists')
+        // this.$emit('roomNotExists')  // 没人监听就不要emit了
       })
-      console.log(this.rooms.comments)
+      // console.log(this.rooms.comments)
     }
   },
-  watch:{
-    username(){
-      this.refreshRoom();
+  computed: {
+    isHeartChecked() {
+      return this.$store.state.stars.some(star => Number(star.roomId) === Number(this.roomId))
     }
   }
 }
@@ -113,8 +97,8 @@ export default {
   <div>
     <div class="container">
       <el-card style="width: 90%; margin: 1%">
-        <el-button :icon="Refresh" size="small" text @click="refreshRoom" />
-        <div class = "hidden-sm-and-up">
+        <el-button :icon="Refresh" size="small" text @click="refreshRoom"/>
+        <div class="hidden-sm-and-up">
           <el-image :src="axiosFunctions.methods.getResourceByFilename(this.rooms.roomPicturePath)" class="Images">
             <template #error>
               <div class="image-slot">
@@ -124,7 +108,7 @@ export default {
         </div>
         <el-row>
           <el-col :xs="0" :sm="10" :md="10" :lg="10" :xl="10">
-            <div class = "hidden-xs-only">
+            <div class="hidden-xs-only">
               <el-image :src="axiosFunctions.methods.getResourceByFilename(this.rooms.roomPicturePath)" class="Images">
                 <template #error>
                   <div class="image-slot">
@@ -141,7 +125,7 @@ export default {
             <!--change the roomId-->
           </el-col>
         </el-row>
-        <div class="heart-container" title="Like" @click = 'toggleHeart'>
+        <div class="heart-container" title="Like" @click='toggleHeart'>
           <input type="checkbox" class="checkbox" id="Give-It-An-Id" v-model="isHeartChecked">
           <div class="svg-container">
             <svg viewBox="0 0 24 24" class="svg-outline" xmlns="http://www.w3.org/2000/svg">
@@ -154,7 +138,8 @@ export default {
                   d="M17.5,1.917a6.4,6.4,0,0,0-5.5,3.3,6.4,6.4,0,0,0-5.5-3.3A6.8,6.8,0,0,0,0,8.967c0,4.547,4.786,9.513,8.8,12.88a4.974,4.974,0,0,0,6.4,0C19.214,18.48,24,13.514,24,8.967A6.8,6.8,0,0,0,17.5,1.917Z">
               </path>
             </svg>
-            <svg class="svg-celebrate" width="100" height="100" xmlns="http://www.w3.org/2000/svg" v-show="isHeartChecked">
+            <svg class="svg-celebrate" width="100" height="100" xmlns="http://www.w3.org/2000/svg"
+                 v-show="isHeartChecked">
               <polygon points="10,10 20,20"></polygon>
               <polygon points="10,50 20,50"></polygon>
               <polygon points="20,80 30,70"></polygon>

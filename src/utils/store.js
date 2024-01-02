@@ -39,10 +39,7 @@ let store = createStore({
             state.name = data.name
             state.profilePhotoUrl = data.profilePhotoUrl
             state.zoneId = data.zoneId
-            console.log(state.name);
-            console.log(data.stars)
-            state.stars = Array.from(data.stars);
-            console.log(state.stars)
+            state.stars = data.stars
         },
 
         logout(state) {
@@ -52,20 +49,15 @@ let store = createStore({
             Cookies.set(token_cookie_name, '', {expires: 1, secure: true})
         },
 
-        starRoom(state, room) {
-            console.log(state.stars);
-            console.log(room);
-            state.stars.push(toRaw(room));
-            console.log(state.stars)
+        setStarRoom(state, stars) {
+            state.stars = stars
         },
-
-        removeStarRoom(state, roomId){
-            state.stars = state.stars.filter(item => item.roomId !== roomId); //
-        }
     }
 })
 
 // Get username and token from Cookies
+store.state.username = Cookies.get(username_cookie_name)
+store.state.token = Cookies.get(token_cookie_name)
 let username = store.state.username
 let token = store.state.token
 if (username && token) {
