@@ -8,7 +8,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
   <div class="comment">
     <el-row type="flex" :gutter="30">
       <el-col :span = "3">
-        <el-avatar shape="square" :size="30" :fit="fill" :src="this.comment.profilePhotoUrl ? axiosFunctions.methods.getResourceByFilename(this.comment.profilePhotoUrl):null"/>
+        <el-avatar shape="square" :size="30" :fit="fill" :src="axiosFunctions.methods.getResourceByFilename(this.comment.profilePhotoUrl)"/>
         <!--根据userId获取头像-->
         <!--    <el-avatar shape="square" :size="30" :fit="fill" :src="comment.user.avatar" />-->
       </el-col>
@@ -44,7 +44,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
           <div v-for = "reply in comment.replies">
             <el-row :gutter = "30">
               <el-col :span = "3">
-                <el-avatar shape="square" :size="30" :fit="fill" :src="reply.profilePhotoUrl ? axiosFunctions.methods.getResourceByFilename(reply.profilePhotoUrl):null"/>
+                <el-avatar shape="square" :size="30" :fit="fill" :src="axiosFunctions.methods.getResourceByFilename(reply.profilePhotoUrl)"/>
 
               </el-col>
               <el-col :span="21">
@@ -194,6 +194,7 @@ export default {
         })
         console.log('Failed to delete comment!')
         console.log(response)
+        this.$router.go(0);
       })
     },
   },
