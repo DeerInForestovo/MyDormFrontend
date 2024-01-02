@@ -101,7 +101,7 @@ export default {
           message: "You have added the comment!",
         })
         this.newComment.content = "";
-
+        this.$router.go(0);
       }).catch((response) => {
         ElNotification({
           title: "Failed",

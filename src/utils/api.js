@@ -194,7 +194,7 @@ export default {
                 }
             })
         },
-        //star
+        // star
         addStar(username, roomId){
             return axios.post(base_api + '/api/profile/star', {
                 username: username,
@@ -211,6 +211,21 @@ export default {
                     Authorization: 'Bearer ' + this.getToken(),
                 }
             })
+        },
+
+        // Message Part
+        getComment(commentId){
+            return axios.get(base_api + '/api/comment/'+ commentId, this.defaultConfig());
+        },
+
+        getUserNotification(username){
+            return axios.get(base_api + '/api/notification/'+ username, this.defaultConfig());
+        },
+
+        readComment(commentId){
+            return axios.post(base_api + '/api/comment', {
+                commentId: commentId,
+            }, this.defaultConfig())
         }
     }
 }

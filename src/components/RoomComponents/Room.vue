@@ -80,9 +80,7 @@ export default {
           message: 'Failed to get room info. Does it exist?',
           type: 'error',
         })
-        // this.$emit('roomNotExists')  // 没人监听就不要emit了
       })
-      // console.log(this.rooms.comments)
     }
   },
   computed: {
