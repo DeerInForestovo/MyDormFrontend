@@ -43,7 +43,7 @@ export default {
           .then(response => {
             this.allZones = response.data
           }).catch(response => {
-            console.log(response)
+        console.log(response)
       })
     },
 
@@ -75,6 +75,14 @@ export default {
                   title: 'Success!',
                   message: 'A new task has been released.',
                 })
+                this.form = {
+                  selectionTaskName: '',
+                  description: '',
+                  timeRange: ['', ''],
+                  startTime: null,
+                  endTime: null,
+                  zones: [],
+                }
               })
               .catch(response => {
                 ElNotification({

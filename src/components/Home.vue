@@ -104,7 +104,11 @@ const buildSubMenuJsonList = [
       {
         name: 'Options',
         path: '/home/manage_options',
-      }
+      },
+      {
+        name: 'Zones',
+        path: '/home/manage_zones',
+      },
     ]
   }
 ]

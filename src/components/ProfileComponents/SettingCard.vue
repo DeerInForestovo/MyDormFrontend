@@ -176,7 +176,6 @@ export default {
     addCustomTag() {
       const hobbyName = this.newTag.trim().toLowerCase();
       if (!hobbyName) {
-        return
       } else if (this.includeHobby(hobbyName)) {
         ElNotification({
           title: 'Failed',

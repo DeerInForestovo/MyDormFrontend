@@ -43,7 +43,6 @@
       :model="form"
       ref="form"
       @change="checkInput"
-      hide-required-asterisk
       @submit.native.prevent
       size="small"
   >
