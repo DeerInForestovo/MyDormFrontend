@@ -137,7 +137,6 @@ onMounted(() => {
 
         // Convert the buildingMap object to an array for the Vue component.
         buildings = Object.values(buildingMap);
-        console.log(buildings)
 
       } catch (error) {
         console.error('Failed to fetch rooms:', error);
