@@ -16,7 +16,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
       <el-col :span="21">
         <div class="username" style="display: flex; align-items: center;">
           <el-space>
-            {{ comment.username }}
+            {{ comment.name }}
             <div :style="{color: 'grey'}">
               {{comment.time}}
             </div>
@@ -50,7 +50,7 @@ import {Position, ChatRound, Delete, ChatDotRound} from "@element-plus/icons-vue
               <el-col :span="21">
                 <div class="username" style="display: flex; align-items: center;">
                   <el-space>
-                    {{ reply.username}}
+                    {{ reply.name}}
                     <div :style="{color: 'grey'}">
                       {{reply.time}}
                     </div>
