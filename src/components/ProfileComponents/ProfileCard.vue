@@ -60,16 +60,17 @@ export default {
   },
   methods: {
     refreshProfile() {
-      if (this.username === null) {
-        return;
-      }
-      getUserProfile(this.username, (data) => {
-        this.form = data
-      })
+      if (this.username === null) return
+      if (this.data) this.form = this.data
+        else getUserProfile(this.username, (data) => {this.form = data})
     },
   },
   props: {
     username: {
+      required: false,
+      default: null,
+    },
+    data: {
       required: false,
       default: null,
     }

@@ -12,6 +12,8 @@ import TeamNotification from "@/components/TeamComponents/TeamInvitationCard.vue
 
 import ManageStudents from "@/components/ManageComponents/Accounts.vue";
 import ManageOptions from "@/components/ManageComponents/Options.vue";
+import ManageZones from "@/components/ManageComponents/Zones.vue";
+import ManageDorms from "@/components/ManageComponents/Dorms.vue";
 
 import Message from "@/components/Message.vue";
 
@@ -81,6 +83,14 @@ const routes = [
             {
                 path: 'manage_options',
                 component: ManageOptions,
+            },
+            {
+                path: 'manage_zones',
+                component: ManageZones,
+            },
+            {
+                path: 'manage_dorms',
+                component: ManageDorms,
             },
             {
                 path: 'map',

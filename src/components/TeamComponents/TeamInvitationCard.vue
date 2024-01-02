@@ -3,7 +3,6 @@ import {Refresh} from "@element-plus/icons-vue"
 </script>
 
 <script>
-import {ref} from "vue";
 import axiosFunctions from "@/utils/api";
 import {ElNotification} from "element-plus";
 
@@ -47,10 +46,9 @@ export default {
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
-          message: response.message,
+          message: response.response.data,
           type: "error",
         })
-        console.log(response)
       })
     },
 
@@ -66,7 +64,7 @@ export default {
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
-          message: response.message,
+          message: response.response.data,
           type: "error",
         })
         console.log(response)

@@ -43,7 +43,7 @@ export default {
                   .catch(response => {
                     ElNotification({
                       title: 'Failed',
-                      message: 'Failed to set info:' + response.message,
+                      message: 'Failed to set info:' + response.data,
                       type: 'error'
                     })
                     console.log(response)
@@ -52,7 +52,7 @@ export default {
             .catch(response => {
               ElNotification({
                 title: 'Failed',
-                message: 'Failed to create account:' + response.message,
+                message: 'Failed to create account:' + response.data,
                 type: 'error'
               })
               console.log(response)

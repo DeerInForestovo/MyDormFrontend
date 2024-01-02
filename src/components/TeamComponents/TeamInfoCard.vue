@@ -5,7 +5,6 @@ import teamApplicationDialog from "@/components/TeamComponents/TeamApplicationDi
 </script>
 
 <script>
-import {ref} from "vue";
 import {ElNotification} from "element-plus";
 import axiosFunctions from "@/utils/api";
 
@@ -21,6 +20,7 @@ export default {
         leader: null,
         leaderUsername: null,
         zoneName: null,
+        roomId: null,
         roomName: null,
         teamMembers: [
           {
@@ -43,6 +43,7 @@ export default {
 
   mounted() {
     this.refreshTeamInfo()
+    console.log(this.teamInfo)
   },
 
   methods: {
@@ -79,7 +80,7 @@ export default {
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
-          message: response.message,
+          message: response.response.data,
           type: "error",
         })
       })
@@ -97,7 +98,7 @@ export default {
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
-          message: response.message,
+          message: response.response.data,
           type: "error",
         })
         console.log(response)
@@ -128,7 +129,7 @@ export default {
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
-          message: response.message,
+          message: response.response.data,
           type: "error",
         })
         console.log(response)
@@ -154,7 +155,7 @@ export default {
             }).catch((response) => {
           ElNotification({
             title: 'Failed!',
-            message: response.message,
+            message: response.response.data,
             type: "error",
           })
         })
@@ -180,12 +181,31 @@ export default {
             }).catch((response) => {
           ElNotification({
             title: 'Failed!',
-            message: response.message,
+            message: response.response.data,
             type: "error",
           })
         })
       }
     },
+
+    deselectRoom() {
+      axiosFunctions.methods.deselectRoom(this.$store.state.username, this.teamInfo.roomId)
+          .then(response => {
+            ElNotification({
+              type: "success",
+              message: "Deselected the room of your team",
+              title: "Success!",
+            })
+            this.$router.go(0)
+          })
+          .catch((response) => {
+            ElNotification({
+              type: "error",
+              message: response.response.data,
+              title: "Failed!",
+            })
+          })
+    }
   }
 }
 </script>
@@ -242,6 +262,14 @@ export default {
         <el-space>
           <el-text tag="b"> Selected Room:</el-text>
           <el-text> {{ teamInfo.roomName }}</el-text>
+          <el-popconfirm
+              width="280px"
+              title="Sure to deselect the room?"
+              @confirm="deselectRoom">
+            <template #reference>
+              <el-button size="small" type="danger" :disabled="this.username !== this.teamInfo.leaderUsername"> Deselect </el-button>
+            </template>
+          </el-popconfirm>
         </el-space>
       </p>
 
@@ -271,7 +299,7 @@ export default {
         <el-space>
           <el-text tag="b"> Invite Member:</el-text>
           <el-input v-model="inviteMemberInput" placeholder="Input username"/>
-          <el-button type="primary" :disabled="username !== teamInfo.leaderUsername" @click="inviteMember"> Invite</el-button>
+          <el-button type="primary" @click="inviteMember"> Invite</el-button>
         </el-space>
       </p>
 
