@@ -5,7 +5,6 @@ import teamApplicationDialog from "@/components/TeamComponents/TeamApplicationDi
 </script>
 
 <script>
-import {ref} from "vue";
 import {ElNotification} from "element-plus";
 import axiosFunctions from "@/utils/api";
 
@@ -271,7 +270,7 @@ export default {
         <el-space>
           <el-text tag="b"> Invite Member:</el-text>
           <el-input v-model="inviteMemberInput" placeholder="Input username"/>
-          <el-button type="primary" :disabled="username !== teamInfo.leaderUsername" @click="inviteMember"> Invite</el-button>
+          <el-button type="primary" @click="inviteMember"> Invite</el-button>
         </el-space>
       </p>
 

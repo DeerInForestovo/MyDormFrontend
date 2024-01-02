@@ -179,6 +179,18 @@ export default {
         leaveTeam() {
             return axios.post(base_api + '/api/team/leave', {}, this.defaultConfig())
         },
+        recommendRoommate(username, pageIndex, pageSize) {
+            return axios.get(base_api + '/api/recommend', {
+                headers: {
+                    Authorization: 'Bearer' + this.getToken()
+                },
+                params: {
+                    username: username,
+                    pageIndex: pageIndex,
+                    pageSize: pageSize,
+                }
+            })
+        },
 
         // Manage
         createUser(username, password) {

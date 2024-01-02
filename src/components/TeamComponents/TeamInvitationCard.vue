@@ -3,7 +3,6 @@ import {Refresh} from "@element-plus/icons-vue"
 </script>
 
 <script>
-import {ref} from "vue";
 import axiosFunctions from "@/utils/api";
 import {ElNotification} from "element-plus";
 

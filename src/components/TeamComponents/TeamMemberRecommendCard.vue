@@ -12,29 +12,20 @@ import {ElNotification} from "element-plus";
 export default {
   data() {
     return {
-      // global variables
-      isTeamLeader: this.$store.state.isTeamLeader,
-
-      // local variables
-      recommendNumber: 3,
-      recommendedMembers: [],  // List of {{recommendNumber}} usernames
-      currentRecommendation: ref(0),
-      temp: 1,
+      recommendedMembers: [],
+      currentRecommendation: ref(''),
     }
   },
 
   mounted() {
-    this.$nextTick(() => {
-      this.refreshRecommendedMembers()
-    })
+    this.refreshRecommendedMembers()
   },
 
   methods: {
     refreshRecommendedMembers() {
-      while (this.recommendedMembers.length < this.recommendNumber)
-        this.recommendedMembers.push('user' + this.temp++)
-        // TODO: do really recommendation here
-      this.currentRecommendation = this.recommendedMembers[0]
+      axiosFunctions.methods.recommendRoommate(this.$store.state.username, 0, 100)
+          .then(response => {this.recommendedMembers = response.data})
+          .catch(response => {console.log(response)})
     },
 
     inviteMember(username) {
@@ -48,7 +39,7 @@ export default {
           }).catch((response) => {
         ElNotification({
           title: 'Failed!',
-          message: response.message,
+          message: response.data,
           type: "error",
         })
         console.log(response)
@@ -57,7 +48,7 @@ export default {
 
     shiftToNext() {
       this.recommendedMembers.shift()
-      this.refreshRecommendedMembers()
+      this.currentRecommendation = this.recommendedMembers[0]
     }
   }
 }
