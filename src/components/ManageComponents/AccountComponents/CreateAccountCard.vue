@@ -24,7 +24,8 @@ export default {
   methods: {
     createAccount() {
       if (this.infoFormCheck) {
-        axiosFunctions.methods.createUser(this.studentInfoForm.username, this.studentInfoForm.password)
+        axiosFunctions.methods.createUser(this.studentInfoForm.username, this.studentInfoForm.password,
+            this.studentInfoForm.role)
             .then(response => {
               axiosFunctions.methods.updateUserProfile(true, this.studentInfoForm.username, {
                 username: this.studentInfoForm.username,

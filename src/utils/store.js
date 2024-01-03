@@ -2,6 +2,7 @@ import {createStore} from "vuex";
 import Cookies from 'js-cookie';
 import {ElNotification} from "element-plus";
 import api from "@/utils/api";
+import getUserProfile from "@/components/ProfileComponents/getUserProfile";
 
 const username_cookie_name = 'MyDorm_username'
 const token_cookie_name = 'MyDorm_token'
@@ -16,7 +17,7 @@ let store = createStore({
             // user basic info
             name: null,
             profilePhotoUrl: null,
-            isAdmin: false,
+            isAdmin: null,
 
             // zone info
             zoneId: null,
@@ -43,7 +44,6 @@ let store = createStore({
             state.zoneId = data.zoneId
             state.stars = data.stars
             state.isAdmin = data.isAdmin
-            console.log(data)
         },
 
         logout(state) {
@@ -91,6 +91,14 @@ if (username && token) {
         type: "info",
         message: "Please login first"
     })
+}
+
+// store profile to $store
+if (store.state.username && store.state.token) {
+    api.methods.getProfileInStore(store.state.username, store.state.token)
+        .then(response => {
+            store.commit('setProfileInfo', response.data)
+        })
 }
 
 export default store

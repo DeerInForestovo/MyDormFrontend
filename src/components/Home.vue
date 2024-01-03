@@ -292,7 +292,7 @@ export default {
           </el-menu-item>
 
           <!--   Build Manage Sub-menu    -->
-          <el-sub-menu v-for="subMenuItem in buildManageSubMenu" :index="subMenuItem.name" v-show="this.isAdmin">
+          <el-sub-menu v-for="subMenuItem in buildManageSubMenu" :index="subMenuItem.name" v-show="this.$store.state.isAdmin">
             <template #title>
               <el-icon>
                 <component :is="subMenuItem.icon"/>

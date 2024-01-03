@@ -56,6 +56,13 @@ export default {
         },
 
         // Me - Profile & Setting
+        getProfileInStore(username, token) {
+            return axios.get(base_api + '/api/profile/' + username, {
+                headers: {
+                    Authorization: 'Bearer ' + token,
+                }
+            })
+        },
         getProfile(username) {
             return axios.get(base_api + '/api/profile/' + username, this.defaultConfig())
         },
@@ -209,11 +216,15 @@ export default {
         },
 
         // Manage
-        createUser(username, password) {
-            return axios.post(base_api + '/api/manage/user', {
+        createUser(username, password, role) {
+            let data = {
                 username: username,
-                password: password
-            }, this.defaultConfig())
+                password: password,
+                roles: ['USER']
+            }
+            if (role === 'Admin')
+                data.roles.push('ADMIN')
+            return axios.post(base_api + '/api/manage/user', data, this.defaultConfig())
         },
         getAllZones() {
             return axios.get(base_api + '/api/zone', this.defaultConfig())
@@ -253,6 +264,15 @@ export default {
             return axios.patch(base_api + '/api/manage/zone/' + zoneId, {
                 rooms: rooms
             }, this.defaultConfig())
+        },
+        getAllTasks() {
+            return axios.get(base_api + '/api/manage/select', this.defaultConfig())
+        },
+        exportResult(taskId) {
+            return axios.get(base_api + '/api/manage/select/' + taskId, this.defaultConfig())
+        },
+        deleteTask(taskId) {
+            return axios.delete(base_api + '/api/manage/select/' + taskId, this.defaultConfig())
         },
 
 
