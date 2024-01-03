@@ -6,7 +6,6 @@ import axiosFunctions from "@/utils/api";
 <script>
 import axiosFunctions from '@/utils/api'
 import {ElNotification} from "element-plus";
-import {ref} from "vue";
 import getUserProfile from "@/components/ProfileComponents/getUserProfile";
 
 export default {
@@ -63,6 +62,9 @@ export default {
     }
   },
   mounted() {
+    axiosFunctions.methods.getAllMajor()
+        .then(response => this.majors = response.data)
+        .catch(response => console.log(response.response.data))
     if (this.$route.fullPath.startsWith('/home/setting'))
       this.form.username = this.$store.state.username
     if (this.username)
@@ -122,7 +124,8 @@ export default {
                   type: "success",
                   message: "You have updated the profile image!",
                 })
-                this.$router.go(0)
+                if (this.$route.path.startsWith('/home/setting'))
+                  this.$router.go(0)
               }).catch((response) => {
                 ElNotification({
                   title: "Failed",
@@ -364,9 +367,9 @@ export default {
             >
               <el-option
                   v-for="item in majors"
-                  :key="item"
-                  :label="item"
-                  :value="item">
+                  :key="item.name"
+                  :label="item.name"
+                  :value="item.name">
               </el-option>
             </el-select>
           </el-form-item>

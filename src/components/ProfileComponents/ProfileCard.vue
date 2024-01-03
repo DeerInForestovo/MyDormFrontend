@@ -31,7 +31,6 @@ const iconStyle = computed(() => {
 
 <script>
 import axiosFunctions from '@/utils/api'
-import {ElNotification} from "element-plus";
 import getUserProfile from "@/components/ProfileComponents/getUserProfile";
 
 export default {

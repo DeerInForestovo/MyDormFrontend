@@ -17,6 +17,9 @@
           ],
           gender: [
             {required: true}
+          ],
+          role: [
+            {required: true}
           ]
         }
       }
@@ -60,6 +63,12 @@
     </el-form-item>
     <el-form-item label="Password" prop="password" style="width: 500px">
       <el-input v-model="form.password"/>
+    </el-form-item>
+    <el-form-item label="Role" prop="role">
+      <el-radio-group v-model="form.role">
+        <el-radio label="MALE"> User </el-radio>
+        <el-radio label="FEMALE"> Admin </el-radio>
+      </el-radio-group>
     </el-form-item>
   </el-form>
 </template>

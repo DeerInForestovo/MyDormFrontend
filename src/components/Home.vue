@@ -155,9 +155,6 @@ export default {
 
       // dynamic route
       dynamicRouteDict: {},
-
-      // message
-      messageNumber: null
     }
   },
 
@@ -315,7 +312,7 @@ export default {
           </el-menu-item>
 
           <!--   Build Manage Sub-menu    -->
-          <el-sub-menu v-for="subMenuItem in buildManageSubMenu" :index="subMenuItem.name" v-show="this.isAdmin">
+          <el-sub-menu v-for="subMenuItem in buildManageSubMenu" :index="subMenuItem.name" v-show="this.$store.state.isAdmin">
             <template #title>
               <el-icon>
                 <component :is="subMenuItem.icon"/>
@@ -347,7 +344,7 @@ export default {
 
           <!--      Message Button                    -->
           <el-tooltip content="Message" placement="bottom">
-            <el-badge class="HeaderButton" :hidden="!this.messageNumber" is-dot>
+            <el-badge class="HeaderButton" :hidden="!this.$store.state.messageNumber" is-dot>
               <el-button @click="this.$router.push('/home/message')" :icon="Message" text size="large"/>
             </el-badge>
           </el-tooltip>
