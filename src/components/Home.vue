@@ -134,6 +134,7 @@ const buildManageSubMenu = [{
 import {ref} from "vue"
 import getUserProfile from "@/components/ProfileComponents/getUserProfile";
 import axiosFunctions from "@/utils/api";
+import {ElNotification} from "element-plus";
 
 export default {
   name: 'MainPage',
@@ -156,7 +157,8 @@ export default {
       dynamicRouteDict: {},
 
       // message
-      messageNumber: null
+      messageNumber: null,
+
     }
   },
 
@@ -237,6 +239,21 @@ export default {
         this.$router.push(this.buildRoute({path: '/home/profile', props: ['username']}))
       this.setActivateIndex()
     }
+  },
+  created() {
+    axiosFunctions.methods.getSelectionTask()
+        .then(response => {
+          this.selectionTask = response.data;
+          ElNotification({
+            title: "You have a selection task!",
+            type: "info",
+            message: "<b>Start Time</b>: "+response.data.startTime+"<br>"+"<b>End Time</b>: "+response.data.endTime,
+            position: "bottom-right",
+            dangerouslyUseHTMLString: "true",
+            duration:"0",
+          })
+        })
+        .catch(response => console.log(response.response.data))
   }
 }
 </script>
@@ -320,9 +337,9 @@ export default {
     <el-container class="MainPageMainPart">
       <el-header class="Header">
         <!--      Buttons                             -->
-        <button class="backButton" @click="this.$router.back()">Back</button>
-
-
+        <el-space>
+          <button class="backButton" @click="this.$router.back()">Back</button>
+        </el-space>
         <div class="HeaderButtonDiv">
           <!--      Logout Button                     -->
           <el-tooltip content="Logout" placement="bottom">
@@ -334,7 +351,8 @@ export default {
             <el-badge class="HeaderButton" v-if="this.messageNumber">
               <el-button @click="this.$router.push('/home/message')" :icon="Message" text size="large"/>
             </el-badge>
-            <el-button @click="this.$router.push('/home/message')" :icon="Message" class="HeaderButton" text size="large" v-else/>
+            <el-button @click="this.$router.push('/home/message')" :icon="Message" class="HeaderButton" text
+                       size="large" v-else/>
           </el-tooltip>
 
           <!--      Switch Light-Dark Mode Button     -->

@@ -140,6 +140,9 @@ export default {
                 }
             })
         },
+        getSelectionTask(){
+            return axios.get(base_api +'/api/select',this.defaultConfig())
+        },
 
         // Team
         createTeam() {
