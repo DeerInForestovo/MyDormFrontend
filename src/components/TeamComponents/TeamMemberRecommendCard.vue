@@ -13,18 +13,36 @@ export default {
   data() {
     return {
       recommendedMembers: [],
-      currentRecommendation: ref(''),
+      currentRecommendation: null,
+      teamInfo: {}
     }
   },
 
   mounted() {
+    this.refreshTeamInfo()
     this.refreshRecommendedMembers()
   },
 
   methods: {
+    refreshTeamInfo() {
+      this.username = this.$store.state.username
+      this.name = this.$store.state.name
+      axiosFunctions.methods.getTeamInfo()
+          .then((response) => {
+            this.teamInfo = response.data
+            console.log(this.teamInfo)
+          }).catch((response) => {
+        console.log(response)
+      })
+    },
+
     refreshRecommendedMembers() {
       axiosFunctions.methods.recommendRoommate(this.$store.state.username, 0, 100)
-          .then(response => {this.recommendedMembers = response.data})
+          .then(response => {
+            this.recommendedMembers = response.data;
+            this.recommendedMembers = this.recommendedMembers.map(user => user.username)
+            this.currentRecommendation = this.recommendedMembers[0]
+          })
           .catch(response => {console.log(response)})
     },
 
