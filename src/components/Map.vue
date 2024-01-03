@@ -9,25 +9,7 @@ const zoneId = store.state.zoneId;
 const image = ref(null)
 const canvas = ref(null);
 
-const areas = [
-  {
-    id: 1,
-    alt: "area1",
-    coords: "733,1608,739,1627,796,1614,796,1594",
-  },
-  {
-    id: 2,
-    alt: "area2",
-    coords: "799,1558,802,1578,861,1568,854,1549",
-  },
-  {
-    id: 3,
-    alt: "area3",
-    coords: "781,1657,772,1678,818,1691,835,1674",
-  },
-  // Add more areas if needed
-];
-let buildings = [];
+let buildings = ref([]);
 
 // 更新 Canvas 尺寸以匹配图片
 function updateCanvasSize() {
@@ -49,7 +31,7 @@ function drawMask(scale = 1) {
 // 遍历 areas 数组并绘制每个区域
   buildings.forEach(building => {
     // 解析每个区域的坐标并根据缩放比例调整
-    const coords = building.coordinates.split(',').map(coordinates => parseInt(coordinates) * scale);
+    const coords = building.buildingCoordinate.split(',').map(coordinates => parseInt(coordinates) * scale);
 
     // 绘制多边形遮罩
     ctx.beginPath();
@@ -106,6 +88,8 @@ onMounted(() => {
   setTimeout(async () => {
     if (zoneId) {
 
+      console.log('begin')
+
       try {
         const zoneResponse = await axiosFunctions.methods.getRoomFromZone(zoneId);
         const rooms = zoneResponse.data;
@@ -123,6 +107,8 @@ onMounted(() => {
           return acc;
         }, {});
 
+        console.log('here')
+
         // Fetch additional information for each building.
         for (let buildingId in buildingMap) {
           try {
@@ -137,6 +123,7 @@ onMounted(() => {
 
         // Convert the buildingMap object to an array for the Vue component.
         buildings = Object.values(buildingMap);
+        console.log(buildings)
 
       } catch (error) {
         console.error('Failed to fetch rooms:', error);
@@ -154,6 +141,8 @@ export default {
   },
   methods: {
     handleAreaClick(buildingId) {
+      console.log('handle')
+      console.log(buildingId)
       this.$router.push('/home/building/' + buildingId)
     }
   },
@@ -167,7 +156,7 @@ export default {
          @mousedown.prevent="moveImg">
     <canvas ref="canvas" class="canvas-overlay"></canvas>
     <map name="image-map">
-      <area target="_self"  :coords="building.coordinates" shape="poly" v-for="building in buildings"
+      <area target="_self"  :coords="building.buildingCoordinate" shape="poly" v-for="building in buildings"
             :key="building.buildingId" @click="handleAreaClick(building.buildingId)" alt="">
     </map>
   </div>
