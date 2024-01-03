@@ -1,4 +1,5 @@
 <script setup>
+import axiosFunctions from "@/utils/api";
 </script>
 
 <template>
@@ -13,13 +14,13 @@
       :style="{ transform: this.transformString }"
   >
     <el-space size="large">
-      <el-avatar size="large" :alt="username" />
+      <el-image :src="axiosFunctions.methods.getResourceByFilename(this.profilePhotoUrl)" :fit="'contain'"/>
       <div>
-        <el-text tag="b"> SID: </el-text>
+        <el-text tag="b"> Username: </el-text>
         <el-text> {{ username }}</el-text>
         <br>
         <el-text tag="b"> Name: </el-text>
-        <el-text> name </el-text>
+        <el-text> {{name}} </el-text>
       </div>
     </el-space>
   </div>
@@ -28,6 +29,7 @@
 <script>
 import interact from "interactjs";
 import {shallowRef} from "@vue/reactivity";
+import getUserProfile from "@/components/ProfileComponents/getUserProfile";
 
 const ACCEPT_CARD = "cardAccepted";
 const REJECT_CARD = "cardRejected";
@@ -62,7 +64,10 @@ export default {
         y: 0,
         rotation: 0
       },
-      staticComponent: shallowRef(this.username)
+      staticComponent: shallowRef(this.username),
+
+      name: null,
+      profilePhotoUrl: null,
     };
   },
 
@@ -78,6 +83,11 @@ export default {
   },
 
   mounted() {
+    getUserProfile(this.username, data => {
+      this.name = data.name
+      this.profilePhotoUrl = data.profilePhotoUrl
+    })
+
     const element = this.$refs.interactElement;
 
     interact(element).draggable({
