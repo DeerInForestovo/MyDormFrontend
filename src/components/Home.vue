@@ -157,8 +157,7 @@ export default {
       dynamicRouteDict: {},
 
       // message
-      messageNumber: null,
-
+      messageNumber: null
     }
   },
 
@@ -337,9 +336,9 @@ export default {
     <el-container class="MainPageMainPart">
       <el-header class="Header">
         <!--      Buttons                             -->
-        <el-space>
-          <button class="backButton" @click="this.$router.back()">Back</button>
-        </el-space>
+        <button class="backButton" @click="this.$router.back()">Back</button>
+
+
         <div class="HeaderButtonDiv">
           <!--      Logout Button                     -->
           <el-tooltip content="Logout" placement="bottom">
@@ -348,11 +347,9 @@ export default {
 
           <!--      Message Button                    -->
           <el-tooltip content="Message" placement="bottom">
-            <el-badge class="HeaderButton" v-if="this.messageNumber">
+            <el-badge class="HeaderButton" :hidden="!this.messageNumber" is-dot>
               <el-button @click="this.$router.push('/home/message')" :icon="Message" text size="large"/>
             </el-badge>
-            <el-button @click="this.$router.push('/home/message')" :icon="Message" class="HeaderButton" text
-                       size="large" v-else/>
           </el-tooltip>
 
           <!--      Switch Light-Dark Mode Button     -->

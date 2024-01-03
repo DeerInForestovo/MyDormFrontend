@@ -64,8 +64,46 @@ export default {
       this.infoFormCheck = inputCheck;
     },
 
-    uploadFileOnClick() {
-      // TODO
+    openFileDialog() {
+      this.$refs.fileInput.click();
+    },
+
+    loadCSV(event) {
+      const files = event.target.files;
+      if (files.length > 0) {
+        const file = files[0];
+        if (this.isFileCSV(file)) {
+          const reader = new FileReader();
+          reader.onload = (event) => {
+            const csvContent = event.target.result;
+
+            // console.log(csvContent['username']);
+            console.log(csvContent);
+            axiosFunctions.methods.batchCreatUser(csvContent).then((response) => {
+              ElNotification({
+                title: "Success!",
+                type: "success",
+                message: "You have created the users from the file!",
+              })
+              console.log(response);
+            }).catch((response) => {
+              ElNotification({
+                title: "Failed",
+                type: "error",
+                message: "Failed to creat users.",
+              })
+              console.log(response)
+            })
+          };
+          reader.readAsText(file);
+        } else {
+          alert('please choose the csv file!');
+        }
+      }
+    },
+    // 判断文件类型是否为CSV
+    isFileCSV(file) {
+      return file.type === 'text/json' || file.name.endsWith('.json');
     }
   }
 }
@@ -94,9 +132,14 @@ export default {
     <el-text>
       or create by
     </el-text>
-    <el-button text class="Buttons" type="primary" @click="uploadFileOnClick">
+    <input type="file" ref="fileInput" style="display: none" @change="loadCSV" accept=".json"/>
+    <el-button text class="Buttons" type="primary" @click="openFileDialog">
       uploading a file
     </el-button>
+
+
+    <!-- 显示按钮 -->
+
     <el-button text plain @click="createByFileIntroductionVisible=true">
       <el-icon>
         <InfoFilled/>
