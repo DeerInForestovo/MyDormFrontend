@@ -14,7 +14,7 @@ import axiosFunctions from "@/utils/api";
       :style="{ transform: this.transformString }"
   >
     <el-space size="large">
-      <el-image :src="axiosFunctions.methods.getResourceByFilename(this.profilePhotoUrl)" :fit="'contain'"/>
+      <el-avatar :src="axiosFunctions.methods.getResourceByFilename(this.profilePhotoUrl)" :fit="'contain'"/>
       <div>
         <el-text tag="b"> Username: </el-text>
         <el-text> {{ username }}</el-text>
