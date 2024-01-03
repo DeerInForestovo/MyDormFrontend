@@ -150,9 +150,6 @@ export default {
 
       // dynamic route
       dynamicRouteDict: {},
-
-      // message
-      messageNumber: null,
     }
   },
 
@@ -327,7 +324,7 @@ export default {
 
           <!--      Message Button                    -->
           <el-tooltip content="Message" placement="bottom">
-            <el-badge class="HeaderButton" :hidden="!this.messageNumber" is-dot>
+            <el-badge class="HeaderButton" :hidden="!this.$store.state.messageNumber" is-dot>
               <el-button @click="this.$router.push('/home/message')" :icon="Message" text size="large"/>
             </el-badge>
           </el-tooltip>

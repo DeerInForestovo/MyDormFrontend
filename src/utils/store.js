@@ -22,8 +22,11 @@ let store = createStore({
             zoneId: null,
             zoneName: null,
 
+            // stars
             stars: [],
 
+            // messages
+            messageNum: null,
         }
     },
     mutations: {
@@ -53,6 +56,10 @@ let store = createStore({
         setStarRoom(state, stars) {
             state.stars = stars
         },
+
+        setMessageNum(state, num) {
+            state.messageNum = num
+        }
     }
 })
 
