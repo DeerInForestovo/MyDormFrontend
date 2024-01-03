@@ -13,6 +13,7 @@ export default {
   data() {
     return {
       allZones: [],
+      allTasks: [],
       form: {
         selectionTaskName: '',
         description: '',
@@ -47,8 +48,17 @@ export default {
       })
     },
 
+    getAllTasks() {
+      axiosFunctions.methods.getAllTasks()
+          .then(response => {
+            this.allTasks = response.data
+            console.log(this.allTasks)
+          }).catch(response => {
+        console.log(response)
+      })
+    },
+
     timeRangeValidator(rule, value, callback) {
-      console.log('check')
       if (!value) {
         callback(new Error('Please select the time range'))
       } else {
@@ -93,11 +103,56 @@ export default {
               })
         }
       })
+    },
+
+    exportResult(taskId) {
+      axiosFunctions.methods.exportResult(taskId)
+          .then(response => {
+            console.log(response.data)
+            let blob = response.data
+            let downLoadUrl = window.URL.createObjectURL(
+                new Blob([blob])
+            );
+            let a = document.createElement("a");
+            a.download = "SelectionTask_" + taskId + "_Result.csv";
+            a.href = downLoadUrl;
+            a.style.display = "none";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          })
+          .catch(response => {
+            ElNotification({
+              type: 'error',
+              title: 'Failed!',
+              message: response.response.data,
+            })
+          })
+    },
+
+    deleteTask(taskId) {
+      axiosFunctions.methods.deleteTask(taskId)
+          .then(response => {
+            ElNotification({
+              type: 'success',
+              title: 'Success!',
+              message: 'Successfully deleted.',
+            })
+            this.getAllTasks()
+          })
+          .catch(response => {
+            ElNotification({
+              type: 'error',
+              title: 'Failed!',
+              message: response.response.data,
+            })
+          })
     }
   },
 
   mounted() {
     this.getAllZones()
+    this.getAllTasks()
   }
 }
 </script>
@@ -158,6 +213,41 @@ export default {
           <el-button type="success" @click="release"> Release</el-button>
         </el-form-item>
       </el-form>
+    </el-card>
+  </div>
+
+  <div class="Cards">
+    <el-card shadow="hover">
+      <template #header>
+        <el-text tag="b">
+          Tasks
+        </el-text>
+      </template>
+
+      <el-table :data="this.allTasks">
+        <el-table-column label="ID" prop="selectionTaskId" width="50"/>
+        <el-table-column label="Start Time" prop="startTime" width="200"/>
+        <el-table-column label="End Time" prop="endTime" width="200"/>
+        <el-table-column label="Zones">
+          <template #default="scope">
+            <el-space wrap>
+              <el-tag v-for="zone in scope.row.zones"> {{ zone.zoneName }}</el-tag>
+            </el-space>
+          </template>
+        </el-table-column>
+        <el-table-column fixed="right" label="Operations" width="400">
+          <template #default="scope">
+            <el-space>
+              <el-button type="success" @click="exportResult(scope.row.selectionTaskId)">
+                Export
+              </el-button>
+              <el-button type="danger" @click="deleteTask(scope.row.selectionTaskId)">
+                Delete
+              </el-button>
+            </el-space>
+          </template>
+        </el-table-column>
+      </el-table>
     </el-card>
   </div>
 </template>

@@ -11,6 +11,8 @@ const canvas = ref(null);
 
 let buildings = ref([]);
 
+let loading = ref(true)
+
 // 更新 Canvas 尺寸以匹配图片
 function updateCanvasSize() {
   const img = image.value;
@@ -83,57 +85,57 @@ const moveImg = (e) => {
   })
 }
 
+const refreshCanvas = async () => {
+  if (zoneId) {
+    try {
+      const zoneResponse = await axiosFunctions.methods.getRoomFromZone(zoneId);
+      const rooms = zoneResponse.data;
+
+      // Building the initial buildingMap with reduced information.
+      let buildingMap = rooms.reduce((acc, room) => {
+        if (!acc[room.buildingId]) {
+          acc[room.buildingId] = {
+            buildingId: room.buildingId,
+            buildingName: room.buildingName,
+            description: '', // Will be filled later
+            buildingCoordinate: '', // Will be filled later
+          };
+        }
+        return acc;
+      }, {});
+
+      // Fetch additional information for each building.
+      for (let buildingId in buildingMap) {
+        try {
+          const buildingResponse = await axiosFunctions.methods.getSingleBuilding(buildingId);
+          // Assuming buildingResponse.data contains 'description' and 'coordinates'
+          buildingMap[buildingId].description = buildingResponse.data.description;
+          buildingMap[buildingId].buildingCoordinate = buildingResponse.data.buildingCoordinate;
+        } catch (error) {
+          console.error(`Failed to fetch data for building ${buildingId}:`, error);
+        }
+      }
+
+      // Convert the buildingMap object to an array for the Vue component.
+      buildings = Object.values(buildingMap);
+      console.log(buildings)
+
+      loading.value = false
+
+    } catch (error) {
+      console.error('Failed to fetch rooms:', error);
+    }
+  }
+}
+
 
 onMounted(() => {
-  setTimeout(async () => {
-    if (zoneId) {
-
-      console.log('begin')
-
-      try {
-        const zoneResponse = await axiosFunctions.methods.getRoomFromZone(zoneId);
-        const rooms = zoneResponse.data;
-
-        // Building the initial buildingMap with reduced information.
-        let buildingMap = rooms.reduce((acc, room) => {
-          if (!acc[room.buildingId]) {
-            acc[room.buildingId] = {
-              buildingId: room.buildingId,
-              buildingName: room.buildingName,
-              description: '', // Will be filled later
-              buildingCoordinate: '', // Will be filled later
-            };
-          }
-          return acc;
-        }, {});
-
-        console.log('here')
-
-        // Fetch additional information for each building.
-        for (let buildingId in buildingMap) {
-          try {
-            const buildingResponse = await axiosFunctions.methods.getSingleBuilding(buildingId);
-            // Assuming buildingResponse.data contains 'description' and 'coordinates'
-            buildingMap[buildingId].description = buildingResponse.data.description;
-            buildingMap[buildingId].buildingCoordinate = buildingResponse.data.buildingCoordinate;
-          } catch (error) {
-            console.error(`Failed to fetch data for building ${buildingId}:`, error);
-          }
-        }
-
-        // Convert the buildingMap object to an array for the Vue component.
-        buildings = Object.values(buildingMap);
-        console.log(buildings)
-
-      } catch (error) {
-        console.error('Failed to fetch rooms:', error);
-      }
-    }
-  }, 500);
+  setTimeout(refreshCanvas, 500);
 });
 
 
 </script>
+
 <script>
 export default {
   props: {
@@ -146,19 +148,23 @@ export default {
       this.$router.push('/home/building/' + buildingId)
     }
   },
+  mounted() {
+  }
 }
 </script>
 
 <template>
-  <div class="wrap" ref="imgWrap" @mousewheel.prevent="rollImg">
-    <!--    <img :src="mapSvgFile" class="img" usemap="#image-map" ref="image" alt="" @mousedown.prevent="moveImg">-->
-    <img src="./MapComponents/MapSvg.svg" class="img" usemap="#image-map" ref="image" alt=""
-         @mousedown.prevent="moveImg">
-    <canvas ref="canvas" class="canvas-overlay"></canvas>
-    <map name="image-map">
-      <area target="_self"  :coords="building.buildingCoordinate" shape="poly" v-for="building in buildings"
-            :key="building.buildingId" @click="handleAreaClick(building.buildingId)" alt="">
-    </map>
+  <div v-loading="loading">
+    <div class="wrap" ref="imgWrap" @mousewheel.prevent="rollImg">
+      <!--    <img :src="mapSvgFile" class="img" usemap="#image-map" ref="image" alt="" @mousedown.prevent="moveImg">-->
+      <img src="./MapComponents/MapSvg.svg" class="img" usemap="#image-map" ref="image" alt=""
+           @mousedown.prevent="moveImg">
+      <canvas ref="canvas" class="canvas-overlay"></canvas>
+      <map name="image-map">
+        <area target="_self" :coords="building.buildingCoordinate" shape="poly" v-for="building in buildings"
+              :key="building.buildingId" @click="handleAreaClick(building.buildingId)" alt="">
+      </map>
+    </div>
   </div>
 </template>
 
@@ -173,10 +179,12 @@ export default {
   align-items: center;
   justify-content: center;
 }
+
 .img, .canvas-overlay {
   position: absolute;
   cursor: move;
 }
+
 .canvas-overlay {
   pointer-events: none; /* 确保 Canvas 不阻止对图片的交互 */
 }

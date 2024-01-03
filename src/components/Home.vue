@@ -134,6 +134,7 @@ const buildManageSubMenu = [{
 import {ref} from "vue"
 import getUserProfile from "@/components/ProfileComponents/getUserProfile";
 import axiosFunctions from "@/utils/api";
+import {ElNotification} from "element-plus";
 
 export default {
   name: 'MainPage',
@@ -154,9 +155,6 @@ export default {
 
       // dynamic route
       dynamicRouteDict: {},
-
-      // message
-      messageNumber: null,
     }
   },
 
@@ -237,6 +235,21 @@ export default {
         this.$router.push(this.buildRoute({path: '/home/profile', props: ['username']}))
       this.setActivateIndex()
     }
+  },
+  created() {
+    axiosFunctions.methods.getSelectionTask()
+        .then(response => {
+          this.selectionTask = response.data;
+          ElNotification({
+            title: "You have a selection task!",
+            type: "info",
+            message: "<b>Start Time</b>: "+response.data.startTime+"<br>"+"<b>End Time</b>: "+response.data.endTime,
+            position: "bottom-right",
+            dangerouslyUseHTMLString: "true",
+            duration:"0",
+          })
+        })
+        .catch(response => console.log(response.response.data))
   }
 }
 </script>
@@ -299,7 +312,7 @@ export default {
           </el-menu-item>
 
           <!--   Build Manage Sub-menu    -->
-          <el-sub-menu v-for="subMenuItem in buildManageSubMenu" :index="subMenuItem.name" v-show="this.isAdmin">
+          <el-sub-menu v-for="subMenuItem in buildManageSubMenu" :index="subMenuItem.name" v-show="this.$store.state.isAdmin">
             <template #title>
               <el-icon>
                 <component :is="subMenuItem.icon"/>
@@ -331,7 +344,7 @@ export default {
 
           <!--      Message Button                    -->
           <el-tooltip content="Message" placement="bottom">
-            <el-badge class="HeaderButton" :hidden="!this.messageNumber" is-dot>
+            <el-badge class="HeaderButton" :hidden="!this.$store.state.messageNumber" is-dot>
               <el-button @click="this.$router.push('/home/message')" :icon="Message" text size="large"/>
             </el-badge>
           </el-tooltip>

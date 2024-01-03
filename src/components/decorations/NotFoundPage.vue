@@ -7,6 +7,7 @@
     <el-card class="box-card">
       <div class="text-center">
         <h1>404 Not Found</h1>
+        <img src="../../assets/maki.png" height="248" width="248" alt=""/>
         <p>The page you are looking for does not exist.</p>
       </div>
       <div class="text-center">
