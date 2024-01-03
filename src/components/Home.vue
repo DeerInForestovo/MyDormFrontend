@@ -92,24 +92,6 @@ const buildSubMenuJsonList = [
         path: '/home/team_recommend',
       }
     ]
-  },
-  {
-    name: 'Manage',
-    icon: Tools,
-    children: [
-      {
-        name: 'Student',
-        path: '/home/manage_students',
-      },
-      {
-        name: 'Options',
-        path: '/home/manage_options',
-      },
-      {
-        name: 'Zones',
-        path: '/home/manage_zones',
-      },
-    ]
   }
 ]
 const buildMenuItemJsonList = [
@@ -124,6 +106,24 @@ const buildMenuItemJsonList = [
     path: '/home/buildings',
   },
 ]
+const buildManageSubMenu = [{
+  name: 'Manage',
+  icon: Tools,
+  children: [
+    {
+      name: 'Student',
+      path: '/home/manage_students',
+    },
+    {
+      name: 'Options',
+      path: '/home/manage_options',
+    },
+    {
+      name: 'Zones',
+      path: '/home/manage_zones',
+    },
+  ]
+}]
 </script>
 
 <script>
@@ -135,6 +135,7 @@ export default {
   name: 'MainPage',
   data() {
     return {
+      isAdmin: false,
       username: null,
 
       // window size
@@ -170,6 +171,7 @@ export default {
 
     // store profile to $store
     getUserProfile(this.username, (data) => {
+      this.isAdmin = data.isAdmin
       this.$store.commit('setProfileInfo', data)
     })
 
@@ -291,6 +293,21 @@ export default {
               {{ menuItem.name }}
             </template>
           </el-menu-item>
+
+          <!--   Build Manage Sub-menu    -->
+          <el-sub-menu v-for="subMenuItem in buildManageSubMenu" :index="subMenuItem.name" v-show="this.isAdmin">
+            <template #title>
+              <el-icon>
+                <component :is="subMenuItem.icon"/>
+              </el-icon>
+              <span> {{ ifCollapse ? '' : subMenuItem.name }} </span>
+            </template>
+            <el-menu-item-group :title="ifCollapse ? subMenuItem.name : ''">
+              <el-menu-item v-for="children in subMenuItem.children" :index="this.buildRoute(children)">
+                {{ children.name }}
+              </el-menu-item>
+            </el-menu-item-group>
+          </el-sub-menu>
         </el-menu>
       </el-scrollbar>
     </div>
@@ -300,6 +317,8 @@ export default {
       <el-header class="Header">
         <!--      Buttons                             -->
         <button class="backButton" @click="this.$router.back()">Back</button>
+
+
         <div class="HeaderButtonDiv">
           <!--      Logout Button                     -->
           <el-tooltip content="Logout" placement="bottom">
@@ -311,7 +330,8 @@ export default {
             <el-badge class="HeaderButton" v-if="this.messageNumber">
               <el-button @click="this.$router.push('/home/message')" :icon="Message" text size="large"/>
             </el-badge>
-            <el-button @click="this.$router.push('/home/message')" :icon="Message" class="HeaderButton" text size="large" v-else/>
+            <el-button @click="this.$router.push('/home/message')" :icon="Message" class="HeaderButton" text
+                       size="large" v-else/>
           </el-tooltip>
 
           <!--      Switch Light-Dark Mode Button     -->

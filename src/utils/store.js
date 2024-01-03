@@ -16,6 +16,7 @@ let store = createStore({
             // user basic info
             name: null,
             profilePhotoUrl: null,
+            isAdmin: false,
 
             // zone info
             zoneId: null,
@@ -38,6 +39,8 @@ let store = createStore({
             state.profilePhotoUrl = data.profilePhotoUrl
             state.zoneId = data.zoneId
             state.stars = data.stars
+            state.isAdmin = data.isAdmin
+            console.log(data)
         },
 
         logout(state) {

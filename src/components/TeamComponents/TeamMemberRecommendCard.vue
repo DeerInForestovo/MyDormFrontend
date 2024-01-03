@@ -13,7 +13,7 @@ export default {
   data() {
     return {
       recommendedMembers: [],
-      currentRecommendation: ref(''),
+      currentRecommendation: null,
     }
   },
 
@@ -24,7 +24,11 @@ export default {
   methods: {
     refreshRecommendedMembers() {
       axiosFunctions.methods.recommendRoommate(this.$store.state.username, 0, 100)
-          .then(response => {this.recommendedMembers = response.data})
+          .then(response => {
+            this.recommendedMembers = response.data;
+            this.recommendedMembers = this.recommendedMembers.map(user => user.username)
+            this.currentRecommendation = this.recommendedMembers[0]
+          })
           .catch(response => {console.log(response)})
     },
 
