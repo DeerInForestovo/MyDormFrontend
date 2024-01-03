@@ -331,6 +331,10 @@ export default {
                 zoneId: room.zoneId,
                 roomPicturePath: room.roomPicturePath
             }, this.defaultConfig())
+        },
+
+        batchCreatUser(batch){
+            return axios.post(base_api + '/api/manage/user/batch', {batch : batch}, this.defaultConfig());
         }
     }
 }
