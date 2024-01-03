@@ -32,7 +32,6 @@ export default {
                   message: 'A new zone has been created',
                   type: 'success'
                 })
-                this.$router.go(0)
               })
               .catch(response => {
                 ElNotification({

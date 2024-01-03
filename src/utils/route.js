@@ -127,6 +127,13 @@ router.beforeEach(async (to, from) => {
         return {
             path: '/login'  // LoginPage
         }
+    } else if (  // Are you admin?
+        !store.state.isAdmin
+        && to.path.startsWith('/home/manage')
+    ) {
+        return {
+            path: '/home'  // Forbidden!
+        }
     }
 })
 
