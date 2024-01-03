@@ -152,7 +152,7 @@ export default {
       dynamicRouteDict: {},
 
       // message
-      messageNumber: null
+      messageNumber: null,
     }
   },
 
@@ -327,11 +327,9 @@ export default {
 
           <!--      Message Button                    -->
           <el-tooltip content="Message" placement="bottom">
-            <el-badge class="HeaderButton" v-if="this.messageNumber">
+            <el-badge class="HeaderButton" :hidden="!this.messageNumber" is-dot>
               <el-button @click="this.$router.push('/home/message')" :icon="Message" text size="large"/>
             </el-badge>
-            <el-button @click="this.$router.push('/home/message')" :icon="Message" class="HeaderButton" text
-                       size="large" v-else/>
           </el-tooltip>
 
           <!--      Switch Light-Dark Mode Button     -->
