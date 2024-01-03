@@ -136,6 +136,7 @@ export default {
             <CommentSection
                 :room-id="roomId"
                 :comments-list="this.rooms.comments"
+                @refresh-CommentSection = "refreshRoom"
             />
             <!--change the roomId-->
           </el-col>

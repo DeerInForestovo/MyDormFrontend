@@ -171,7 +171,8 @@ export default {
           message: "You have added the reply!",
         })
         this.reply.content = "";
-        this.$router.go(0);
+        // this.$router.go(0);
+        this.$emit('refresh-comment');
         console.log(response)
       }).catch((response) => {
         ElNotification({
@@ -190,7 +191,7 @@ export default {
           type: "success",
           message: "You have deleted the comment!",
         })
-        this.$router.go(0);
+        this.$emit('refresh-comment');
       }).catch((response) => {
         ElNotification({
           title: "Failed",
@@ -199,7 +200,7 @@ export default {
         })
         console.log('Failed to delete comment!')
         console.log(response)
-        this.$router.go(0);
+        this.$emit('refresh-comment');
       })
     },
   },
