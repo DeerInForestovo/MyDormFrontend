@@ -319,7 +319,7 @@ export default {
         },
 
         readComment(commentId){
-            return axios.post(base_api + '/api/comment/' + commentId, this.defaultConfig())
+            return axios.post(base_api + '/api/comment/' + commentId, {}, this.defaultConfig())
         },
 
         updateRoom(roomId, room){
